@@ -53,6 +53,8 @@ def verificar():
                         assert medidas['largura'] <= medidas['janela'] + 1, (largura, rota, medidas)
                         assert medidas['titulo'] >= medidas['cabecalho'], (largura, rota, medidas)
                         assert pagina.locator('#logo-abaquar').evaluate('(img) => img.naturalWidth > 0')
+                        if rota == '/':
+                            assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0 && getComputedStyle(img).objectFit === "contain"')
                         if rota == '/montagem':
                             assert pagina.locator('.opcao img').evaluate_all('(imgs) => imgs.every(img => img.naturalWidth > 0)')
                             assert pagina.locator('.opcao img').first.evaluate('(img) => getComputedStyle(img).objectFit') == 'contain'

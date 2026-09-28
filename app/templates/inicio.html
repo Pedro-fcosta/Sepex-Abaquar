@@ -6,12 +6,9 @@
     <h1>Monte seu foguete.<br><span>Descubra o voo.</span></h1>
     <p class="lead">Escolha os componentes de um foguete modular, acompanhe o lançamento da sua configuração e veja sua posição no ranking da ABAQUAR.</p>
     <div class="acoes"><a class="botao" href="{{ url_for('web.montagem') }}">Começar montagem <span aria-hidden="true">→</span></a><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking</a></div>
+    <p class="inicio-contagem"><strong>108</strong><span>configurações possíveis: 3 coifas, 3 formatos de aleta, 3 quantidades e 4 comprimentos.</span></p>
   </div>
-  <div class="inicio-numeros" aria-label="108 configurações possíveis">
-    <p class="inicio-numeros-titulo">UMA EXPERIÊNCIA, MUITAS ESCOLHAS</p>
-    <strong>108</strong><span>configurações possíveis</span>
-    <div class="inicio-formula"><span>3 coifas</span><span>3 formatos de aleta</span><span>3 quantidades</span><span>4 comprimentos</span></div>
-  </div>
+  <figure class="inicio-ilustracao"><img src="{{ url_for('static', filename='img/katherine johnson home/Katherine Johnson.png') }}" alt="Ilustração de Katherine Johnson com um foguete e anotações de trajetórias"></figure>
 </section>
 <section class="passos" aria-labelledby="passos-titulo">
   <div class="secao-cabecalho"><div><p class="sobretitulo">COMO FUNCIONA</p><h2 id="passos-titulo">Da escolha ao resultado</h2></div><p>Dados pré-simulados, consultados localmente durante o evento.</p></div>
