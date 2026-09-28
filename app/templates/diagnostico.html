@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block titulo %}Diagnóstico · ABAQUAR{% endblock %}{% block conteudo %}
+<section class="cabecalho"><p class="sobretitulo">OPERAÇÃO LOCAL</p><h1>Diagnóstico</h1></section>
+<section class="grade quatro metricas"><article class="cartao"><span>Configurações</span><strong>{{configuracoes}} / 108</strong></article><article class="cartao"><span>Simulações aprovadas</span><strong>{{aprovadas}}</strong></article><article class="cartao"><span>Tentativas</span><strong>{{tentativas}}</strong></article><article class="cartao"><span>Integridade SQLite</span><strong>{{integridade}}</strong></article></section>
+<p class="nota">Para backup consistente em modo WAL, use <code>flask --app run backup-db caminho/do/backup.sqlite3</code>.</p>{% endblock %}

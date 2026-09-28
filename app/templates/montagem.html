@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block titulo %}Montagem · ABAQUAR{% endblock %}{% block conteudo %}
+<section class="cabecalho"><p class="sobretitulo">ETAPA 01 / MONTAGEM</p><h1>Monte sua missão</h1><p>Escolha uma opção em cada grupo. A pré-visualização acompanha suas escolhas.</p></section>
+<div class="montagem-layout"><form id="form-montagem" class="montagem-form">
+  <section class="painel"><h2>Quem vai lançar?</h2><label for="nome">Nome ou apelido</label><input id="nome" name="nome" maxlength="60" minlength="2" placeholder="Digite seu nome" required autocomplete="off"></section>
+  <section class="painel"><h2>01 · Coifa</h2><div class="opcoes tres" role="group" aria-label="Coifa">
+    {% for codigo,nome in coifas.items() %}<label class="opcao"><input type="radio" name="coifa" value="{{codigo}}" required {% if codigo=='C2' %}checked{% endif %}><span class="opcao-conteudo"><img src="{{ url_for('static',filename='img/componentes/coifa_'+codigo|lower+'.png') }}" alt=""><strong>{{nome}}</strong><small>{{codigo}}</small></span></label>{% endfor %}
+  </div></section>
+  <section class="painel"><h2>02 · Formato das aletas</h2><div class="opcoes tres" role="group" aria-label="Formato das aletas">
+    {% for codigo,nome in aletas.items() %}<label class="opcao"><input type="radio" name="aleta" value="{{codigo}}" required {% if codigo=='A3' %}checked{% endif %}><span class="opcao-conteudo"><img src="{{ url_for('static',filename='img/componentes/aleta_'+codigo|lower+'.png') }}" alt=""><strong>{{nome}}</strong><small>{{codigo}}</small></span></label>{% endfor %}
+  </div></section>
+  <section class="painel"><h2>03 · Quantidade de aletas</h2><div class="opcoes tres">
+    {% for n in (3,4,5) %}<label class="opcao numerica"><input type="radio" name="aletas" value="{{n}}" required {% if n==4 %}checked{% endif %}><span class="opcao-conteudo"><strong>{{n}}</strong><small>aletas</small></span></label>{% endfor %}
+  </div></section>
+  <section class="painel"><h2>04 · Seções do corpo</h2><div class="opcoes quatro">
+    {% for n in (1,2,3,4) %}<label class="opcao numerica"><input type="radio" name="secoes" value="{{n}}" required {% if n==2 %}checked{% endif %}><span class="opcao-conteudo"><strong>{{n}}</strong><small>{{n*20}} cm</small></span></label>{% endfor %}
+  </div></section>
+</form>
+<aside class="resumo-fixo painel"><p class="sobretitulo">PRÉ-VISUALIZAÇÃO</p><div class="palco-foguete"><div class="foguete-montado"><div id="preview-coifa" class="preview-coifa c2"></div><div id="preview-corpo" class="preview-corpo"></div><div id="preview-aleta" class="preview-aleta a3"></div></div></div>
+  <p class="codigo" id="codigo">C2-A3-F4-S2</p><h2>Seu foguete</h2><p id="descricao">Coifa ogival · Aleta elíptica · 4 aletas · 40 cm de corpo</p><p id="disponibilidade" class="estado">Consultando simulação...</p>
+  <button form="form-montagem" class="botao largura" id="confirmar" type="submit">Confirmar e lançar →</button><p id="erro" class="erro" role="alert"></p>
+  <small>O resultado só é liberado quando há uma simulação aprovada. Dados fictícios aparecem identificados.</small>
+</aside></div>
+{% endblock %}{% block scripts %}<script src="{{ url_for('static',filename='js/montagem.js') }}"></script>{% endblock %}

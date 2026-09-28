@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block titulo %}Voo · ABAQUAR{% endblock %}{% block conteudo %}
+<section class="voo-pagina" data-id="{{tentativa.id}}"><div class="voo-info"><p class="sobretitulo">MISSÃO {{tentativa.configuracao_codigo}}</p><h1 id="titulo-voo">Preparar para lançamento</h1>
+  {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
+  <p id="tipo-trajetoria" class="nota"></p><p id="altitude-atual" class="medida-atual">0 m</p><p>Altitude exibida na animação</p>
+  <a id="ver-resultado" class="botao oculto" href="{{url_for('web.resultado',id=tentativa.id)}}">Ver resultados →</a></div>
+  <div class="cenario-voo"><div class="estrelas"></div><div class="linha-altitude"></div><div id="foguete-voo" class="foguete-voo">🚀</div><div class="solo"></div><div id="contagem" class="contagem"></div></div></section>
+{% endblock %}{% block scripts %}<script src="{{url_for('static',filename='js/voo.js')}}"></script>{% endblock %}

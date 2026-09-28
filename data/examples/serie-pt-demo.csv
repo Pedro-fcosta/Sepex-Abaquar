@@ -1,0 +1,6 @@
+# Exemplo de formato, valores artificiais; não é resultado OpenRocket
+# Tempo (s),Altitude (m),Velocidade total (m/s),Aceleração total (m/s²)
+0,0,0,0
+1,20,30,45
+2,35,20,5
+3,40,0,-10

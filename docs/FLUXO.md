@@ -1,0 +1,10 @@
+# Fluxo do visitante
+
+1. Início em `/` e montagem em `/montagem`.
+2. Nome ou apelido, coifa, forma e quantidade de aletas, seções do corpo.
+3. A pré-visualização e o código mudam imediatamente. `/api/configuracoes/<codigo>` informa se há simulação aprovada.
+4. Confirmar cria uma tentativa por `POST /api/tentativas`. Um identificador guardado no navegador evita cliques duplos e permite repetir com segurança uma requisição cuja resposta se perdeu.
+5. `/voo/<id>` faz contagem regressiva e anima a série OpenRocket; sem série, usa curva apenas ilustrativa.
+6. `/resultado/<id>` mostra os indicadores gravados no momento da tentativa e a posição atual. Depois o visitante pode recomeçar.
+
+Se uma configuração não tem resultado aprovado, a confirmação fica indisponível. O endpoint valida isso novamente. Se uma simulação demonstrativa estiver ativa, todos os passos marcam seu caráter fictício. O ranking completo e a opção de melhor resultado por participante estão em `/ranking`; `/dashboard` mostra agregados do evento.

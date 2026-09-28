@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block titulo %}Ranking · ABAQUAR{% endblock %}{% block conteudo %}
+<section class="cabecalho"><p class="sobretitulo">SEPEX 2026</p><h1>Ranking de voos</h1><p>Maior apogeu, depois maior velocidade e, por fim, registro mais antigo.</p>
+<div class="acoes"><a class="botao {% if melhor %}secundario{% endif %}" href="/ranking">Todas as tentativas</a><a class="botao {% if not melhor %}secundario{% endif %}" href="/ranking?melhor=1">Melhor por participante</a></div></section>
+<section class="painel tabela-area"><table><thead><tr><th>Pos.</th><th>Participante</th><th>Configuração</th><th>Apogeu</th><th>Velocidade</th><th>Tipo</th></tr></thead><tbody>
+{% for linha in linhas %}<tr><td><b>#{{linha.posicao}}</b></td><td>{{linha.nome}}</td><td><code>{{linha.configuracao_codigo}}</code></td><td>{{'%.1f'|format(linha.apogeu_m)}} m</td><td>{% if linha.velocidade_max_ms is not none %}{{'%.1f'|format(linha.velocidade_max_ms)}} m/s{% else %}—{% endif %}</td><td>{% if linha.demonstrativo %}<span class="badge-demo">DEMO</span>{% else %}OpenRocket{% endif %}</td></tr>{% else %}<tr><td colspan="6">Ainda não há tentativas registradas.</td></tr>{% endfor %}
+</tbody></table></section>{% endblock %}

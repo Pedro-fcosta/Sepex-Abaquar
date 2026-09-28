@@ -1,0 +1,11 @@
+# Importação do OpenRocket
+
+Exporte um CSV de série temporal ou um resumo com colunas conhecidas em português ou inglês. O importador reconhece, por exemplo, `Tempo (s)`/`Time (s)`, `Altitude (m)`/`Altitude (ft)`, `Velocidade total`/`Total velocity`, `Aceleração total`/`Total acceleration`, CG, CP e margem estática. Para resumo, reconhece `Apogeu`/`Apogee`, máximos, tempo ao apogeu, duração e aviso. Comentários iniciados por `#`, comuns no CSV do OpenRocket, são ignorados; a linha `# Tempo...` é aceita como cabeçalho. Consulte os exemplos artificiais em `data/examples`.
+
+Unidades reconhecidas: comprimento `m`, `cm`, `mm`, `ft`; velocidade `m/s`, `km/h`, `mph`, `ft/s`; aceleração `m/s²`, `g`, `ft/s²`; tempo `s`, `ms`, `min`. Conversões são salvas em m, m/s, m/s² e s. `unidades_originais_json` preserva o texto do cabeçalho. Valores `NaN` são tratados como ausentes. Unidade desconhecida gera erro de importação; acrescente o alias após verificar a origem.
+
+Para série, apogeu e tempo são obtidos do maior ponto de altitude; velocidade e aceleração máximas são magnitudes dos pontos. Revise se o canal exportado é total ou vertical e se esse critério corresponde ao protocolo da equipe. CG, CP, margem e avisos ausentes ficam vazios; o sistema não os calcula. A condição compartilhada (`condicoes`) nasce pendente. Preencha motor, atmosfera, vento, trilho, versão e data com `flask --app run condicao-configurar "NOME" --motor "..." --temperatura-c ... --pressao-pa ...`; após conferência use `--revisao-tecnica approved`.
+
+Importe com `flask --app run importar-csv CODIGO arquivo.csv --condicao NOME` ou pela administração. O status inicial é `pending_review`, inclusive se o CSV tiver números completos. Confira identificação da configuração, geometria, massas reais, motor, atmosfera e avisos; então use `revisar ID approved` ou a interface. Reimportar os mesmos bytes para a mesma configuração retorna o ID existente. Versões diferentes mantêm histórico. Uma nova aprovação rejeita a anterior; snapshots de tentativas antigas permanecem.
+
+O protótipo de Daniel foi consultado apenas para verificar o formato de CSV e a ideia de animação: [Gr-fico-Foguete](https://github.com/DGsomente/Gr-fico-Foguete). Seu repositório não foi alterado.
