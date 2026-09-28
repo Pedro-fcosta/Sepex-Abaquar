@@ -1,23 +1,73 @@
-{% extends 'base.html' %}{% block titulo %}Montagem · ABAQUAR{% endblock %}{% block conteudo %}
-<section class="cabecalho"><p class="sobretitulo">ETAPA 01 / MONTAGEM</p><h1>Monte sua missão</h1><p>Escolha uma opção em cada grupo. A pré-visualização acompanha suas escolhas.</p></section>
-<div class="montagem-layout"><form id="form-montagem" class="montagem-form">
-  <section class="painel"><h2>Quem vai lançar?</h2><label for="nome">Nome ou apelido</label><input id="nome" name="nome" maxlength="60" minlength="2" placeholder="Digite seu nome" required autocomplete="off"></section>
-  <section class="painel"><h2>01 · Coifa</h2><div class="opcoes tres" role="group" aria-label="Coifa">
-    {% for codigo,nome in coifas.items() %}<label class="opcao"><input type="radio" name="coifa" value="{{codigo}}" required {% if codigo=='C2' %}checked{% endif %}><span class="opcao-conteudo"><img src="{{ url_for('static',filename='img/componentes/coifa_'+codigo|lower+'.png') }}" alt=""><strong>{{nome}}</strong><small>{{codigo}}</small></span></label>{% endfor %}
-  </div></section>
-  <section class="painel"><h2>02 · Formato das aletas</h2><div class="opcoes tres" role="group" aria-label="Formato das aletas">
-    {% for codigo,nome in aletas.items() %}<label class="opcao"><input type="radio" name="aleta" value="{{codigo}}" required {% if codigo=='A3' %}checked{% endif %}><span class="opcao-conteudo"><img src="{{ url_for('static',filename='img/componentes/aleta_'+codigo|lower+'.png') }}" alt=""><strong>{{nome}}</strong><small>{{codigo}}</small></span></label>{% endfor %}
-  </div></section>
-  <section class="painel"><h2>03 · Quantidade de aletas</h2><div class="opcoes tres">
-    {% for n in (3,4,5) %}<label class="opcao numerica"><input type="radio" name="aletas" value="{{n}}" required {% if n==4 %}checked{% endif %}><span class="opcao-conteudo"><strong>{{n}}</strong><small>aletas</small></span></label>{% endfor %}
-  </div></section>
-  <section class="painel"><h2>04 · Seções do corpo</h2><div class="opcoes quatro">
-    {% for n in (1,2,3,4) %}<label class="opcao numerica"><input type="radio" name="secoes" value="{{n}}" required {% if n==2 %}checked{% endif %}><span class="opcao-conteudo"><strong>{{n}}</strong><small>{{n*20}} cm</small></span></label>{% endfor %}
-  </div></section>
-</form>
-<aside class="resumo-fixo painel"><p class="sobretitulo">PRÉ-VISUALIZAÇÃO</p><div class="palco-foguete"><div class="foguete-montado"><div id="preview-coifa" class="preview-coifa c2"></div><div id="preview-corpo" class="preview-corpo"></div><div id="preview-aleta" class="preview-aleta a3"></div></div></div>
-  <p class="codigo" id="codigo">C2-A3-F4-S2</p><h2>Seu foguete</h2><p id="descricao">Coifa ogival · Aleta elíptica · 4 aletas · 40 cm de corpo</p><p id="disponibilidade" class="estado">Consultando simulação...</p>
-  <button form="form-montagem" class="botao largura" id="confirmar" type="submit">Confirmar e lançar →</button><p id="erro" class="erro" role="alert"></p>
-  <small>O resultado só é liberado quando há uma simulação aprovada. Dados fictícios aparecem identificados.</small>
-</aside></div>
-{% endblock %}{% block scripts %}<script src="{{ url_for('static',filename='js/montagem.js') }}"></script>{% endblock %}
+{% extends 'base.html' %}
+{% block titulo %}Montagem · ABAQUAR{% endblock %}
+{% block conteudo %}
+<section class="cabecalho montagem-cabecalho"><p class="sobretitulo">CONFIGURADOR DE FOGUETES</p><h1>Monte sua missão</h1><p>Escolha as peças em quatro etapas. Você pode voltar e ajustar sua montagem a qualquer momento.</p></section>
+
+<nav class="progresso" aria-label="Etapas da montagem">
+  {% for titulo in ('Coifa', 'Aletas', 'Corpo', 'Confirmar') %}
+  <button type="button" class="progresso-etapa" data-step-target="{{ loop.index0 }}" {% if loop.first %}aria-current="step"{% endif %} {% if not loop.first %}disabled{% endif %}>
+    <span class="progresso-numero">{{ loop.index }}</span><span class="progresso-texto">{{ titulo }}</span>
+  </button>
+  {% endfor %}
+</nav>
+
+<div class="montagem-layout">
+  <form id="form-montagem" class="montagem-form" novalidate>
+    <section class="etapa painel" data-step="0" aria-labelledby="titulo-coifa">
+      <div class="etapa-cabecalho"><span class="etapa-ordem">ETAPA 1 DE 4</span><h2 id="titulo-coifa">Escolha a coifa</h2><p>A coifa define o formato da parte dianteira do foguete.</p></div>
+      <div class="opcoes tres" role="radiogroup" aria-labelledby="titulo-coifa">
+        {% for codigo,nome in coifas.items() %}
+        <label class="opcao"><input type="radio" name="coifa" value="{{codigo}}" required {% if codigo == 'C2' %}checked{% endif %}>
+          <span class="opcao-conteudo"><span class="selecao-marca" aria-hidden="true">✓</span><span class="peca-visual peca-coifa peca-{{codigo|lower}}"><img src="{{ url_for('static',filename='img/componentes/coifa_'+codigo|lower+'.png') }}" alt="Coifa {{nome|lower }}"></span><strong>{{nome}}</strong><small>{{codigo}}</small></span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="etapa painel" data-step="1" aria-labelledby="titulo-aletas" hidden>
+      <div class="etapa-cabecalho"><span class="etapa-ordem">ETAPA 2 DE 4</span><h2 id="titulo-aletas">Configure as aletas</h2><p>Escolha o formato e depois a quantidade.</p></div>
+      <div class="grupo-opcoes" role="radiogroup" aria-labelledby="titulo-formato"><h3 id="titulo-formato">Formato</h3><div class="opcoes tres">
+        {% for codigo,nome in aletas.items() %}
+        <label class="opcao"><input type="radio" name="aleta" value="{{codigo}}" required {% if codigo == 'A3' %}checked{% endif %}>
+          <span class="opcao-conteudo"><span class="selecao-marca" aria-hidden="true">✓</span><span class="peca-visual peca-aleta peca-{{codigo|lower}}"><img src="{{ url_for('static',filename='img/componentes/aleta_'+codigo|lower+'.png') }}" alt="Aleta {{nome|lower }}"></span><strong>{{nome}}</strong><small>{{codigo}}</small></span>
+        </label>
+        {% endfor %}
+      </div></div>
+      <div class="grupo-opcoes" role="radiogroup" aria-labelledby="titulo-quantidade"><h3 id="titulo-quantidade">Quantidade</h3><div class="opcoes tres">
+        {% for n in (3,4,5) %}<label class="opcao numerica"><input type="radio" name="aletas" value="{{n}}" required {% if n == 4 %}checked{% endif %}><span class="opcao-conteudo"><span class="selecao-marca" aria-hidden="true">✓</span><strong>{{n}}</strong><small>aletas</small></span></label>{% endfor %}
+      </div></div>
+    </section>
+
+    <section class="etapa painel" data-step="2" aria-labelledby="titulo-corpo" hidden>
+      <div class="etapa-cabecalho"><span class="etapa-ordem">ETAPA 3 DE 4</span><h2 id="titulo-corpo">Defina o corpo</h2><p>Cada seção acrescenta 20 cm ao comprimento do corpo.</p></div>
+      <div class="opcoes quatro" role="radiogroup" aria-labelledby="titulo-corpo">
+        {% for n in (1,2,3,4) %}<label class="opcao numerica"><input type="radio" name="secoes" value="{{n}}" required {% if n == 2 %}checked{% endif %}><span class="opcao-conteudo"><span class="selecao-marca" aria-hidden="true">✓</span><strong>{{n}}</strong><small>{{n}} {{'seção' if n == 1 else 'seções'}}</small><span class="medida-opcao">{{n*20}} cm</span></span></label>{% endfor %}
+      </div>
+    </section>
+
+    <section class="etapa painel" data-step="3" aria-labelledby="titulo-confirmar" hidden>
+      <div class="etapa-cabecalho"><span class="etapa-ordem">ETAPA 4 DE 4</span><h2 id="titulo-confirmar">Confirme a montagem</h2><p>Confira as escolhas e informe como deseja aparecer no ranking.</p></div>
+      <label class="rotulo-input" for="nome">Nome ou apelido</label><input id="nome" name="nome" maxlength="60" minlength="2" placeholder="Digite seu nome ou apelido" required autocomplete="off">
+      <dl class="confirmacao-lista"><div><dt>Coifa</dt><dd id="confirmacao-coifa">Ogival</dd></div><div><dt>Aletas</dt><dd id="confirmacao-aletas">Elíptica · 4 aletas</dd></div><div><dt>Corpo</dt><dd id="confirmacao-corpo">2 seções · 40 cm</dd></div><div><dt>Código</dt><dd><code id="confirmacao-codigo">C2-A3-F4-S2</code></dd></div></dl>
+      <p id="disponibilidade-final" class="estado estado-consultando" aria-live="polite">Consultando simulação...</p>
+    </section>
+
+    <div class="etapa-acoes"><button type="button" class="botao secundario" id="voltar" hidden>Voltar</button><button type="button" class="botao" id="continuar">Continuar <span aria-hidden="true">→</span></button><button type="submit" class="botao" id="confirmar" hidden disabled>Confirmar e lançar <span aria-hidden="true">→</span></button></div>
+    <p id="erro" class="erro" role="alert" aria-live="assertive"></p>
+  </form>
+
+  <aside class="resumo-fixo painel" aria-label="Pré-visualização da configuração">
+    <div class="resumo-topo"><p class="sobretitulo">SEU FOGUETE</p><span class="resumo-legenda">Perfil lateral ilustrativo</span></div>
+    <div class="palco-foguete">
+      <svg id="preview-foguete" class="preview-foguete" viewBox="0 0 640 220" role="img" aria-label="Vista lateral do foguete com coifa ogival, aletas elípticas e duas seções de corpo">
+        <defs><linearGradient id="corpo-gradiente" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d5e1ed"/><stop offset="1" stop-color="#9fb8d1"/></linearGradient><linearGradient id="coifa-gradiente" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b2cbe1"/></linearGradient></defs>
+        <g id="preview-aletas-svg"></g><g id="preview-corpo-svg"></g><path id="preview-coifa-svg" class="svg-coifa" d="M44 110 Q76 82 160 82 L160 138 Q76 138 44 110 Z"/>
+      </svg>
+    </div>
+    <div class="vista-auxiliar"><div><strong>Vista traseira</strong><span id="quantidade-texto">4 aletas distribuídas</span></div><svg id="vista-traseira" viewBox="0 0 120 120" role="img" aria-label="Vista traseira com quatro aletas"><g id="aletas-traseiras"></g><circle class="traseira-corpo" cx="60" cy="60" r="23"/><circle class="traseira-centro" cx="60" cy="60" r="8"/></svg></div>
+    <div class="resumo-dados"><p class="codigo" id="codigo">C2-A3-F4-S2</p><p id="descricao">Coifa ogival · Aleta elíptica · 4 aletas · 40 cm de corpo</p><p id="disponibilidade" class="estado estado-consultando" aria-live="polite">Consultando simulação...</p></div>
+    <p class="resumo-nota">O lançamento exige uma simulação aprovada. Resultados demonstrativos são identificados.</p>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static',filename='js/montagem.js') }}"></script>{% endblock %}

@@ -3,5 +3,5 @@
   {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
   <p id="tipo-trajetoria" class="nota"></p><p id="altitude-atual" class="medida-atual">0 m</p><p>Altitude exibida na animação</p>
   <a id="ver-resultado" class="botao oculto" href="{{url_for('web.resultado',id=tentativa.id)}}">Ver resultados →</a></div>
-  <div class="cenario-voo"><div class="estrelas"></div><div class="linha-altitude"></div><div id="foguete-voo" class="foguete-voo">🚀</div><div class="solo"></div><div id="contagem" class="contagem"></div></div></section>
+  <div class="cenario-voo"><div class="estrelas"></div><div class="linha-altitude"></div><div id="foguete-voo" class="foguete-voo" role="img" aria-label="Foguete ilustrativo subindo"><svg viewBox="0 0 82 82" aria-hidden="true"><path d="M41 4 C26 18 27 37 28 54 L54 54 C55 37 56 18 41 4 Z" fill="#f8fafc" stroke="#003f91" stroke-width="2"/><circle cx="41" cy="31" r="7" fill="#0b5fc0"/><path d="M28 44 L15 62 L29 58 M54 44 L67 62 L53 58" fill="#0b5fc0" stroke="#003f91" stroke-width="2"/><path d="M33 55 L33 65 M49 55 L49 65" stroke="#003f91" stroke-width="3"/></svg></div><div class="solo"></div><div id="contagem" class="contagem"></div></div></section>
 {% endblock %}{% block scripts %}<script src="{{url_for('static',filename='js/voo.js')}}"></script>{% endblock %}

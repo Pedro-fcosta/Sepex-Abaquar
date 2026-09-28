@@ -1,8 +1,24 @@
-{% extends 'base.html' %}{% block conteudo %}
-<section class="hero"><div><p class="sobretitulo">SEPEX 2026 · EXPERIÊNCIA INTERATIVA</p><h1>Seu foguete.<br><em>Sua missão.</em></h1>
-  <p class="lead">Escolha cada peça, veja o foguete ganhar forma e descubra o voo da sua configuração.</p>
-  <div class="acoes"><a class="botao" href="/montagem">Começar montagem →</a><a class="botao secundario" href="/ranking">Ver ranking</a></div>
-  <p class="nota">108 combinações · resultados pré-simulados · sem internet durante o evento</p></div>
-  <div class="hero-arte"><div class="orbita"></div><div class="foguete-decorativo"><div class="ponta"></div><div class="tubo"></div><div class="asa"></div></div><span class="tag-hero">MISSÃO ABAQUAR</span></div></section>
-<section class="passos"><h2>Como funciona</h2><div class="grade tres"><article class="cartao"><b>01</b><h3>Monte</h3><p>Escolha coifa, aletas e comprimento do corpo.</p></article><article class="cartao"><b>02</b><h3>Lance</h3><p>Acompanhe a trajetória simulada ou uma animação ilustrativa.</p></article><article class="cartao"><b>03</b><h3>Compare</h3><p>Veja os indicadores e sua posição no ranking.</p></article></div></section>
+{% extends 'base.html' %}
+{% block conteudo %}
+<section class="inicio-apresentacao painel">
+  <div>
+    <p class="sobretitulo">EXPERIÊNCIA INTERATIVA · SEPEX 2026</p>
+    <h1>Monte seu foguete.<br><span>Descubra o voo.</span></h1>
+    <p class="lead">Escolha os componentes de um foguete modular, acompanhe o lançamento da sua configuração e veja sua posição no ranking da ABAQUAR.</p>
+    <div class="acoes"><a class="botao" href="{{ url_for('web.montagem') }}">Começar montagem <span aria-hidden="true">→</span></a><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking</a></div>
+  </div>
+  <div class="inicio-numeros" aria-label="108 configurações possíveis">
+    <p class="inicio-numeros-titulo">UMA EXPERIÊNCIA, MUITAS ESCOLHAS</p>
+    <strong>108</strong><span>configurações possíveis</span>
+    <div class="inicio-formula"><span>3 coifas</span><span>3 formatos de aleta</span><span>3 quantidades</span><span>4 comprimentos</span></div>
+  </div>
+</section>
+<section class="passos" aria-labelledby="passos-titulo">
+  <div class="secao-cabecalho"><div><p class="sobretitulo">COMO FUNCIONA</p><h2 id="passos-titulo">Da escolha ao resultado</h2></div><p>Dados pré-simulados, consultados localmente durante o evento.</p></div>
+  <div class="grade tres">
+    <article class="cartao passo-card"><span class="passo-numero">01</span><h3>Monte</h3><p>Escolha a coifa, as aletas e as seções do corpo.</p></article>
+    <article class="cartao passo-card"><span class="passo-numero">02</span><h3>Lance</h3><p>Acompanhe a trajetória da configuração escolhida.</p></article>
+    <article class="cartao passo-card"><span class="passo-numero">03</span><h3>Compare</h3><p>Veja os indicadores do voo e sua posição no ranking.</p></article>
+  </div>
+</section>
 {% endblock %}

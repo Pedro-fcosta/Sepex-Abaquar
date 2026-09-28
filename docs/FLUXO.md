@@ -1,8 +1,8 @@
 # Fluxo do visitante
 
 1. Início em `/` e montagem em `/montagem`.
-2. Nome ou apelido, coifa, forma e quantidade de aletas, seções do corpo.
-3. A pré-visualização e o código mudam imediatamente. `/api/configuracoes/<codigo>` informa se há simulação aprovada.
+2. A montagem segue quatro etapas: coifa; forma e quantidade de aletas; seções do corpo; nome ou apelido e confirmação. É possível voltar e ajustar as escolhas.
+3. O perfil lateral, a vista traseira das aletas, o resumo e o código mudam imediatamente. `/api/configuracoes/<codigo>` informa se há simulação aprovada.
 4. Confirmar cria uma tentativa por `POST /api/tentativas`. Um identificador guardado no navegador evita cliques duplos e permite repetir com segurança uma requisição cuja resposta se perdeu.
 5. `/voo/<id>` faz contagem regressiva e anima a série OpenRocket; sem série, usa curva apenas ilustrativa.
 6. `/resultado/<id>` mostra os indicadores gravados no momento da tentativa e a posição atual. Depois o visitante pode recomeçar.

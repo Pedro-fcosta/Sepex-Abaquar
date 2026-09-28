@@ -56,7 +56,9 @@ O ranking ordena por apogeu decrescente, velocidade máxima decrescente, horári
 
 SQLite usa WAL, chaves estrangeiras e backup pela API do próprio SQLite. O log de erros fica em `instance/sepex.log`. `/diagnostico` mostra contagens e `PRAGMA integrity_check`. Ver [operação](docs/OPERACAO-SEPEX.md) para rede local, quiosque, backup e recuperação.
 
-O frontend inclui as imagens fornecidas para as peças em `app/static/img/componentes` como `coifa_c1.png`, `coifa_c2.png`, `coifa_c3.png`, `corpo.png`, `aleta_a1.png`, `aleta_a2.png` e `aleta_a3.png`. A pré-visualização é feita por camadas CSS e aceita futuras artes. Chart.js 4.5.0 está armazenado em `app/static/vendor` com sua licença. Nenhum CDN é chamado em produção.
+O frontend inclui as imagens fornecidas para as peças em `app/static/img/componentes` como `coifa_c1.png`, `coifa_c2.png`, `coifa_c3.png`, `corpo.png`, `aleta_a1.png`, `aleta_a2.png` e `aleta_a3.png`. A montagem guiada tem quatro etapas: coifa, aletas, corpo e confirmação. A pré-visualização em SVG mostra o perfil lateral, as seções do corpo e uma vista traseira com a quantidade de aletas. A logo em `app/static/Logo/Logo ABAQUAR.png` aparece no cabeçalho. O tema claro é inicial; a escolha entre claro e escuro fica salva no navegador. Chart.js 4.5.0 está armazenado em `app/static/vendor` com sua licença. Nenhum CDN é chamado em produção.
+
+Para conferir a interface em Chromium nas resoluções de 1920 × 1080, 1366 × 768, 1024 × 768, 768 × 1024 e 390 × 844, instale opcionalmente Playwright (`python -m pip install playwright` e `python -m playwright install chromium`) e execute `python -m scripts.verificar_interface`. As capturas ficam em `data/exports/qa`.
 
 Arquitetura: `app/db.py` contém o esquema e conexão; `app/catalogo.py` gera as combinações; `app/simulacoes.py` importa e revisa CSV; `app/tentativas.py` registra participações; `app/estatisticas.py` calcula ranking e dashboard; `app/web.py` fornece páginas e API; `app/cli.py` contém os comandos. Consulte [arquitetura](docs/ARQUITETURA.md) e [fluxo](docs/FLUXO.md).
 
