@@ -1,6 +1,6 @@
 # ABAQUAR · SEPEX 2026
 
-Experiência local de montagem digital de foguetes modulares para a SEPEX 2026. O visitante escolhe peças, acompanha a animação do voo de uma simulação **previamente importada e aprovada** e entra no ranking. O programa não executa OpenRocket durante o atendimento e funciona sem internet.
+Experiência local de montagem digital de foguetes modulares para a SEPEX 2026. O visitante escolhe peças, acompanha gráficos animados de altura × tempo e velocidade × tempo de uma simulação **previamente importada e aprovada** e entra no ranking. O programa não executa OpenRocket durante o atendimento e funciona sem internet.
 
 ## Começo rápido
 
@@ -50,7 +50,7 @@ Também há interface administrativa em `/admin/entrar` com o token de `SEPEX_AD
 
 O CSV importado fica `pending_review`. Revise o arquivo, parâmetros físicos e indicadores antes de aprovar. Uma aprovação substitui a aprovação anterior da mesma configuração; tentativas antigas preservam os números registrados. O hash SHA-256 do arquivo e a configuração tornam a importação idempotente. O importador lê cabeçalhos comuns em português/inglês, CSV de resumo ou série temporal, converte unidades para SI e salva as unidades originais. Consulte [guia do OpenRocket](docs/OPENROCKET.md). Os CSV em `data/examples` são **exemplos artificiais de formato**, não simulações reais.
 
-O lote em `Foguete Modular - Banco/.ork` e `Foguete Modular - Banco/.csv` contém 21 pares de modelo e série temporal para teste. Depois de `init-db` e `seed-configuracoes`, importe os CSVs com `python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"`. O comando é idempotente e deixa as simulações pendentes. Ao selecionar no configurador uma dessas combinações, use **Testar prévia da animação** para reproduzir a série sem registrar tentativa nem alterar o ranking. Por exemplo, `C1-A1-F3-S1` tem uma série completa. Cinco séries terminam antes do pouso; a página de prévia mostra esse aviso. Todos os CSVs informam ausência de dispositivo de recuperação e exigem revisão antes de aprovação.
+O lote em `Foguete Modular - Banco/.ork` e `Foguete Modular - Banco/.csv` contém 21 pares de modelo e série temporal para teste. Depois de `init-db` e `seed-configuracoes`, importe os CSVs com `python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"`. O comando é idempotente e deixa as simulações pendentes. Ao selecionar no configurador uma dessas combinações, use **Testar gráficos do voo** para reproduzir as curvas de altura e velocidade sem registrar tentativa nem alterar o ranking. Por exemplo, `C1-A1-F3-S1` tem uma série completa. Cinco séries terminam antes do pouso; a página de prévia mostra esse aviso. Todos os CSVs informam ausência de dispositivo de recuperação e exigem revisão antes de aprovação.
 
 ## Operação e classificação
 

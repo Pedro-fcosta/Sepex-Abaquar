@@ -1,8 +1,35 @@
-{% extends 'base.html' %}{% block titulo %}Voo · ABAQUAR{% endblock %}{% block conteudo %}
-<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}" data-preview="{{ 'true' if previa|default(false) else 'false' }}"><div class="voo-info"><p class="sobretitulo">{{ 'PRÉVIA TÉCNICA' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p><h1 id="titulo-voo">{{ 'Preparar prévia da trajetória' if previa|default(false) else 'Preparar para lançamento' }}</h1>
-  {% if previa|default(false) %}<p class="aviso-demo">Simulação OpenRocket ainda não aprovada. Esta prévia serve apenas para testar a animação; não registra tentativa nem entra no ranking.</p>{% if tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude.</p>{% endif %}{% if tentativa.avisos_exibicao %}<p class="nota">Aviso do arquivo: {{tentativa.avisos_exibicao}}</p>{% endif %}{% endif %}
+{% extends 'base.html' %}
+{% block titulo %}Gráficos do voo · ABAQUAR{% endblock %}
+{% block conteudo %}
+<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}" data-preview="{{ 'true' if previa|default(false) else 'false' }}">
+  <div class="voo-cabecalho">
+    <div>
+      <p class="sobretitulo">{{ 'PRÉVIA TÉCNICA' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p>
+      <h1 id="titulo-voo">Altura e velocidade ao longo do tempo</h1>
+      <p id="tipo-trajetoria" class="nota">Carregando dados do voo...</p>
+    </div>
+    <a id="ver-resultado" class="botao secundario" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else 'Ver resultados →' }}</a>
+  </div>
+  {% if previa|default(false) %}<p class="aviso-demo">Simulação OpenRocket ainda não aprovada. Esta prévia serve apenas para testar os gráficos; não registra tentativa nem entra no ranking.</p>{% if tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude.</p>{% endif %}{% if tentativa.avisos_exibicao %}<p class="nota">Aviso do arquivo: {{tentativa.avisos_exibicao}}</p>{% endif %}{% endif %}
   {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
-  <p id="tipo-trajetoria" class="nota"></p><p id="altitude-atual" class="medida-atual">0 m</p><p>Altitude exibida na animação</p>
-  <a id="ver-resultado" class="botao oculto" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else 'Ver resultados →' }}</a></div>
-  <div class="cenario-voo"><div class="estrelas"></div><div class="linha-altitude"></div><div id="foguete-voo" class="foguete-voo" role="img" aria-label="Foguete ilustrativo subindo"><svg viewBox="0 0 82 82" aria-hidden="true"><path d="M41 4 C26 18 27 37 28 54 L54 54 C55 37 56 18 41 4 Z" fill="#f8fafc" stroke="#003f91" stroke-width="2"/><circle cx="41" cy="31" r="7" fill="#0b5fc0"/><path d="M28 44 L15 62 L29 58 M54 44 L67 62 L53 58" fill="#0b5fc0" stroke="#003f91" stroke-width="2"/><path d="M33 55 L33 65 M49 55 L49 65" stroke="#003f91" stroke-width="3"/></svg></div><div class="solo"></div><div id="contagem" class="contagem"></div></div></section>
-{% endblock %}{% block scripts %}<script src="{{url_for('static',filename='js/voo.js')}}"></script>{% endblock %}
+
+  <div class="voo-controles painel">
+    <button id="reproduzir-graficos" class="botao" type="button" disabled>Carregando...</button>
+    <label for="tempo-graficos">Tempo da simulação <strong id="tempo-atual">0,0 s</strong></label>
+    <input id="tempo-graficos" type="range" min="0" max="1000" value="0" disabled aria-label="Posição na linha do tempo da simulação">
+    <span id="estado-graficos" class="nota" role="status" aria-live="polite">Carregando série temporal...</span>
+  </div>
+
+  <div class="voo-graficos">
+    <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-altura">
+      <div class="voo-grafico-topo"><div><h2 id="titulo-grafico-altura">Altura × tempo</h2><p>Altitude em metros</p></div><strong id="altura-atual" class="voo-valor">0 m</strong></div>
+      <div class="voo-grafico"><canvas id="grafico-altura" role="img" aria-label="Gráfico de altura em metros por tempo em segundos"></canvas></div>
+    </article>
+    <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-velocidade">
+      <div class="voo-grafico-topo"><div><h2 id="titulo-grafico-velocidade">Velocidade × tempo</h2><p>Velocidade vertical em metros por segundo</p></div><strong id="velocidade-atual" class="voo-valor">0 m/s</strong></div>
+      <div class="voo-grafico"><canvas id="grafico-velocidade" role="img" aria-label="Gráfico de velocidade vertical em metros por segundo por tempo em segundos"></canvas></div>
+    </article>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js') }}"></script>{% endblock %}

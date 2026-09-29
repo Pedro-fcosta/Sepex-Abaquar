@@ -137,7 +137,10 @@ def verificar():
                 pagina.locator('#nome').fill('Visitante QA')
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
                 pagina.wait_for_url('**/voo/*')
-                pagina.locator('#ver-resultado').wait_for(state='visible')
+                pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 121
+                assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => !!Chart.getChart(canvas)')
+                assert 'ilustrativas' in pagina.locator('#tipo-trajetoria').inner_text()
                 pagina.locator('#ver-resultado').click()
                 assert pagina.locator('h1').inner_text() == 'Voo de Visitante QA'
                 pagina.locator('#tema').click()
@@ -151,9 +154,14 @@ def verificar():
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
                 assert 'não aprovada' in pagina.locator('.aviso-demo').inner_text()
                 assert pagina.get_by_text('Nenhum dispositivo de recuperação', exact=False).is_visible()
-                pagina.locator('#ver-resultado').wait_for(state='visible')
-                assert 'Prévia concluída' in pagina.locator('#titulo-voo').inner_text()
-                assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
+                assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
+                assert pagina.locator('#tempo-graficos').input_value() == '1000'
+                assert 'Série temporal do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                assert pagina.locator('#foguete-voo').count() == 0
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#83beff'
+                pagina.locator('#tema').click()
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#003f91'
                 pagina.screenshot(path=str(CAPTURAS / 'previa-1366.png'), full_page=True)
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 1
@@ -166,6 +174,18 @@ def verificar():
                 pagina.locator('#menu-toggle').click()
                 assert pagina.locator('#nav-principal').is_visible()
                 assert pagina.locator('#menu-toggle').get_attribute('aria-expanded') == 'true'
+                contextoAnimado = navegador.new_context(reduced_motion='no-preference', viewport={'width': 1366, 'height': 768})
+                paginaAnimada = contextoAnimado.new_page()
+                paginaAnimada.on('pageerror', lambda erro: falhas.append(str(erro)))
+                paginaAnimada.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
+                paginaAnimada.wait_for_function("() => Chart.getChart(document.getElementById('grafico-altura'))?.data.datasets[0].data.length > 4")
+                pontosVisiveis = paginaAnimada.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length')
+                assert 4 < pontosVisiveis < 974, pontosVisiveis
+                paginaAnimada.locator('#reproduzir-graficos').click()
+                assert 'pausada' in paginaAnimada.locator('#estado-graficos').inner_text()
+                paginaAnimada.evaluate("() => { const tempo = document.getElementById('tempo-graficos'); tempo.value = '500'; tempo.dispatchEvent(new Event('input', { bubbles: true })); }")
+                assert paginaAnimada.locator('#tempo-graficos').input_value() == '500'
+                contextoAnimado.close()
                 contexto.close()
                 navegador.close()
             assert not falhas, falhas
