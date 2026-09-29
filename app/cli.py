@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import os
+import re
 import sqlite3
 from pathlib import Path
 import click
@@ -27,6 +28,31 @@ def registrar_comandos(app):
     def importar_csv(codigo,arquivo,condicao):
         id_simulacao,criada = importar(arquivo.read_bytes(),arquivo.name,codigo,condicao)
         click.echo(f'Simulação {id_simulacao}: {"importada, pendente" if criada else "já existente"}.')
+
+    @app.cli.command('importar-lote')
+    @click.argument('pasta',type=click.Path(exists=True,file_okay=False,path_type=Path))
+    @click.option('--condicao',default='Lote OpenRocket pendente de revisão')
+    def importar_lote(pasta,condicao):
+        arquivos = sorted(pasta.rglob('*.csv'))
+        if not arquivos:
+            raise click.ClickException('Nenhum CSV encontrado na pasta.')
+        novos = existentes = 0
+        erros = []
+        for arquivo in arquivos:
+            codigo = arquivo.stem
+            if not re.fullmatch(r'C[1-3]-A[1-3]-F[3-5]-S[1-4]',codigo):
+                erros.append(f'{arquivo.name}: código inválido no nome')
+                continue
+            try:
+                identificador,criada = importar(arquivo.read_bytes(),arquivo.name,codigo,condicao)
+                novos += int(criada)
+                existentes += int(not criada)
+                click.echo(f'{codigo}: simulação {identificador} ({"pendente" if criada else "já existente"})')
+            except ValueError as exc:
+                erros.append(f'{arquivo.name}: {exc}')
+        click.echo(f'Total: {novos} importadas, {existentes} já existentes, {len(erros)} erros. Todas as novas simulações aguardam revisão técnica.')
+        if erros:
+            raise click.ClickException('\n'.join(erros))
 
     @app.cli.command('pendentes')
     def pendentes():

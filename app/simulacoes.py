@@ -107,11 +107,18 @@ def ler_csv(conteudo):
         pontos = [r for r in linhas_dados if r.get('tempo') is not None and r.get('altitude') is not None]
         if not pontos:
             raise ValueError('Série temporal vazia')
-        if any(p['tempo'] < 0 or p['altitude'] < 0 for p in pontos):
-            raise ValueError('Tempo ou altitude negativos')
+        if any(p['tempo'] < 0 for p in pontos):
+            raise ValueError('Tempo negativo')
         pontos.sort(key=lambda p:p['tempo'])
         if len({p['tempo'] for p in pontos}) != len(pontos):
             raise ValueError('Tempos duplicados')
+        negativos = [i for i,p in enumerate(pontos) if p['altitude'] < 0]
+        # O OpenRocket pode encerrar a série um passo após tocar o solo.
+        # Ajustamos só esse último ponto para desenhar o pouso em 0 m.
+        if negativos:
+            if len(pontos) < 2 or negativos != [len(pontos)-1] or pontos[-1]['altitude'] < -0.5 or pontos[-2]['altitude'] < 0:
+                raise ValueError('Altitude negativa fora do ponto final de pouso')
+            pontos[-1]['altitude'] = 0.0
         pico = max(pontos,key=lambda p:p['altitude'])
         resumo = {'apogeu':pico['altitude'], 'tempo_apogeu':pico['tempo'], 'duracao':pontos[-1]['tempo'],
                   'velocidade_max':max((abs(p['velocidade']) for p in pontos if p.get('velocidade') is not None),default=None),
@@ -135,13 +142,19 @@ def importar(conteudo, nome_arquivo, codigo, condicao='Padrão pendente de revis
     if anterior:
         return anterior['id'],False
     resumo,pontos,unidades = ler_csv(conteudo)
+    avisos = []
+    for linha in conteudo.decode('utf-8-sig',errors='replace').splitlines():
+        if linha.startswith('#   '):
+            avisos.append(linha[4:].strip())
+        elif not linha.startswith('#'):
+            break
     with db:
         db.execute('INSERT OR IGNORE INTO condicoes(nome) VALUES (?)',(condicao,))
         condicao_id = db.execute('SELECT id FROM condicoes WHERE nome=?',(condicao,)).fetchone()['id']
         cursor = db.execute('''INSERT INTO simulacoes(configuracao_codigo,condicao_id,apogeu_m,velocidade_max_ms,aceleracao_max_ms2,
-          tempo_apogeu_s,duracao_s,cg_m,cp_m,margem_calibres,aviso_estabilidade,unidades_originais_json,origem,hash_arquivo)
-          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-          (codigo,condicao_id,resumo['apogeu'],resumo.get('velocidade_max'),resumo.get('aceleracao_max'),resumo.get('tempo_apogeu'),resumo.get('duracao'),resumo.get('cg'),resumo.get('cp'),resumo.get('margem'),resumo.get('aviso'),json.dumps(unidades,ensure_ascii=False),Path(nome_arquivo).name,hash_arquivo))
+          tempo_apogeu_s,duracao_s,cg_m,cp_m,margem_calibres,aviso_estabilidade,unidades_originais_json,origem,hash_arquivo,observacoes)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+          (codigo,condicao_id,resumo['apogeu'],resumo.get('velocidade_max'),resumo.get('aceleracao_max'),resumo.get('tempo_apogeu'),resumo.get('duracao'),resumo.get('cg'),resumo.get('cp'),resumo.get('margem'),resumo.get('aviso'),json.dumps(unidades,ensure_ascii=False),Path(nome_arquivo).name,hash_arquivo,'; '.join(avisos) or None))
         id_simulacao = cursor.lastrowid
         db.executemany('INSERT INTO pontos(simulacao_id,tempo_s,altitude_m,velocidade_ms,aceleracao_ms2) VALUES (?,?,?,?,?)',[(id_simulacao,p['tempo'],p['altitude'],p.get('velocidade'),p.get('aceleracao')) for p in pontos])
     return id_simulacao,True

@@ -228,6 +228,7 @@ code { color: var(--azul-principal); overflow-wrap: anywhere; }
 .estado-demonstracao { background: var(--amarelo-bg); color: var(--amarelo-texto); }
 .estado-indisponivel, .estado-erro { background: var(--vermelho-bg); color: var(--vermelho-texto); }
 [data-theme="dark"] .estado-consultando { color: #b8d6ff; }
+.link-previa { width: 100%; margin-top: 10px; }
 @keyframes pulsar { to { opacity: .3; } }
 .resumo-nota { margin: 12px 0 0; line-height: 1.4; }
 

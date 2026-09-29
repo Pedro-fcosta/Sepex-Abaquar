@@ -58,7 +58,10 @@ def configuracao(codigo):
     linha = conexao().execute('SELECT * FROM configuracoes WHERE codigo=?',(codigo,)).fetchone()
     if not linha: abort(404)
     sim = conexao().execute("SELECT id,demonstrativo FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
-    return jsonify({**dict(linha),'disponivel':bool(sim),'demonstrativo':bool(sim and sim['demonstrativo'])})
+    previa = conexao().execute("""SELECT s.id FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status='pending_review'
+        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY s.id DESC LIMIT 1""",(codigo,)).fetchone()
+    return jsonify({**dict(linha),'disponivel':bool(sim),'demonstrativo':bool(sim and sim['demonstrativo']),
+                   'url_previa':url_for('web.previa_voo',codigo=codigo) if previa else None})
 
 
 @bp.post('/api/tentativas')
@@ -89,6 +92,33 @@ def dados_voo(id):
     tentativa = obter_tentativa(id)
     pontos = [dict(r) for r in conexao().execute('SELECT tempo_s,altitude_m,velocidade_ms,aceleracao_ms2 FROM pontos WHERE simulacao_id=? ORDER BY tempo_s',(tentativa['simulacao_id'],))]
     return jsonify(tentativa=tentativa,pontos=pontos,origem_trajetoria='serie_openrocket' if pontos else 'animacao_ilustrativa')
+
+
+def obter_previa(codigo):
+    linha = conexao().execute("""SELECT s.* FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status='pending_review'
+        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY s.id DESC LIMIT 1""",(codigo,)).fetchone()
+    if not linha: abort(404)
+    simulacao = dict(linha)
+    ultimo = conexao().execute('SELECT altitude_m FROM pontos WHERE simulacao_id=? ORDER BY tempo_s DESC LIMIT 1',(simulacao['id'],)).fetchone()
+    simulacao['altitude_final_m'] = ultimo['altitude_m']
+    simulacao['avisos_exibicao'] = (simulacao['observacoes'] or '').replace(
+        'No recovery device defined in the simulation.',
+        'Nenhum dispositivo de recuperação foi definido na simulação.')
+    return simulacao
+
+
+@bp.get('/previa/<codigo>')
+def previa_voo(codigo):
+    simulacao = obter_previa(codigo)
+    return render_template('voo.html',tentativa=simulacao,previa=True)
+
+
+@bp.get('/api/previa/<codigo>')
+def dados_previa(codigo):
+    simulacao = obter_previa(codigo)
+    pontos = [dict(r) for r in conexao().execute('SELECT tempo_s,altitude_m,velocidade_ms,aceleracao_ms2 FROM pontos WHERE simulacao_id=? ORDER BY tempo_s',(simulacao['id'],))]
+    indicadores = {campo:simulacao[campo] for campo in ('apogeu_m','tempo_apogeu_s','duracao_s')}
+    return jsonify(tentativa=indicadores,pontos=pontos,origem_trajetoria='serie_openrocket',previa=True)
 
 
 @bp.get('/resultado/<int:id>')

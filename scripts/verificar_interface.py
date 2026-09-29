@@ -15,6 +15,7 @@ from app.db import conexao
 
 RESOLUCOES = [(1920, 1080), (1366, 768), (1024, 768), (768, 1024), (390, 844)]
 CAPTURAS = Path('data/exports/qa')
+LOTE = Path('Foguete Modular - Banco/.csv')
 
 
 def verificar():
@@ -22,6 +23,8 @@ def verificar():
     with tempfile.TemporaryDirectory() as temporario:
         app = criar_app({'TESTING': True, 'DATABASE': str(Path(temporario) / 'interface.sqlite3')})
         resultado = app.test_cli_runner().invoke(args=['demo-criar'])
+        assert resultado.exit_code == 0, resultado.output
+        resultado = app.test_cli_runner().invoke(args=['importar-lote', str(LOTE)])
         assert resultado.exit_code == 0, resultado.output
         logging.getLogger('werkzeug').setLevel(logging.ERROR)
         servidor = make_server('127.0.0.1', 0, app, threaded=True)
@@ -120,7 +123,8 @@ def verificar():
                 pagina.screenshot(path=str(CAPTURAS / 'corpo-1366.png'), full_page=True)
                 pagina.locator('#continuar').click()
                 assert pagina.locator('#confirmar').is_disabled()
-                assert 'não possui simulação aprovada' in pagina.locator('#disponibilidade-final').inner_text()
+                assert 'aguardando revisão técnica' in pagina.locator('#disponibilidade-final').inner_text()
+                assert pagina.locator('#link-previa').is_visible()
                 pagina.locator('#voltar').click()
                 assert pagina.locator('input[name="secoes"][value="4"]').is_checked()
                 pagina.locator('[data-step-target="1"]').click()
@@ -144,7 +148,20 @@ def verificar():
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 1
 
+                pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
+                assert 'não aprovada' in pagina.locator('.aviso-demo').inner_text()
+                assert pagina.get_by_text('Nenhum dispositivo de recuperação', exact=False).is_visible()
+                pagina.locator('#ver-resultado').wait_for(state='visible')
+                assert 'Prévia concluída' in pagina.locator('#titulo-voo').inner_text()
+                assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                pagina.screenshot(path=str(CAPTURAS / 'previa-1366.png'), full_page=True)
+                with app.app_context():
+                    assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 1
+
                 pagina.set_viewport_size({'width': 390, 'height': 844})
+                pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
+                assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                pagina.screenshot(path=str(CAPTURAS / 'previa-390.png'), full_page=True)
                 pagina.goto(origem, wait_until='networkidle')
                 pagina.locator('#menu-toggle').click()
                 assert pagina.locator('#nav-principal').is_visible()

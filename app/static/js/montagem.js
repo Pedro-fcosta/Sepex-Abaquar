@@ -5,6 +5,7 @@ const botaoVoltar = document.getElementById('voltar');
 const botaoContinuar = document.getElementById('continuar');
 const botaoConfirmar = document.getElementById('confirmar');
 const mensagemErro = document.getElementById('erro');
+const linkPrevia = document.getElementById('link-previa');
 const namespaceSvg = 'http://www.w3.org/2000/svg';
 
 const nomesCoifa = { C1: 'cônica', C2: 'ogival', C3: 'elipsoidal' };
@@ -108,6 +109,8 @@ function atualizarResumo() {
 
   if (codigo === codigoAtual) return;
   codigoAtual = codigo;
+  linkPrevia.hidden = true;
+  linkPrevia.removeAttribute('href');
   consultarDisponibilidade(codigo);
 }
 
@@ -121,7 +124,12 @@ async function consultarDisponibilidade(codigo) {
     if (!resposta.ok) throw new Error('Não foi possível consultar esta configuração.');
     const dados = await resposta.json();
     if (pedido !== numeroConsulta) return;
-    if (!dados.disponivel) mostrarSituacao('indisponivel', 'Esta configuração ainda não possui simulação aprovada.');
+    if (!dados.disponivel && dados.url_previa) {
+      mostrarSituacao('indisponivel', 'Simulação importada para prévia; aguardando revisão técnica.');
+      linkPrevia.href = dados.url_previa;
+      linkPrevia.hidden = false;
+    }
+    else if (!dados.disponivel) mostrarSituacao('indisponivel', 'Esta configuração ainda não possui simulação aprovada.');
     else if (dados.demonstrativo) mostrarSituacao('demonstracao', 'Demonstração com dados fictícios');
     else mostrarSituacao('disponivel', 'Simulação disponível');
   } catch (erro) {
