@@ -58,6 +58,12 @@ def verificar():
                         assert pagina.locator('#logo-abaquar').evaluate('(img) => img.naturalWidth > 0')
                         if rota == '/':
                             assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0 && getComputedStyle(img).objectFit === "contain"')
+                            assert pagina.locator('.inicio-indicadores strong').all_inner_texts() == ['108', '3', '3', '4']
+                            assert pagina.get_by_text('O ranking será preenchido durante a SEPEX.').is_visible()
+                            assert pagina.locator('.inicio-sequencia li').count() == 5
+                            assert pagina.locator('.inicio-linha-tempo li').count() == 3
+                            assert pagina.locator('.topo').evaluate('(el) => getComputedStyle(el).position') == 'sticky'
+                            assert pagina.locator('.rodape-marca img').evaluate('(img) => img.naturalWidth > 0')
                         if rota == '/montagem':
                             assert pagina.locator('.opcao img').evaluate_all('(imgs) => imgs.every(img => img.naturalWidth > 0)')
                             assert pagina.locator('.opcao img').first.evaluate('(img) => getComputedStyle(img).objectFit') == 'contain'
@@ -99,15 +105,26 @@ def verificar():
                 assert pagina.locator('html').get_attribute('data-theme') == 'dark'
                 assert 'Tema claro' in pagina.locator('#tema').inner_text()
                 pagina.screenshot(path=str(CAPTURAS / 'montagem-escuro-1366.png'), full_page=True)
+                pagina.goto(origem, wait_until='networkidle')
+                pagina.screenshot(path=str(CAPTURAS / 'inicio-escuro-1366.png'), full_page=True)
+                assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0')
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 pagina.screenshot(path=str(CAPTURAS / 'dashboard-escuro-1366.png'), full_page=True)
                 for rota in ('/', '/ranking', '/diagnostico'):
                     pagina.goto(origem + rota, wait_until='networkidle')
                     assert pagina.locator('html').get_attribute('data-theme') == 'dark'
-                    assert pagina.locator('body').evaluate('(body) => getComputedStyle(body).backgroundColor') == 'rgb(17, 24, 39)'
+                    assert pagina.locator('body').evaluate('(body) => getComputedStyle(body).backgroundColor') == 'rgb(8, 20, 38)'
                 pagina.locator('#tema').click()
                 assert pagina.locator('html').get_attribute('data-theme') == 'light'
+                pagina.goto(origem, wait_until='networkidle')
+                pagina.locator('.inicio-acoes a[href="#como-funciona"]').click()
+                assert pagina.evaluate('location.hash') == '#como-funciona'
+                pagina.locator('.inicio-acoes a').first.click()
+                assert pagina.url.endswith('/montagem')
+                pagina.goto(origem, wait_until='networkidle')
+                pagina.get_by_role('link', name='Ver ranking completo').click()
+                assert pagina.url.endswith('/ranking')
 
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
                 pagina.locator('#continuar').click()
@@ -133,6 +150,9 @@ def verificar():
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 pagina.locator('#ver-resultado').click()
                 assert pagina.locator('h1').inner_text() == 'Voo de Visitante OpenRocket'
+                pagina.goto(origem, wait_until='networkidle')
+                assert pagina.locator('.inicio-ranking-lista li').count() == 1
+                assert 'Visitante OpenRocket' in pagina.locator('.inicio-ranking-lista').inner_text()
 
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
                 for _ in range(3):
@@ -154,6 +174,9 @@ def verificar():
                 assert cor_resultado == 'rgb(169, 205, 252)', cor_resultado
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
+                pagina.goto(origem, wait_until='networkidle')
+                assert pagina.locator('.inicio-ranking-lista li').count() == 1
+                assert 'Visitante QA' not in pagina.locator('.inicio-ranking-lista').inner_text()
 
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
                 assert pagina.get_by_text('não registra tentativa nem altera o ranking', exact=False).is_visible()
@@ -178,6 +201,8 @@ def verificar():
                 pagina.locator('#menu-toggle').click()
                 assert pagina.locator('#nav-principal').is_visible()
                 assert pagina.locator('#menu-toggle').get_attribute('aria-expanded') == 'true'
+                pagina.locator('#nav-principal').get_by_role('link', name='Diagnóstico').click()
+                assert pagina.url.endswith('/diagnostico')
                 contextoAnimado = navegador.new_context(reduced_motion='no-preference', viewport={'width': 1366, 'height': 768})
                 paginaAnimada = contextoAnimado.new_page()
                 paginaAnimada.on('pageerror', lambda erro: falhas.append(str(erro)))

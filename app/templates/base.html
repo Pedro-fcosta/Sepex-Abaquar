@@ -4,12 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}ABAQUAR · SEPEX 2026{% endblock %}</title>
-  <script>
-    try {
-      const tema = localStorage.getItem('sepex-theme');
-      if (tema === 'dark') document.documentElement.dataset.theme = 'dark';
-    } catch (_) { /* O tema claro permanece disponível sem armazenamento local. */ }
-  </script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 </head>
 <body>
@@ -31,7 +26,12 @@
     </div>
   </header>
   <main>{% block conteudo %}{% endblock %}</main>
-  <footer>ABAQUAR · SEPEX 2026 <span>Dados de demonstração são sempre identificados.</span></footer>
+  <footer class="rodape">
+    <div class="rodape-conteudo">
+      <div class="rodape-marca"><img src="{{ url_for('static', filename='Logo/Logo ABAQUAR.png') }}" alt="Logo ABAQUAR" loading="lazy"><div><strong>ABAQUAR</strong><span>CEFET/RJ — Campus Itaguaí<br>SEPEX 2026</span></div></div>
+      <div class="rodape-info"><p>Resultados provenientes de simulações previamente realizadas no OpenRocket. Dados de demonstração são identificados.</p><a href="https://github.com/Pedro-fcosta/Sepex-Abaquar" target="_blank" rel="noopener noreferrer">Repositório do projeto <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </footer>
   <script src="{{ url_for('static', filename='js/base.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>

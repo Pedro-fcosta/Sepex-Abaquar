@@ -1,21 +1,62 @@
 {% extends 'base.html' %}
 {% block conteudo %}
-<section class="inicio-apresentacao painel">
-  <div>
-    <p class="sobretitulo">EXPERIÊNCIA INTERATIVA · SEPEX 2026</p>
-    <h1>Monte seu foguete.<br><span>Descubra o voo.</span></h1>
-    <p class="lead">Escolha os componentes de um foguete modular, acompanhe o lançamento da sua configuração e veja sua posição no ranking da ABAQUAR.</p>
-    <div class="acoes"><a class="botao" href="{{ url_for('web.montagem') }}">Começar montagem <span aria-hidden="true">→</span></a><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking</a></div>
-    <p class="inicio-contagem"><strong>108</strong><span>configurações possíveis: 3 coifas, 3 formatos de aleta, 3 quantidades e 4 comprimentos.</span></p>
-  </div>
-  <figure class="inicio-ilustracao"><img src="{{ url_for('static', filename='img/katherine johnson home/Katherine Johnson.png') }}" alt="Ilustração de Katherine Johnson com um foguete e anotações de trajetórias"></figure>
-</section>
-<section class="passos" aria-labelledby="passos-titulo">
-  <div class="secao-cabecalho"><div><p class="sobretitulo">COMO FUNCIONA</p><h2 id="passos-titulo">Da escolha ao resultado</h2></div><p>Dados pré-simulados, consultados localmente durante o evento.</p></div>
-  <div class="grade tres">
-    <article class="cartao passo-card"><span class="passo-numero">01</span><h3>Monte</h3><p>Escolha a coifa, as aletas e as seções do corpo.</p></article>
-    <article class="cartao passo-card"><span class="passo-numero">02</span><h3>Lance</h3><p>Acompanhe a trajetória da configuração escolhida.</p></article>
-    <article class="cartao passo-card"><span class="passo-numero">03</span><h3>Compare</h3><p>Veja os indicadores do voo e sua posição no ranking.</p></article>
-  </div>
-</section>
+<div class="inicio-pagina">
+  <section class="inicio-hero" aria-labelledby="inicio-titulo">
+    <div class="inicio-hero-conteudo">
+      <p class="sobretitulo">EXPERIÊNCIA INTERATIVA · SEPEX 2026</p>
+      <h1 id="inicio-titulo">Projete. <span>Lance.</span><br>Supere.</h1>
+      <p class="inicio-lead">Monte seu foguete modular, acompanhe a simulação do voo e dispute o maior apogeu da SEPEX 2026.</p>
+      <div class="acoes inicio-acoes">
+        <a class="botao" href="{{ url_for('web.montagem') }}">Montar meu foguete <span aria-hidden="true">→</span></a>
+        <a class="botao secundario" href="#como-funciona">Como funciona <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="inicio-status"><span class="inicio-status-ponto" aria-hidden="true"></span>Sistema pronto · {{ configuracoes_carregadas }} configurações carregadas</p>
+    </div>
+    <figure class="inicio-ilustracao">
+      <img src="{{ url_for('static', filename='img/katherine johnson home/Katherine Johnson.png') }}" alt="Ilustração de Katherine Johnson com foguete, planeta e cálculos de trajetórias" fetchpriority="high">
+      <figcaption><strong>Katherine Johnson</strong><span>Matemática e pioneira da exploração espacial</span></figcaption>
+    </figure>
+  </section>
+
+  <section class="inicio-indicadores" aria-label="Possibilidades de montagem">
+    <div><strong>108</strong><span>Configurações possíveis</span></div>
+    <div><strong>3</strong><span>Tipos de coifa</span></div>
+    <div><strong>3</strong><span>Formatos de aleta</span></div>
+    <div><strong>4</strong><span>Comprimentos</span></div>
+    <p>3 coifas × 3 formatos de aleta × 3 quantidades de aletas × 4 comprimentos = 108 configurações.</p>
+  </section>
+
+  <section class="inicio-secao inicio-modulos" aria-labelledby="modulos-titulo">
+    <div class="inicio-secao-cabecalho"><p class="sobretitulo">MONTAGEM MODULAR</p><h2 id="modulos-titulo">Cada escolha transforma o voo</h2><p>Combine os componentes do foguete e descubra como a geometria influencia o apogeu, a velocidade e a estabilidade.</p></div>
+    <ol class="inicio-sequencia">
+      <li><span class="inicio-peca-icone"><img src="{{ url_for('static', filename='img/componentes/coifa_c2.png') }}" alt="" loading="lazy"></span><strong>Coifa</strong><span>Escolha o perfil frontal.</span></li>
+      <li><span class="inicio-peca-icone"><img src="{{ url_for('static', filename='img/componentes/corpo.png') }}" alt="" loading="lazy"></span><strong>Corpo modular</strong><span>Defina o comprimento.</span></li>
+      <li><span class="inicio-peca-icone"><span class="inicio-anel" aria-hidden="true"></span></span><strong>Anel de aletas</strong><span>Prepare a fixação.</span></li>
+      <li><span class="inicio-peca-icone"><img src="{{ url_for('static', filename='img/componentes/aleta_a1.png') }}" alt="" loading="lazy"></span><strong>Aletas</strong><span>Escolha forma e quantidade.</span></li>
+      <li><span class="inicio-peca-icone"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 48V14M11 48h43M17 40l11-10 9 5 13-18"/><circle cx="50" cy="17" r="3" fill="currentColor" stroke="none"/></svg></span><strong>Resultado</strong><span>Compare os dados do voo.</span></li>
+    </ol>
+  </section>
+
+  <section class="inicio-secao inicio-como" id="como-funciona" aria-labelledby="passos-titulo">
+    <div class="inicio-secao-cabecalho"><p class="sobretitulo">COMO FUNCIONA</p><h2 id="passos-titulo">Da ideia ao apogeu</h2><p>Três etapas para colocar sua configuração à prova.</p></div>
+    <ol class="inicio-linha-tempo">
+      <li><span class="inicio-passo-icone"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 7h18v9H15zM17 16v21h14V16M12 38h24M22 22h4M22 28h4"/></svg></span><span class="inicio-passo-numero">ETAPA 01</span><h3>Monte</h3><p>Escolha a coifa, o formato das aletas, a quantidade de aletas e o número de seções do corpo.</p></li>
+      <li><span class="inicio-passo-icone"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 5c-7 8-10 17-8 25l8 5 8-5c2-8-1-17-8-25ZM16 26l-6 8 8-1M32 26l6 8-8-1M24 37v7M19 41l-2 3M29 41l2 3"/><circle cx="24" cy="20" r="3"/></svg></span><span class="inicio-passo-numero">ETAPA 02</span><h3>Lance</h3><p>Acompanhe a trajetória animada da configuração selecionada e torça pelo maior apogeu.</p></li>
+      <li><span class="inicio-passo-icone"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 40V25h8v15M20 40V17h8v23M32 40V9h8v31M6 40h36"/></svg></span><span class="inicio-passo-numero">ETAPA 03</span><h3>Compare</h3><p>Veja os dados do voo e descubra sua posição no ranking da ABAQUAR.</p></li>
+    </ol>
+  </section>
+
+  <section class="inicio-secao inicio-ranking" aria-labelledby="ranking-inicio-titulo">
+    <div class="inicio-ranking-texto"><p class="sobretitulo">RANKING DA SEPEX</p><h2 id="ranking-inicio-titulo">Será que você consegue chegar ao topo?</h2><p>Monte sua configuração, faça o lançamento e compare seu resultado com os outros participantes da SEPEX.</p><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking completo <span aria-hidden="true">→</span></a></div>
+    <div class="inicio-ranking-lista" aria-label="Primeiros resultados reais">
+      {% if destaques %}
+      <ol>{% for linha in destaques %}<li><span class="inicio-ranking-posicao">{{ '%02d'|format(loop.index) }}</span><strong>{{ linha.nome }}</strong><span>{{ '%.1f'|format(linha.apogeu_m) }} m</span></li>{% endfor %}</ol>
+      {% else %}
+      <div class="inicio-ranking-vazio"><span class="inicio-ranking-vazio-icone" aria-hidden="true">○</span><p>O ranking será preenchido durante a SEPEX.</p></div>
+      {% endif %}
+    </div>
+  </section>
+
+  <aside class="inicio-ciencia" aria-labelledby="ciencia-titulo"><span class="inicio-ciencia-marca" aria-hidden="true">✦</span><div><p class="sobretitulo">NOSSA INSPIRAÇÃO</p><h2 id="ciencia-titulo">Ciência que abre caminhos</h2><p>A experiência homenageia Katherine Johnson, matemática cuja precisão foi fundamental para missões históricas da exploração espacial. Na SEPEX, cada participante poderá experimentar como decisões de projeto modificam o comportamento de um foguete.</p></div></aside>
+</div>
 {% endblock %}

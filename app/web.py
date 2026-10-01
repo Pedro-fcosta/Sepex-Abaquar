@@ -37,7 +37,12 @@ def exige_admin(funcao):
 
 @bp.get('/')
 def inicio():
-    return render_template('inicio.html')
+    db = conexao()
+    if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='configuracoes'").fetchone():
+        return render_template('inicio.html', destaques=[], configuracoes_carregadas=0)
+    destaques = [linha for linha in ranking() if not linha['demonstrativo']][:3]
+    return render_template('inicio.html', destaques=destaques,
+                           configuracoes_carregadas=db.execute('SELECT count(*) FROM configuracoes').fetchone()[0])
 
 
 @bp.get('/montagem')
