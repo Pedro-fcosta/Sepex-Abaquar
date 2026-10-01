@@ -24,14 +24,14 @@ def registrar_comandos(app):
     @app.cli.command('importar-csv')
     @click.argument('codigo')
     @click.argument('arquivo',type=click.Path(exists=True,path_type=Path))
-    @click.option('--condicao',default='Padrão pendente de revisão')
+    @click.option('--condicao',default='Importação OpenRocket')
     def importar_csv(codigo,arquivo,condicao):
         id_simulacao,criada = importar(arquivo.read_bytes(),arquivo.name,codigo,condicao)
-        click.echo(f'Simulação {id_simulacao}: {"importada, pendente" if criada else "já existente"}.')
+        click.echo(f'Simulação {id_simulacao}: {"importada e disponível" if criada else "já existente e disponível"}.')
 
     @app.cli.command('importar-lote')
     @click.argument('pasta',type=click.Path(exists=True,file_okay=False,path_type=Path))
-    @click.option('--condicao',default='Lote OpenRocket pendente de revisão')
+    @click.option('--condicao',default='Lote OpenRocket de teste')
     def importar_lote(pasta,condicao):
         arquivos = sorted(pasta.rglob('*.csv'))
         if not arquivos:
@@ -47,10 +47,10 @@ def registrar_comandos(app):
                 identificador,criada = importar(arquivo.read_bytes(),arquivo.name,codigo,condicao)
                 novos += int(criada)
                 existentes += int(not criada)
-                click.echo(f'{codigo}: simulação {identificador} ({"pendente" if criada else "já existente"})')
+                click.echo(f'{codigo}: simulação {identificador} ({"disponível" if criada else "já existente e disponível"})')
             except ValueError as exc:
                 erros.append(f'{arquivo.name}: {exc}')
-        click.echo(f'Total: {novos} importadas, {existentes} já existentes, {len(erros)} erros. Todas as novas simulações aguardam revisão técnica.')
+        click.echo(f'Total: {novos} importadas, {existentes} já existentes, {len(erros)} erros. Simulações válidas disponíveis no programa.')
         if erros:
             raise click.ClickException('\n'.join(erros))
 

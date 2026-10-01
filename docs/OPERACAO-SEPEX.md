@@ -3,8 +3,8 @@
 ## Antes de abrir
 
 1. Instale dependências e defina `SEPEX_ADMIN_TOKEN` e `SEPEX_SECRET_KEY` no ambiente do processo. Não coloque segredos em arquivos versionados.
-2. Execute `init-db`, `seed-configuracoes`, `verificar-cobertura` e os testes. Importe e revise as 108 simulações reais; `verificar-cobertura` deve exibir 108/108. Execute `demo-limpar`.
-3. Abra `/diagnostico`: configurações 108, integridade `ok`, quantidade de aprovadas esperada.
+2. Execute `init-db`, `seed-configuracoes`, `importar-lote "Foguete Modular - Banco/.csv"`, `verificar-cobertura` e os testes. Os 21 CSVs existentes ficam disponíveis. Importe as outras configurações quando os respectivos CSVs estiverem prontos. Execute `demo-limpar` se quiser operar somente com resultados do OpenRocket.
+3. Abra `/diagnostico`: configurações 108, integridade `ok`, quantidade de simulações disponíveis esperada.
 4. Faça backup inicial. Abra montagem, voo, resultado, ranking e dashboard no navegador do evento.
 
 ## Servidor e quiosque

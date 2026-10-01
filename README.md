@@ -1,6 +1,6 @@
 # ABAQUAR · SEPEX 2026
 
-Experiência local de montagem digital de foguetes modulares para a SEPEX 2026. O visitante escolhe peças, acompanha gráficos animados de altura × tempo e velocidade × tempo de uma simulação **previamente importada e aprovada** e entra no ranking. O programa não executa OpenRocket durante o atendimento e funciona sem internet.
+Experiência local de montagem digital de foguetes modulares para a SEPEX 2026. O visitante escolhe peças, acompanha gráficos animados de altura × tempo e velocidade × tempo de uma simulação importada e entra no ranking. O programa não executa OpenRocket durante o atendimento e funciona sem internet.
 
 ## Começo rápido
 
@@ -15,10 +15,11 @@ $env:SEPEX_SECRET_KEY = 'defina-outra-chave-longa'
 python -m flask --app run init-db
 python -m flask --app run seed-configuracoes
 python -m flask --app run demo-criar
+python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"
 python run.py
 ```
 
-Abra `http://127.0.0.1:5000`. A demonstração usa **números fictícios** em `C2-A3-F4-S2`, claramente marcados. Para usar somente resultados reais, execute `python -m flask --app run demo-limpar` antes do evento. Sem simulação aprovada, a interface impede o lançamento daquela configuração.
+Abra `http://127.0.0.1:5000`. Os 21 CSVs do lote ficam disponíveis imediatamente no fluxo de montagem, voo, resultado e ranking. A demonstração usa **números fictícios** em `C2-A3-F4-S2`, claramente marcados. Para usar somente resultados reais, execute `python -m flask --app run demo-limpar` antes do evento. As outras 87 configurações aguardam dados de voo; a interface impede o lançamento delas.
 
 No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`.
 
@@ -34,6 +35,7 @@ Os valores de partida são configuráveis pelas variáveis `SEPEX_*` de [.env.ex
 python -m flask --app run init-db
 python -m flask --app run seed-configuracoes
 python -m flask --app run importar-csv C2-A3-F4-S2 caminho\voo.csv --condicao "Condição SEPEX 2026"
+python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"
 python -m flask --app run pendentes
 python -m flask --app run revisar 1 approved
 python -m flask --app run revisar 1 rejected
@@ -48,9 +50,9 @@ python -m pytest -q
 
 Também há interface administrativa em `/admin/entrar` com o token de `SEPEX_ADMIN_TOKEN`. As rotas de escrita e exportação administrativas exigem esse token. Sem token configurado, elas ficam bloqueadas. O login web usa sessão assinada e token de formulário. Configure `SEPEX_SECRET_KEY` estável para preservar sessões entre reinicializações. Não exponha o servidor à internet pública.
 
-O CSV importado fica `pending_review`. Revise o arquivo, parâmetros físicos e indicadores antes de aprovar. Uma aprovação substitui a aprovação anterior da mesma configuração; tentativas antigas preservam os números registrados. O hash SHA-256 do arquivo e a configuração tornam a importação idempotente. O importador lê cabeçalhos comuns em português/inglês, CSV de resumo ou série temporal, converte unidades para SI e salva as unidades originais. Consulte [guia do OpenRocket](docs/OPENROCKET.md). Os CSV em `data/examples` são **exemplos artificiais de formato**, não simulações reais.
+O CSV importado fica disponível imediatamente. Uma nova versão da mesma configuração substitui a versão ativa anterior; tentativas antigas preservam os números registrados. O hash SHA-256 do arquivo e a configuração tornam a importação idempotente. O importador lê cabeçalhos comuns em português/inglês, CSV de resumo ou série temporal, converte unidades para SI e salva as unidades originais. Consulte [guia do OpenRocket](docs/OPENROCKET.md). Os CSV em `data/examples` são **exemplos artificiais de formato**, não simulações reais.
 
-O lote em `Foguete Modular - Banco/.ork` e `Foguete Modular - Banco/.csv` contém 21 pares de modelo e série temporal para teste. Depois de `init-db` e `seed-configuracoes`, importe os CSVs com `python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"`. O comando é idempotente e deixa as simulações pendentes. Ao selecionar no configurador uma dessas combinações, use **Testar gráficos do voo** para reproduzir as curvas de altura e velocidade sem registrar tentativa nem alterar o ranking. Por exemplo, `C1-A1-F3-S1` tem uma série completa. Cinco séries terminam antes do pouso; a página de prévia mostra esse aviso. Todos os CSVs informam ausência de dispositivo de recuperação e exigem revisão antes de aprovação.
+O lote em `Foguete Modular - Banco/.ork` e `Foguete Modular - Banco/.csv` contém 21 pares de modelo e série temporal para teste. Depois de `init-db` e `seed-configuracoes`, importe os CSVs com `python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"`. O comando é idempotente e libera os 21 voos. A montagem dessas combinações permite confirmar, assistir aos dois gráficos animados, ver o resultado e entrar no ranking. O link **Testar gráficos do voo** permite visualizar as curvas sem registrar tentativa. Cinco séries terminam antes do pouso e exibem um aviso. Os CSVs indicam ausência de dispositivo de recuperação; essa informação aparece nos gráficos.
 
 ## Operação e classificação
 

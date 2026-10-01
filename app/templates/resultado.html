@@ -4,6 +4,6 @@
 <section class="resultado-destaque"><span>APOGEU</span><strong>{{'%.1f'|format(tentativa.apogeu_m)}} <small>m</small></strong><p>Posição atual no ranking: <b>#{{posicao}}</b></p></section>
 <section class="grade tres indicadores"><article class="cartao revelar"><span>Velocidade máxima</span><strong>{% if tentativa.velocidade_max_ms is not none %}{{'%.1f'|format(tentativa.velocidade_max_ms)}} m/s{% else %}Pendente{% endif %}</strong></article>
 <article class="cartao revelar"><span>Aceleração máxima</span><strong>{% if tentativa.aceleracao_max_ms2 is not none %}{{'%.1f'|format(tentativa.aceleracao_max_ms2)}} m/s²{% else %}Pendente{% endif %}</strong></article>
-<article class="cartao revelar"><span>Estabilidade</span><strong>{% if tentativa.margem_calibres is not none %}{{'%.2f'|format(tentativa.margem_calibres)}} calibres{% else %}Pendente de revisão{% endif %}</strong><small>{{tentativa.aviso_estabilidade or ''}}</small></article></section>
+<article class="cartao revelar"><span>Estabilidade</span><strong>{% if tentativa.margem_calibres is not none %}{{'%.2f'|format(tentativa.margem_calibres)}} calibres{% else %}Dado não informado{% endif %}</strong><small>{{tentativa.aviso_estabilidade or ''}}</small></article></section>
 <div class="acoes centro"><a class="botao" href="/montagem">Nova participação</a><a class="botao secundario" href="/ranking">Ver ranking</a></div>
 {% endblock %}

@@ -133,13 +133,15 @@ def ler_csv(conteudo):
     return resumo,pontos,unidades
 
 
-def importar(conteudo, nome_arquivo, codigo, condicao='Padrão pendente de revisão'):
+def importar(conteudo, nome_arquivo, codigo, condicao='Importação OpenRocket', ativar=True):
     db = conexao()
     if not db.execute('SELECT 1 FROM configuracoes WHERE codigo=?', (codigo,)).fetchone():
         raise ValueError('Configuração inexistente')
     hash_arquivo = hashlib.sha256(conteudo).hexdigest()
-    anterior = db.execute('SELECT id FROM simulacoes WHERE configuracao_codigo=? AND hash_arquivo=?',(codigo,hash_arquivo)).fetchone()
+    anterior = db.execute('SELECT id,status FROM simulacoes WHERE configuracao_codigo=? AND hash_arquivo=?',(codigo,hash_arquivo)).fetchone()
     if anterior:
+        if ativar and anterior['status'] != 'approved':
+            revisar(anterior['id'],'approved')
         return anterior['id'],False
     resumo,pontos,unidades = ler_csv(conteudo)
     avisos = []
@@ -157,6 +159,8 @@ def importar(conteudo, nome_arquivo, codigo, condicao='Padrão pendente de revis
           (codigo,condicao_id,resumo['apogeu'],resumo.get('velocidade_max'),resumo.get('aceleracao_max'),resumo.get('tempo_apogeu'),resumo.get('duracao'),resumo.get('cg'),resumo.get('cp'),resumo.get('margem'),resumo.get('aviso'),json.dumps(unidades,ensure_ascii=False),Path(nome_arquivo).name,hash_arquivo,'; '.join(avisos) or None))
         id_simulacao = cursor.lastrowid
         db.executemany('INSERT INTO pontos(simulacao_id,tempo_s,altitude_m,velocidade_ms,aceleracao_ms2) VALUES (?,?,?,?,?)',[(id_simulacao,p['tempo'],p['altitude'],p.get('velocidade'),p.get('aceleracao')) for p in pontos])
+    if ativar:
+        revisar(id_simulacao,'approved')
     return id_simulacao,True
 
 

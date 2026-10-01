@@ -1,5 +1,4 @@
 const paginaVoo = document.querySelector('.voo-pagina');
-const previaVoo = paginaVoo.dataset.preview === 'true';
 const botaoReproduzir = document.getElementById('reproduzir-graficos');
 const controleTempo = document.getElementById('tempo-graficos');
 const estadoGraficos = document.getElementById('estado-graficos');
@@ -171,7 +170,7 @@ async function iniciarGraficos() {
       : pontosIlustrativos(dados.tentativa);
     duracaoVoo = serieVoo.at(-1).tempo;
     document.getElementById('tipo-trajetoria').textContent = temSerie
-      ? previaVoo ? 'Série temporal do OpenRocket em revisão técnica.' : 'Gráficos baseados na série temporal importada do OpenRocket.'
+      ? 'Gráficos baseados na série temporal importada do OpenRocket.'
       : 'Curvas ilustrativas geradas apenas para visualização. Os indicadores registrados não foram alterados.';
     const alturas = serieVoo.map(p => p.altura);
     const velocidades = serieVoo.map(p => p.velocidade).filter(Number.isFinite);

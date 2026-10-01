@@ -21,7 +21,7 @@ def test_csv_portugues_serie_e_idempotencia(app):
         id2,criada2=importar(PORTUGUES,'pt.csv','C2-A3-F4-S2')
         assert (id1,criada2)==(id2,False)
         sim=conexao().execute('SELECT * FROM simulacoes WHERE id=?',(id1,)).fetchone()
-        assert sim['status']=='pending_review'
+        assert sim['status']=='approved'
         assert sim['apogeu_m']==120
         assert sim['cp_m']==.2
         assert sim['cg_m']==.15

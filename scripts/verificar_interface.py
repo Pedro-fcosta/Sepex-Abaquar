@@ -122,17 +122,21 @@ def verificar():
                 assert pagina.locator('#aletas-traseiras path').count() == 3
                 pagina.screenshot(path=str(CAPTURAS / 'corpo-1366.png'), full_page=True)
                 pagina.locator('#continuar').click()
-                assert pagina.locator('#confirmar').is_disabled()
-                assert 'aguardando revisão técnica' in pagina.locator('#disponibilidade-final').inner_text()
+                assert pagina.locator('#confirmar').is_enabled()
+                assert 'Simulação disponível' in pagina.locator('#disponibilidade-final').inner_text()
                 assert pagina.locator('#link-previa').is_visible()
-                pagina.locator('#voltar').click()
-                assert pagina.locator('input[name="secoes"][value="4"]').is_checked()
-                pagina.locator('[data-step-target="1"]').click()
-                pagina.locator('input[name="aleta"][value="A3"]').check()
-                pagina.locator('input[name="aletas"][value="4"]').check()
-                pagina.locator('[data-step-target="2"]').click()
-                pagina.locator('input[name="secoes"][value="2"]').check()
-                pagina.locator('#continuar').click()
+                pagina.locator('#nome').fill('Visitante OpenRocket')
+                pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
+                pagina.wait_for_url('**/voo/*')
+                pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 738
+                assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                pagina.locator('#ver-resultado').click()
+                assert pagina.locator('h1').inner_text() == 'Voo de Visitante OpenRocket'
+
+                pagina.goto(origem + '/montagem', wait_until='networkidle')
+                for _ in range(3):
+                    pagina.locator('#continuar').click()
                 pagina.locator('#disponibilidade-final').get_by_text('dados fictícios').wait_for()
                 pagina.locator('#nome').fill('Visitante QA')
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
@@ -149,22 +153,22 @@ def verificar():
                 cor_resultado = pagina.locator('.resultado-destaque strong').evaluate('(item) => getComputedStyle(item).color')
                 assert cor_resultado == 'rgb(169, 205, 252)', cor_resultado
                 with app.app_context():
-                    assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 1
+                    assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
 
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
-                assert 'não aprovada' in pagina.locator('.aviso-demo').inner_text()
+                assert pagina.get_by_text('não registra tentativa nem altera o ranking', exact=False).is_visible()
                 assert pagina.get_by_text('Nenhum dispositivo de recuperação', exact=False).is_visible()
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
                 assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
                 assert pagina.locator('#tempo-graficos').input_value() == '1000'
-                assert 'Série temporal do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 assert pagina.locator('#foguete-voo').count() == 0
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#83beff'
                 pagina.locator('#tema').click()
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#003f91'
                 pagina.screenshot(path=str(CAPTURAS / 'previa-1366.png'), full_page=True)
                 with app.app_context():
-                    assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 1
+                    assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
 
                 pagina.set_viewport_size({'width': 390, 'height': 844})
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')

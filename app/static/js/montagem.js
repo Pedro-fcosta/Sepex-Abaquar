@@ -124,12 +124,11 @@ async function consultarDisponibilidade(codigo) {
     if (!resposta.ok) throw new Error('Não foi possível consultar esta configuração.');
     const dados = await resposta.json();
     if (pedido !== numeroConsulta) return;
-    if (!dados.disponivel && dados.url_previa) {
-      mostrarSituacao('indisponivel', 'Simulação importada para prévia; aguardando revisão técnica.');
+    if (dados.url_previa) {
       linkPrevia.href = dados.url_previa;
       linkPrevia.hidden = false;
     }
-    else if (!dados.disponivel) mostrarSituacao('indisponivel', 'Esta configuração ainda não possui simulação aprovada.');
+    if (!dados.disponivel) mostrarSituacao('indisponivel', 'Esta configuração ainda não possui dados de voo disponíveis.');
     else if (dados.demonstrativo) mostrarSituacao('demonstracao', 'Demonstração com dados fictícios');
     else mostrarSituacao('disponivel', 'Simulação disponível');
   } catch (erro) {

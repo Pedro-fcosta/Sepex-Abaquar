@@ -58,8 +58,8 @@ def configuracao(codigo):
     linha = conexao().execute('SELECT * FROM configuracoes WHERE codigo=?',(codigo,)).fetchone()
     if not linha: abort(404)
     sim = conexao().execute("SELECT id,demonstrativo FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
-    previa = conexao().execute("""SELECT s.id FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status='pending_review'
-        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY s.id DESC LIMIT 1""",(codigo,)).fetchone()
+    previa = conexao().execute("""SELECT s.id FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status IN ('approved','pending_review')
+        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY (s.status='approved') DESC,s.id DESC LIMIT 1""",(codigo,)).fetchone()
     return jsonify({**dict(linha),'disponivel':bool(sim),'demonstrativo':bool(sim and sim['demonstrativo']),
                    'url_previa':url_for('web.previa_voo',codigo=codigo) if previa else None})
 
@@ -95,8 +95,8 @@ def dados_voo(id):
 
 
 def obter_previa(codigo):
-    linha = conexao().execute("""SELECT s.* FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status='pending_review'
-        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY s.id DESC LIMIT 1""",(codigo,)).fetchone()
+    linha = conexao().execute("""SELECT s.* FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status IN ('approved','pending_review')
+        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY (s.status='approved') DESC,s.id DESC LIMIT 1""",(codigo,)).fetchone()
     if not linha: abort(404)
     simulacao = dict(linha)
     ultimo = conexao().execute('SELECT altitude_m FROM pontos WHERE simulacao_id=? ORDER BY tempo_s DESC LIMIT 1',(simulacao['id'],)).fetchone()
@@ -192,12 +192,12 @@ def admin_importar():
     arquivo = request.files.get('arquivo')
     if not arquivo: return jsonify(erro='Arquivo CSV obrigatório'),400
     try:
-        id_simulacao,criada = importar(arquivo.read(),arquivo.filename or 'importacao.csv',request.form.get('codigo',''),request.form.get('condicao') or 'Padrão pendente de revisão')
+        id_simulacao,criada = importar(arquivo.read(),arquivo.filename or 'importacao.csv',request.form.get('codigo',''),request.form.get('condicao') or 'Importação OpenRocket')
     except (ValueError,sqlite3.IntegrityError) as exc:
         return jsonify(erro=str(exc)),422
     if request.accept_mimetypes.accept_html and not request.accept_mimetypes.accept_json:
         return redirect(url_for('web.admin_simulacoes'))
-    return jsonify(id=id_simulacao,criada=criada,status='pending_review' if criada else 'existente'),201 if criada else 200
+    return jsonify(id=id_simulacao,criada=criada,status='approved'),201 if criada else 200
 
 
 @bp.post('/admin/simulacoes/<int:id>/aprovar')

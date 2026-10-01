@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block titulo %}Gráficos do voo · ABAQUAR{% endblock %}
 {% block conteudo %}
-<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}" data-preview="{{ 'true' if previa|default(false) else 'false' }}">
+<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}">
   <div class="voo-cabecalho">
     <div>
-      <p class="sobretitulo">{{ 'PRÉVIA TÉCNICA' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p>
+      <p class="sobretitulo">{{ 'VISUALIZAÇÃO DOS GRÁFICOS' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p>
       <h1 id="titulo-voo">Altura e velocidade ao longo do tempo</h1>
       <p id="tipo-trajetoria" class="nota">Carregando dados do voo...</p>
     </div>
     <a id="ver-resultado" class="botao secundario" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else 'Ver resultados →' }}</a>
   </div>
-  {% if previa|default(false) %}<p class="aviso-demo">Simulação OpenRocket ainda não aprovada. Esta prévia serve apenas para testar os gráficos; não registra tentativa nem entra no ranking.</p>{% if tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude.</p>{% endif %}{% if tentativa.avisos_exibicao %}<p class="nota">Aviso do arquivo: {{tentativa.avisos_exibicao}}</p>{% endif %}{% endif %}
+  {% if previa|default(false) %}<p class="nota">Visualização dos gráficos: não registra tentativa nem altera o ranking.</p>{% if tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude.</p>{% endif %}{% if tentativa.avisos_exibicao %}<p class="nota">Aviso do arquivo: {{tentativa.avisos_exibicao}}</p>{% endif %}{% endif %}
   {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
 
   <div class="voo-controles painel">
