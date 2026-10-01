@@ -47,7 +47,23 @@ def inicio():
 
 @bp.get('/montagem')
 def montagem():
-    return render_template('montagem.html',coifas=COIFAS,aletas=ALETAS)
+    db = conexao()
+    componentes = {}
+    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='componentes'").fetchone():
+        componentes = {linha['codigo']: json.loads(linha['propriedades_json']) for linha in db.execute(
+            "SELECT codigo,propriedades_json FROM componentes WHERE codigo='CORPO' OR categoria IN ('coifa','aleta')")}
+    medidas = {}
+    if {'CORPO', *COIFAS, *ALETAS} <= componentes.keys():
+        medidas = {
+            'diametro_mm': componentes['CORPO']['diametro_externo_mm'],
+            'secao_mm': componentes['CORPO']['comprimento_secao_mm'],
+            'coifas': {codigo: componentes[codigo]['comprimento_mm'] for codigo in COIFAS},
+            'aletas': {codigo: {
+                'corda_raiz_mm': componentes[codigo]['corda_raiz_mm'],
+                'envergadura_mm': componentes[codigo]['envergadura_mm'],
+            } for codigo in ALETAS},
+        }
+    return render_template('montagem.html',coifas=COIFAS,aletas=ALETAS,medidas_blueprint=medidas)
 
 
 @bp.get('/api/configuracoes')
@@ -62,10 +78,12 @@ def configuracoes():
 def configuracao(codigo):
     linha = conexao().execute('SELECT * FROM configuracoes WHERE codigo=?',(codigo,)).fetchone()
     if not linha: abort(404)
-    sim = conexao().execute("SELECT id,demonstrativo FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
+    sim = conexao().execute("SELECT id,demonstrativo,cg_m,cp_m,margem_calibres FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
     previa = conexao().execute("""SELECT s.id FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status IN ('approved','pending_review')
         AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY (s.status='approved') DESC,s.id DESC LIMIT 1""",(codigo,)).fetchone()
+    dados_tecnicos = {campo: sim[campo] for campo in ('cg_m','cp_m','margem_calibres')} if sim and not sim['demonstrativo'] else None
     return jsonify({**dict(linha),'disponivel':bool(sim),'demonstrativo':bool(sim and sim['demonstrativo']),
+                   'dados_tecnicos':dados_tecnicos,
                    'url_previa':url_for('web.previa_voo',codigo=codigo) if previa else None})
 
 

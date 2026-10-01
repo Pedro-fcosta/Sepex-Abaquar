@@ -56,17 +56,43 @@
     <p id="erro" class="erro" role="alert" aria-live="assertive"></p>
   </form>
 
-  <aside class="resumo-fixo painel" aria-label="Pré-visualização da configuração">
-    <div class="resumo-topo"><p class="sobretitulo">SEU FOGUETE</p><span class="resumo-legenda">Perfil lateral ilustrativo</span></div>
-    <div class="palco-foguete">
-      <svg id="preview-foguete" class="preview-foguete" viewBox="0 0 640 220" role="img" aria-label="Vista lateral do foguete com coifa ogival, aletas elípticas e duas seções de corpo">
-        <defs><linearGradient id="corpo-gradiente" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d5e1ed"/><stop offset="1" stop-color="#9fb8d1"/></linearGradient><linearGradient id="coifa-gradiente" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b2cbe1"/></linearGradient></defs>
-        <g id="preview-aletas-svg"></g><g id="preview-corpo-svg"></g><path id="preview-coifa-svg" class="svg-coifa" d="M44 110 Q76 82 160 82 L160 138 Q76 138 44 110 Z"/>
-      </svg>
+  <aside class="resumo-fixo painel blueprint-painel" aria-label="Prancheta técnica da configuração">
+    <div class="blueprint-prancha">
+      <div class="resumo-topo"><div><p class="sobretitulo">SEU FOGUETE</p><strong>VISTA TÉCNICA INTERATIVA</strong></div><span class="resumo-legenda">ABAQUAR · SEPEX 2026</span></div>
+      <div class="palco-foguete">
+        <svg id="preview-foguete" class="preview-foguete rocket-blueprint" viewBox="0 0 500 700" data-medidas="{{ medidas_blueprint|tojson|forceescape }}" role="img" aria-label="Prancheta técnica do foguete modular selecionado">
+          <defs>
+            <pattern id="blueprint-grade-menor" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" class="blueprint-grade-menor"/></pattern>
+            <pattern id="blueprint-grade-maior" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" class="blueprint-grade-maior"/></pattern>
+            <pattern id="blueprint-hachura" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V7" class="blueprint-hachura"/></pattern>
+            <marker id="blueprint-seta" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M8 0L0 4L8 8" class="blueprint-seta"/></marker>
+          </defs>
+          <rect width="500" height="700" class="blueprint-fundo"/>
+          <g id="blueprint-grid"><rect width="500" height="700" fill="url(#blueprint-grade-menor)"/><rect width="500" height="700" fill="url(#blueprint-grade-maior)"/></g>
+          <g id="rocket-side-view"><g id="preview-aletas-svg"></g><g id="preview-corpo-svg"></g><path id="preview-coifa-svg" class="svg-coifa"/></g>
+          <g id="rocket-centerlines"></g>
+          <g id="rocket-dimensions"></g>
+          <g id="rocket-callouts"></g>
+          <g id="rocket-cg-cp" hidden></g>
+          <g id="rocket-rear-view"><svg id="vista-traseira" x="25" y="362" width="170" height="148" viewBox="0 0 160 140" role="img" aria-label="Vista traseira com quatro aletas"><line class="blueprint-centro" x1="15" y1="70" x2="145" y2="70"/><line class="blueprint-centro" x1="80" y1="5" x2="80" y2="135"/><g id="aletas-traseiras"></g><circle class="traseira-corpo" cx="80" cy="70" r="27"/><circle class="traseira-centro" cx="80" cy="70" r="3"/></svg></g>
+          <g id="rocket-title-block"></g>
+        </svg>
+      </div>
+      <dl class="blueprint-ficha-movel" aria-label="Quadro técnico da configuração">
+        <div><dt>PROJETO</dt><dd>ABAQUAR — SEPEX 2026</dd></div>
+        <div><dt>DESCRIÇÃO</dt><dd>FOGUETE MODULAR</dd></div>
+        <div><dt>CONFIGURAÇÃO</dt><dd id="blueprint-codigo-movel">—</dd></div>
+        <div><dt>CORPO</dt><dd id="blueprint-corpo-movel">—</dd></div>
+        <div><dt>COIFA</dt><dd id="blueprint-coifa-movel">—</dd></div>
+        <div><dt>ALETA</dt><dd id="blueprint-aleta-movel">—</dd></div>
+        <div><dt>QUANTIDADE</dt><dd id="blueprint-quantidade-movel">—</dd></div>
+        <div><dt>ESCALA</dt><dd>ESQUEMÁTICA</dd></div>
+        <div><dt>REVISÃO</dt><dd>REV. 00</dd></div>
+        <p>REPRESENTAÇÃO TÉCNICA ESQUEMÁTICA · NÃO UTILIZAR PARA FABRICAÇÃO</p>
+      </dl>
     </div>
-    <div class="vista-auxiliar"><div><strong>Vista traseira</strong><span id="quantidade-texto">4 aletas distribuídas</span></div><svg id="vista-traseira" viewBox="0 0 120 120" role="img" aria-label="Vista traseira com quatro aletas"><g id="aletas-traseiras"></g><circle class="traseira-corpo" cx="60" cy="60" r="23"/><circle class="traseira-centro" cx="60" cy="60" r="8"/></svg></div>
-    <div class="resumo-dados"><p class="codigo" id="codigo">C2-A3-F4-S2</p><p id="descricao">Coifa ogival · Aleta elíptica · 4 aletas · 40 cm de corpo</p><p id="disponibilidade" class="estado estado-consultando" aria-live="polite">Consultando simulação...</p><a id="link-previa" class="botao secundario link-previa" hidden>Testar gráficos do voo →</a></div>
-    <p class="resumo-nota">O lançamento usa os dados de voo disponíveis para a configuração. Resultados demonstrativos são identificados.</p>
+    <p id="disponibilidade" class="estado estado-consultando blueprint-status" aria-live="polite">Consultando simulação...</p>
+    <a id="link-previa" class="botao secundario link-previa" hidden>Testar gráficos do voo →</a>
   </aside>
 </div>
 {% endblock %}

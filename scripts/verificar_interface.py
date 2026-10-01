@@ -67,6 +67,10 @@ def verificar():
                         if rota == '/montagem':
                             assert pagina.locator('.opcao img').evaluate_all('(imgs) => imgs.every(img => img.naturalWidth > 0)')
                             assert pagina.locator('.opcao img').first.evaluate('(img) => getComputedStyle(img).objectFit') == 'contain'
+                            assert pagina.locator('#preview-foguete').evaluate('(svg) => svg.querySelectorAll("#rocket-title-block text").length > 0')
+                            if largura == 390:
+                                assert pagina.locator('.blueprint-ficha-movel').is_visible()
+                                assert pagina.locator('#blueprint-codigo-movel').inner_text() == 'C2-A3-F4-S2'
                             if largura in (1366, 390):
                                 pagina.screenshot(path=str(CAPTURAS / f'montagem-{largura}.png'), full_page=True)
                             for etapa in range(4):
@@ -97,8 +101,9 @@ def verificar():
 
                 pagina.set_viewport_size({'width': 1366, 'height': 768})
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
-                assert pagina.locator('#codigo').inner_text() == 'C2-A3-F4-S2'
+                assert pagina.locator('#codigo').text_content() == 'C2-A3-F4-S2'
                 assert 'dados fictícios' in pagina.locator('#disponibilidade').inner_text()
+                assert 'blueprint-status' in pagina.locator('#disponibilidade').get_attribute('class')
                 pagina.locator('#tema').click()
                 assert pagina.locator('html').get_attribute('data-theme') == 'dark'
                 pagina.reload(wait_until='networkidle')
@@ -127,6 +132,33 @@ def verificar():
                 assert pagina.url.endswith('/ranking')
 
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
+                assert pagina.locator('#rocket-cg-cp').get_attribute('hidden') is not None
+                ogival = pagina.locator('#preview-coifa-svg').get_attribute('d')
+                pagina.locator('input[name="coifa"][value="C1"]').check()
+                conica = pagina.locator('#preview-coifa-svg').get_attribute('d')
+                pagina.locator('input[name="coifa"][value="C3"]').check()
+                elipsoidal = pagina.locator('#preview-coifa-svg').get_attribute('d')
+                assert len({ogival, conica, elipsoidal}) == 3
+                pagina.locator('input[name="coifa"][value="C2"]').check()
+                pagina.locator('#continuar').click()
+                eliptica = pagina.locator('#preview-aletas-svg path').first.get_attribute('d')
+                pagina.locator('input[name="aleta"][value="A1"]').check()
+                reta = pagina.locator('#preview-aletas-svg path').first.get_attribute('d')
+                pagina.locator('input[name="aleta"][value="A2"]').check()
+                enflechada = pagina.locator('#preview-aletas-svg path').first.get_attribute('d')
+                assert len({eliptica, reta, enflechada}) == 3
+                pagina.locator('input[name="aletas"][value="5"]').check()
+                assert pagina.locator('#aletas-traseiras path').count() == 5
+                assert '5 × 72°' in pagina.locator('#rocket-rear-view').text_content()
+                pagina.locator('#continuar').click()
+                pagina.locator('input[name="secoes"][value="1"]').check()
+                assert pagina.locator('#preview-corpo-svg rect.svg-corpo').count() == 1
+                assert 'CORPO: 200 mm' in pagina.locator('#rocket-dimensions').text_content()
+                pagina.locator('input[name="secoes"][value="4"]').check()
+                assert pagina.locator('#preview-corpo-svg rect.svg-corpo').count() == 4
+                assert 'CORPO: 800 mm' in pagina.locator('#rocket-dimensions').text_content()
+
+                pagina.goto(origem + '/montagem', wait_until='networkidle')
                 pagina.locator('#continuar').click()
                 assert pagina.locator('[data-step="1"]').is_visible()
                 pagina.screenshot(path=str(CAPTURAS / 'aletas-1366.png'), full_page=True)
@@ -134,13 +166,16 @@ def verificar():
                 pagina.locator('input[name="aletas"][value="3"]').check()
                 pagina.locator('#continuar').click()
                 pagina.locator('input[name="secoes"][value="4"]').check()
-                assert pagina.locator('#codigo').inner_text() == 'C2-A1-F3-S4'
+                assert pagina.locator('#codigo').text_content() == 'C2-A1-F3-S4'
                 assert pagina.locator('#preview-corpo-svg rect.svg-corpo').count() == 4
                 assert pagina.locator('#aletas-traseiras path').count() == 3
                 pagina.screenshot(path=str(CAPTURAS / 'corpo-1366.png'), full_page=True)
                 pagina.locator('#continuar').click()
                 assert pagina.locator('#confirmar').is_enabled()
                 assert 'Simulação disponível' in pagina.locator('#disponibilidade-final').inner_text()
+                assert pagina.locator('#rocket-cg-cp').get_attribute('hidden') is None
+                assert 'CG:' in pagina.locator('#rocket-cg-cp').text_content()
+                assert 'CP:' in pagina.locator('#rocket-cg-cp').text_content()
                 assert pagina.locator('#link-previa').is_visible()
                 pagina.locator('#nome').fill('Visitante OpenRocket')
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
