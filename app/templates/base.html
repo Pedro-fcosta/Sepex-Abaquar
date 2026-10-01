@@ -10,11 +10,13 @@
 <body>
   <header class="topo">
     <div class="topo-conteudo">
-      <a class="marca" href="{{ url_for('web.inicio') }}" aria-label="ABAQUAR — início">
-        <span class="marca-logo"><img src="{{ url_for('static', filename='Logo/Logo ABAQUAR.png') }}" alt="Logo da equipe de foguetes ABAQUAR" id="logo-abaquar"></span>
-        <span class="marca-texto"><strong>ABAQUAR</strong><small>SEPEX 2026</small></span>
-      </a>
-      <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+      <div class="topo-marcas">
+        <a class="marca" href="{{ url_for('web.inicio') }}" aria-label="ABAQUAR — início">
+          <span class="marca-logo"><img src="{{ url_for('static', filename='Logo/Logo ABAQUAR.png') }}" alt="Logo da equipe de foguetes ABAQUAR" id="logo-abaquar"></span>
+          <span class="marca-texto"><strong>ABAQUAR</strong><small>SEPEX 2026</small></span>
+        </a>
+        <img class="logo-cefet" src="{{ url_for('static', filename='Logo/cefet-rj-branco.png') }}" alt="CEFET/RJ" id="logo-cefet">
+      </div>
       <nav class="nav-principal" id="nav-principal" aria-label="Navegação principal">
         <a href="{{ url_for('web.inicio') }}" {% if request.endpoint == 'web.inicio' %}aria-current="page"{% endif %}>Início</a>
         <a href="{{ url_for('web.montagem') }}" {% if request.endpoint == 'web.montagem' %}aria-current="page"{% endif %}>Montagem</a>
@@ -23,6 +25,7 @@
         <a class="nav-secundaria" href="{{ url_for('web.diagnostico') }}" {% if request.endpoint == 'web.diagnostico' %}aria-current="page"{% endif %}>Diagnóstico</a>
       </nav>
       <button class="tema" id="tema" type="button" aria-label="Alternar tema"><span class="tema-icone" aria-hidden="true">🌙</span><span class="tema-texto">Tema escuro</span></button>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span><span></span></button>
     </div>
   </header>
   <main>{% block conteudo %}{% endblock %}</main>
