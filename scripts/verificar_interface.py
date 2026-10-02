@@ -56,6 +56,23 @@ def verificar():
                         assert medidas['largura'] <= medidas['janela'] + 1, (largura, rota, medidas)
                         assert medidas['titulo'] >= medidas['cabecalho'], (largura, rota, medidas)
                         assert pagina.locator('#logo-abaquar').evaluate('(img) => img.naturalWidth > 0')
+                        assert pagina.locator('#logo-cefet').evaluate('(img) => img.naturalWidth > 0')
+                        assert pagina.locator('.marca-logo').evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgba(0, 0, 0, 0)'
+                        if largura > 1120:
+                            topo = pagina.evaluate('''() => {
+                                const rect = (seletor) => document.querySelector(seletor).getBoundingClientRect();
+                                const marcas = rect('.topo-marcas');
+                                const abaquar = rect('.marca');
+                                const cefet = rect('.logo-cefet');
+                                const abas = rect('.nav-principal');
+                                const tema = rect('.tema');
+                                return {
+                                    ordem: marcas.bottom <= abas.top && abas.bottom <= tema.top,
+                                    centros: [marcas, abas, tema].map(item => Math.abs((item.left + item.right) / 2 - innerWidth / 2)),
+                                    grupoDeMarcas: cefet.right - abaquar.left,
+                                };
+                            }''')
+                            assert topo['ordem'] and max(topo['centros']) <= 1 and topo['grupoDeMarcas'] < 500, (largura, topo)
                         if rota == '/':
                             assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0 && getComputedStyle(img).objectFit === "contain"')
                             assert pagina.locator('.inicio-indicadores strong').all_inner_texts() == ['108', '3', '3', '4']

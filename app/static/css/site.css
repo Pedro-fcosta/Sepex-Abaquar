@@ -69,8 +69,8 @@ a { color: inherit; text-decoration: none; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--azul-secundario); outline-offset: 3px; }
 .topo { position: sticky; top: 0; z-index: 50; background: var(--bg-header); color: var(--text-inverse); box-shadow: 0 2px 12px rgba(4, 26, 61, .12); }
-.topo-conteudo { max-width: 1320px; margin: auto; padding: 7px 24px 10px; display: grid; justify-items: center; gap: 3px; }
-.topo-marcas { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.topo-conteudo { max-width: 1320px; margin: auto; padding: 8px 24px 12px; display: grid; justify-items: center; gap: 8px; }
+.topo-marcas { width: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(48px, 8vw, 112px); }
 .marca { min-width: 0; display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .marca-logo { width: 58px; height: 58px; display: grid; place-items: center; flex: none; }
 .marca-logo img { width: 100%; height: 100%; object-fit: contain; }
@@ -172,7 +172,7 @@ code { color: var(--azul-principal); overflow-wrap: anywhere; }
 .inicio-anel { width: 49px; height: 49px; border: 9px solid var(--home-azul); border-radius: 50%; box-shadow: inset 0 0 0 2px var(--bg-card), 0 0 0 2px rgba(11, 86, 179, .16); }
 .inicio-sequencia strong { margin-top: 8px; color: var(--text-main); font-size: .96rem; }
 .inicio-sequencia li > span:last-child { color: var(--text-muted); font-size: .82rem; line-height: 1.35; }
-.inicio-como { scroll-margin-top: 174px; }
+.inicio-como { scroll-margin-top: 194px; }
 .inicio-linha-tempo { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; list-style: none; margin: 0; padding: 0; }
 .inicio-linha-tempo::before { content: ''; position: absolute; top: 34px; left: 8%; right: 8%; height: 2px; background: linear-gradient(90deg, var(--home-azul), #91bdf0, var(--home-azul)); }
 .inicio-linha-tempo li { position: relative; min-width: 0; padding: 0 12px 0 0; }
@@ -370,7 +370,7 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
 /* Telas menores */
 @media (max-width: 1120px) {
   .topo-conteudo { grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; }
-  .topo-marcas { grid-column: 1; grid-row: 1; }
+  .topo-marcas { grid-column: 1; grid-row: 1; justify-content: space-between; gap: 20px; }
   .menu-toggle { display: flex; grid-column: 2; grid-row: 1; }
   .tema { grid-column: 1 / -1; grid-row: 2; }
   .nav-principal { display: none; grid-column: 1 / -1; grid-row: 3; width: 100%; margin: 0; padding: 8px 0 4px; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, .25); }
