@@ -368,9 +368,12 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
 .voo-grafico { position: relative; height: 350px; margin-top: 18px; }
 
 @media (min-width: 1121px) {
-  .topo-conteudo { padding-top: 3px; padding-bottom: 6px; gap: 0; }
-  .nav-principal { margin-top: -17px; }
-  .tema { margin-top: 2px; }
+  .topo-conteudo { padding: 9px 24px 11px; gap: 4px; }
+  .topo-marcas { width: auto; justify-content: center; gap: clamp(28px, 5vw, 70px); }
+  .marca-logo { width: 52px; height: 52px; }
+  .logo-cefet { width: 140px; height: 56px; }
+  .nav-principal a { min-height: 36px; padding-top: 6px; padding-bottom: 6px; }
+  .tema { min-height: 36px; padding-top: 5px; padding-bottom: 5px; }
 }
 
 /* Telas menores */
