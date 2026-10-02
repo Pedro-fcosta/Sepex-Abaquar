@@ -1,0 +1,249 @@
+/* Placar da SEPEX. As cores acompanham o tema global sem alterar outras páginas. */
+.ranking-pagina {
+  --placar-azul: #0b56b3;
+  --placar-escuro: #073b7a;
+  --placar-destaque: #0b56b3;
+  --placar-superficie: #ffffff;
+  --placar-elevado: #f5f9ff;
+  --placar-borda: #dce5f0;
+  --placar-texto: #0f172a;
+  --placar-muted: #52627a;
+  --placar-ouro: #e3ad32;
+  --placar-prata: #94a3b8;
+  --placar-bronze: #b87348;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  color: var(--placar-texto);
+}
+[data-theme="dark"] .ranking-pagina {
+  --placar-azul: #60a5fa;
+  --placar-escuro: #bfdbfe;
+  --placar-destaque: #60a5fa;
+  --placar-superficie: #0f2038;
+  --placar-elevado: #132944;
+  --placar-borda: #334a68;
+  --placar-texto: #f8fafc;
+  --placar-muted: #aebdd1;
+}
+.ranking-pagina h1, .ranking-pagina h2 { color: var(--placar-escuro); }
+.ranking-pagina h2 { margin: 0; }
+.ranking-fundo { position: absolute; inset: -32px -24px 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: .7; background: radial-gradient(circle at 82% 12%, rgba(69, 148, 242, .1), transparent 24%), linear-gradient(rgba(11, 86, 179, .028) 1px, transparent 1px), linear-gradient(90deg, rgba(11, 86, 179, .028) 1px, transparent 1px); background-size: auto, 42px 42px, 42px 42px; mask-image: linear-gradient(to bottom, #000 0, transparent 78%); }
+[data-theme="dark"] .ranking-fundo { opacity: .44; }
+.ranking-trajetoria { position: absolute; width: 100%; height: 560px; top: 0; left: 0; fill: none; stroke: var(--placar-azul); stroke-width: 1.4; stroke-dasharray: 3 11; opacity: .24; animation: ranking-trajeto 35s linear infinite; }
+.ranking-foguete { display: none; position: absolute; width: 34px; height: 34px; left: 0; bottom: 18%; color: var(--placar-azul); opacity: .38; }
+.ranking-foguete.voar { display: block; animation: ranking-sobrevoo 7s ease-in-out forwards; }
+@keyframes ranking-trajeto { to { stroke-dashoffset: -140; } }
+@keyframes ranking-sobrevoo { from { transform: translate(-35px, 20px) rotate(30deg); opacity: 0; } 20% { opacity: .42; } 85% { opacity: .42; } to { transform: translate(85vw, -380px) rotate(37deg); opacity: 0; } }
+
+.ranking-eyebrow { margin: 0 0 7px; color: var(--placar-azul); font-size: .69rem; font-weight: 900; letter-spacing: .16em; }
+.ranking-intro { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.ranking-intro-texto h1 { margin: 0 0 6px; font-size: clamp(2.4rem, 4.2vw, 4rem); letter-spacing: -.045em; }
+.ranking-intro-texto > p:last-child { margin: 0; color: var(--placar-muted); max-width: 660px; font-size: .95rem; }
+.ranking-intro-lateral { display: grid; justify-items: end; gap: 9px; flex: none; }
+.ranking-ao-vivo { display: flex; align-items: center; gap: 9px; padding: 8px 12px; border: 1px solid var(--placar-borda); border-radius: 12px; background: var(--placar-superficie); box-shadow: 0 8px 22px rgba(7, 59, 122, .05); }
+.ranking-ponto-vivo { width: 9px; height: 9px; flex: none; border-radius: 50%; background: #17a364; box-shadow: 0 0 0 4px rgba(23, 163, 100, .12); animation: ranking-pulso 2.8s ease-in-out infinite; }
+.ranking-ao-vivo[data-estado="erro"] .ranking-ponto-vivo { background: #e3ad32; box-shadow: 0 0 0 4px rgba(227, 173, 50, .13); animation: none; }
+.ranking-ao-vivo[data-estado="atualizando"] .ranking-ponto-vivo { animation-duration: 1.2s; }
+.ranking-ao-vivo div { display: grid; line-height: 1.2; }
+.ranking-ao-vivo strong { color: var(--placar-escuro); font-size: .73rem; letter-spacing: .08em; text-transform: uppercase; }
+.ranking-ao-vivo small { margin-top: 3px; color: var(--placar-muted); font-size: .72rem; }
+.ranking-relogio { display: none; color: var(--placar-escuro); font-size: 1.38rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.ranking-modo-acoes { display: flex; gap: 7px; }
+.ranking-acao-sutil { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 32px; padding: 5px 10px; border: 1px solid var(--placar-borda); border-radius: 8px; background: var(--placar-superficie); color: var(--placar-escuro); font-size: .76rem; font-weight: 800; white-space: nowrap; }
+.ranking-acao-sutil:hover { background: var(--placar-elevado); }
+@keyframes ranking-pulso { 50% { box-shadow: 0 0 0 7px rgba(23, 163, 100, 0); } }
+
+.ranking-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--placar-borda); border-radius: 16px; background: var(--placar-superficie); box-shadow: 0 10px 25px rgba(7, 59, 122, .05); }
+.ranking-kpi { display: grid; align-content: center; gap: 2px; min-width: 0; padding: 15px 20px; border-right: 1px solid var(--placar-borda); }
+.ranking-kpi:last-child { border-right: 0; }
+.ranking-kpi span { color: var(--placar-muted); font-size: .75rem; font-weight: 700; }
+.ranking-kpi strong { color: var(--placar-escuro); font-size: clamp(1.3rem, 2vw, 2rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.ranking-kpi small { color: var(--placar-muted); font-size: .7rem; }
+
+.ranking-podio-secao { position: relative; min-width: 0; }
+.ranking-secao-titulo, .ranking-lista-cabecalho { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 13px; }
+.ranking-secao-titulo h2, .ranking-lista-cabecalho h2 { font-size: clamp(1.3rem, 2vw, 1.7rem); letter-spacing: -.025em; }
+.ranking-legenda { color: var(--placar-muted); font-size: .74rem; }
+.ranking-podio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 16px; min-height: 228px; }
+.ranking-podio-cartao { position: relative; min-width: 0; min-height: 210px; overflow: hidden; padding: 17px 18px; border: 1px solid var(--placar-borda); border-top: 4px solid var(--medalha); border-radius: 15px; background: var(--placar-superficie); box-shadow: 0 10px 25px rgba(7, 59, 122, .06); animation: ranking-entrar .5s both; }
+.ranking-podio-cartao::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--medalha), transparent 87%), transparent 42%); pointer-events: none; }
+.ranking-podio-cartao[data-posicao="1"] { --medalha: var(--placar-ouro); grid-column: 2; grid-row: 1; min-height: 228px; transform: translateY(-8px); border-color: color-mix(in srgb, var(--placar-ouro), var(--placar-borda) 48%); box-shadow: 0 14px 32px rgba(195, 143, 31, .13); animation-delay: .08s; }
+.ranking-podio-cartao[data-posicao="2"] { --medalha: var(--placar-prata); grid-column: 1; grid-row: 1; animation-delay: .16s; }
+.ranking-podio-cartao[data-posicao="3"] { --medalha: var(--placar-bronze); grid-column: 3; grid-row: 1; animation-delay: .24s; }
+.ranking-podio-cartao[data-posicao="1"]::after { content: ''; position: absolute; top: 0; left: -55%; width: 35%; height: 4px; background: rgba(255, 255, 255, .72); transform: skewX(-22deg); animation: ranking-reflexo 14s ease-in-out infinite; }
+.ranking-podio-cartao.recorde-ativo { animation: ranking-recorde-brilho 4s ease-out both; }
+.ranking-podio-cartao.placeholder { display: grid; align-content: center; justify-items: center; gap: 9px; border-top-style: dashed; color: var(--placar-muted); text-align: center; background: var(--placar-elevado); box-shadow: none; }
+.ranking-podio-cartao.placeholder strong { color: var(--placar-muted); font-size: .87rem; }
+.ranking-podio-cartao.placeholder span { font-size: .75rem; }
+.ranking-medalha { display: inline-flex; align-items: center; gap: 7px; color: var(--placar-texto); font-size: .77rem; font-weight: 900; }
+.ranking-medalha svg { width: 21px; height: 21px; fill: none; stroke: var(--medalha); stroke-width: 1.8; }
+.ranking-podio-nome { min-width: 0; margin: 10px 0 4px; overflow-wrap: anywhere; color: var(--placar-texto); font-size: clamp(1.15rem, 1.8vw, 1.55rem); font-weight: 800; line-height: 1.12; }
+.ranking-podio-apogeu { display: block; color: var(--placar-escuro); font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 900; line-height: 1.02; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+.ranking-podio-apogeu small { font-size: .42em; }
+.ranking-podio-dados { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 12px; color: var(--placar-muted); font-size: .74rem; }
+.ranking-podio-dados code, .ranking-config-chip { padding: 4px 6px; border: 1px solid var(--placar-borda); border-radius: 6px; background: var(--placar-elevado); color: var(--placar-escuro); font-family: Consolas, 'Courier New', monospace; font-size: .75rem; font-weight: 800; white-space: nowrap; }
+.ranking-podio-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; color: var(--placar-muted); font-size: .72rem; }
+.ranking-badge { display: inline-flex; align-items: center; border-radius: 99px; padding: 3px 8px; font-size: .67rem; font-weight: 800; white-space: nowrap; }
+.ranking-badge-oficial { background: color-mix(in srgb, var(--placar-azul), transparent 89%); color: var(--placar-escuro); }
+.ranking-badge-demo { background: var(--amarelo-bg); color: var(--amarelo-texto); }
+.ranking-recorde { position: absolute; z-index: 2; top: 36px; left: 50%; transform: translateX(-50%); padding: 7px 13px; border: 1px solid var(--placar-ouro); border-radius: 99px; background: var(--placar-superficie); color: var(--placar-escuro); box-shadow: 0 8px 22px rgba(195, 143, 31, .2); font-size: .7rem; font-weight: 900; letter-spacing: .1em; white-space: nowrap; }
+@keyframes ranking-entrar { from { opacity: 0; translate: 0 9px; } to { opacity: 1; translate: 0 0; } }
+@keyframes ranking-reflexo { 0%, 81% { left: -55%; } 88%, 100% { left: 130%; } }
+@keyframes ranking-recorde-brilho { 0%, 100% { box-shadow: 0 14px 32px rgba(195, 143, 31, .13); } 20%, 60% { box-shadow: 0 0 0 8px rgba(227, 173, 50, .13), 0 15px 38px rgba(195, 143, 31, .28); } }
+.ranking-vazio { display: grid; justify-items: center; gap: 8px; padding: 32px 20px; border: 1px dashed var(--placar-borda); border-radius: 15px; background: var(--placar-superficie); text-align: center; }
+.ranking-vazio-simbolo { color: var(--placar-azul); font-size: 2.8rem; line-height: 1; }
+.ranking-vazio h2 { max-width: 570px; margin: 0; font-size: 1.4rem; }
+.ranking-vazio p { margin: 0 0 8px; color: var(--placar-muted); }
+
+.ranking-controles { display: grid; gap: 12px; padding: 13px 16px; border: 1px solid var(--placar-borda); border-radius: 15px; background: var(--placar-superficie); }
+.ranking-controles-principal { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ranking-segmentado { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--placar-borda); border-radius: 10px; background: var(--placar-elevado); }
+.ranking-segmentado button { min-height: 34px; padding: 6px 12px; border: 0; border-radius: 7px; background: transparent; color: var(--placar-muted); font-size: .8rem; font-weight: 800; }
+.ranking-segmentado button[aria-pressed="true"] { background: var(--placar-superficie); color: var(--placar-escuro); box-shadow: 0 2px 8px rgba(7, 59, 122, .12); }
+.ranking-filtros-botao { display: none; }
+.ranking-filtros { display: grid; grid-template-columns: minmax(150px, 1.2fr) minmax(180px, 1fr) minmax(180px, 1fr) auto; align-items: end; gap: 10px; }
+.ranking-filtros label { display: grid; gap: 4px; min-width: 0; color: var(--placar-muted); font-size: .71rem; font-weight: 800; }
+.ranking-filtros input, .ranking-filtros select { width: 100%; min-height: 38px; padding: 7px 10px; border: 1px solid var(--placar-borda); border-radius: 8px; background: var(--bg-input); color: var(--placar-texto); font-size: .82rem; }
+.ranking-filtros input:focus, .ranking-filtros select:focus { outline: 2px solid var(--placar-azul); outline-offset: 1px; }
+.ranking-limpar { min-height: 38px; padding: 7px 11px; border: 1px solid var(--placar-borda); border-radius: 8px; background: var(--placar-elevado); color: var(--placar-escuro); font-size: .76rem; font-weight: 800; white-space: nowrap; }
+.ranking-limpar:hover { background: color-mix(in srgb, var(--placar-azul), transparent 88%); }
+
+.ranking-lista { min-width: 0; padding: 18px; border: 1px solid var(--placar-borda); border-radius: 16px; background: var(--placar-superficie); box-shadow: 0 10px 25px rgba(7, 59, 122, .04); }
+.ranking-lista-cabecalho { margin-bottom: 11px; }
+.ranking-lista-cabecalho .ranking-eyebrow { margin-bottom: 4px; }
+.ranking-lista-cabecalho p:last-child { margin: 4px 0 0; color: var(--placar-muted); font-size: .77rem; }
+.ranking-mostrar-todos { display: inline-flex; align-items: center; gap: 7px; color: var(--placar-muted); font-size: .73rem; font-weight: 700; white-space: nowrap; }
+.ranking-mostrar-todos input { accent-color: var(--placar-azul); }
+.ranking-tabela-viewport { max-width: 100%; overflow: auto; border: 1px solid var(--placar-borda); border-radius: 10px; }
+.ranking-tabela { min-width: 840px; width: 100%; border-collapse: separate; border-spacing: 0; }
+.ranking-tabela thead { position: sticky; top: 0; z-index: 1; background: var(--placar-elevado); }
+.ranking-tabela th { padding: 10px 13px; border-bottom: 1px solid var(--placar-borda); color: var(--placar-muted); font-size: .67rem; letter-spacing: .08em; }
+.ranking-tabela td { padding: 11px 13px; border-bottom: 1px solid var(--placar-borda); color: var(--placar-texto); font-size: .81rem; }
+.ranking-tabela tr:last-child td { border-bottom: 0; }
+.ranking-tabela tbody tr { transition: background .25s; }
+.ranking-tabela tbody tr:hover td { background: var(--placar-elevado); }
+.ranking-tabela tbody tr.subiu td { animation: ranking-subiu 2.7s ease-out; }
+.ranking-tabela tbody tr.desceu td { animation: ranking-desceu 2.7s ease-out; }
+.ranking-tabela tbody tr.novo td { animation: ranking-novo 2.7s ease-out; }
+.ranking-tabela tbody tr.demo td { background: color-mix(in srgb, var(--amarelo-bg), transparent 68%); }
+.ranking-tabela td.ranking-apogeu { color: var(--placar-escuro); font-weight: 900; font-variant-numeric: tabular-nums; }
+.ranking-tabela td.ranking-diferenca { color: var(--placar-muted); }
+.ranking-tabela .ranking-posicao { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; min-height: 30px; border-radius: 8px; background: var(--placar-elevado); color: var(--placar-escuro); font-weight: 900; }
+.ranking-tabela .ranking-posicao.podio { background: color-mix(in srgb, var(--placar-ouro), transparent 85%); }
+.ranking-tabela .ranking-posicao.podio-2 { background: color-mix(in srgb, var(--placar-prata), transparent 78%); }
+.ranking-tabela .ranking-posicao.podio-3 { background: color-mix(in srgb, var(--placar-bronze), transparent 82%); }
+.ranking-demo-nota { display: block; max-width: 210px; margin-top: 3px; color: var(--amarelo-texto); font-size: .67rem; line-height: 1.2; white-space: normal; }
+.ranking-tabela-vazia { color: var(--placar-muted) !important; text-align: center; white-space: normal; }
+@keyframes ranking-subiu { 0% { background: rgba(22, 163, 111, .19); } to { background: transparent; } }
+@keyframes ranking-desceu { 0% { background: rgba(148, 163, 184, .2); } to { background: transparent; } }
+@keyframes ranking-novo { 0% { background: rgba(11, 86, 179, .18); } to { background: transparent; } }
+.ranking-paginacao { display: flex; justify-content: center; align-items: center; gap: 11px; margin-top: 10px; color: var(--placar-muted); font-size: .75rem; font-weight: 800; }
+.ranking-paginacao button { width: 32px; height: 32px; border: 1px solid var(--placar-borda); border-radius: 8px; background: var(--placar-elevado); color: var(--placar-escuro); font-weight: 900; }
+.ranking-paginacao button:disabled { opacity: .4; cursor: default; }
+.ranking-chamada { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 17px 21px; border: 1px solid var(--placar-borda); border-radius: 15px; background: linear-gradient(110deg, var(--placar-elevado), var(--placar-superficie)); }
+.ranking-chamada div { display: grid; gap: 2px; }
+.ranking-chamada strong { color: var(--placar-escuro); }
+.ranking-chamada span { color: var(--placar-muted); font-size: .82rem; }
+.ranking-chamada .botao span { color: inherit; }
+
+/* O telão mantém o pódio fixo e pagina apenas a classificação inferior. */
+body.ranking-telao { height: 100vh; overflow: hidden; }
+.ranking-telao .topo { position: relative; box-shadow: none; }
+.ranking-telao .topo-conteudo { display: flex; align-items: center; max-width: none; min-height: 56px; padding: 3px 2vw; }
+.ranking-telao .topo-marcas { display: flex; width: 100%; justify-content: space-between; }
+.ranking-telao .marca { justify-self: auto; }
+.ranking-telao .marca-logo { width: 42px; height: 42px; }
+.ranking-telao .logo-cefet { width: 120px; height: 48px; }
+.ranking-telao .topo .nav-principal, .ranking-telao .topo .tema, .ranking-telao .topo .menu-toggle, .ranking-telao .rodape { display: none; }
+.ranking-telao main { max-width: none; height: calc(100vh - 56px); padding: 10px 2vw; overflow: hidden; }
+.ranking-telao .ranking-pagina { height: 100%; grid-template-rows: auto auto auto auto minmax(0, 1fr); gap: 8px; }
+.ranking-telao .ranking-fundo { inset: -10px -2vw; }
+.ranking-telao .ranking-intro { min-height: 72px; }
+.ranking-telao .ranking-intro-texto h1 { margin: 0; font-size: clamp(2rem, 2.6vw, 3rem); }
+.ranking-telao .ranking-intro-texto > p:last-child { font-size: .79rem; }
+.ranking-telao .ranking-intro-lateral { grid-template-columns: auto auto; align-items: center; gap: 2px 12px; }
+.ranking-telao .ranking-relogio { display: block; }
+.ranking-telao .ranking-modo-acoes { grid-column: 1 / -1; justify-self: end; }
+.ranking-telao .ranking-kpi { padding: 8px 16px; }
+.ranking-telao .ranking-kpi strong { font-size: 1.48rem; }
+.ranking-telao .ranking-kpi small { display: none; }
+.ranking-telao .ranking-secao-titulo { margin-bottom: 6px; }
+.ranking-telao .ranking-secao-titulo h2 { font-size: 1.16rem; }
+.ranking-telao .ranking-podio { min-height: 0; gap: 11px; }
+.ranking-telao .ranking-podio-cartao { min-height: 181px; padding: 12px 16px; }
+.ranking-telao .ranking-podio-cartao[data-posicao="1"] { min-height: 195px; }
+.ranking-telao .ranking-podio-nome { margin: 5px 0 2px; font-size: 1.22rem; }
+.ranking-telao .ranking-podio-apogeu { font-size: 2.2rem; }
+.ranking-telao .ranking-podio-dados { margin-top: 7px; }
+.ranking-telao .ranking-podio-rodape { margin-top: 6px; }
+.ranking-telao .ranking-controles { position: relative; padding: 5px 10px; }
+.ranking-telao .ranking-filtros-botao { display: inline-flex; }
+.ranking-telao .ranking-filtros { display: none; }
+.ranking-telao .ranking-controles.filtros-abertos .ranking-filtros { position: absolute; top: calc(100% + 4px); right: 0; display: grid; width: min(850px, 100%); padding: 13px; border: 1px solid var(--placar-borda); border-radius: 12px; background: var(--placar-superficie); box-shadow: var(--shadow-medium); }
+.ranking-telao .ranking-controles.filtros-abertos { position: relative; z-index: 3; }
+.ranking-telao .ranking-lista { display: flex; flex-direction: column; min-height: 0; padding: 9px 14px; }
+.ranking-telao .ranking-lista-cabecalho { margin-bottom: 5px; }
+.ranking-telao .ranking-lista-cabecalho h2 { font-size: 1.14rem; }
+.ranking-telao .ranking-lista-cabecalho p:last-child { display: none; }
+.ranking-telao .ranking-tabela-viewport { flex: 1; min-height: 0; overflow: hidden; }
+.ranking-telao .ranking-tabela th { padding: 6px 12px; }
+.ranking-telao .ranking-tabela td { padding: 8px 12px; font-size: .78rem; }
+.ranking-telao .ranking-mostrar-todos, .ranking-telao .ranking-chamada { display: none; }
+.ranking-telao .ranking-paginacao { margin-top: 5px; }
+.ranking-telao .ranking-vazio { padding: 18px; }
+
+@media (max-height: 900px) and (min-width: 901px) {
+  .ranking-telao .ranking-pagina { gap: 5px; }
+  .ranking-telao .ranking-intro { min-height: 0; }
+  .ranking-telao .ranking-intro-texto h1 { font-size: 2rem; }
+  .ranking-telao .ranking-intro-texto > p:last-child { display: none; }
+  .ranking-telao .ranking-intro-lateral { display: flex; align-items: center; gap: 8px; }
+  .ranking-telao .ranking-secao-titulo { margin-bottom: 3px; }
+  .ranking-telao .ranking-podio-cartao { min-height: 155px; padding: 9px 13px; }
+  .ranking-telao .ranking-podio-cartao[data-posicao="1"] { min-height: 165px; }
+  .ranking-telao .ranking-podio-nome { font-size: 1.08rem; }
+  .ranking-telao .ranking-podio-apogeu { font-size: 1.85rem; }
+  .ranking-telao .ranking-podio-dados, .ranking-telao .ranking-podio-rodape { margin-top: 4px; }
+  .ranking-telao .ranking-controles { padding: 3px 8px; }
+  .ranking-telao .ranking-segmentado button { min-height: 29px; padding-top: 3px; padding-bottom: 3px; }
+}
+
+@media (max-width: 900px) {
+  .ranking-intro { align-items: flex-start; }
+  .ranking-kpi { padding: 12px; }
+  .ranking-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ranking-limpar { justify-self: start; }
+}
+@media (max-width: 700px) {
+  .ranking-pagina { gap: 15px; }
+  .ranking-fundo { inset: -22px -15px 0; }
+  .ranking-intro { display: grid; }
+  .ranking-intro-lateral { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .ranking-intro-texto h1 { font-size: 2.6rem; }
+  .ranking-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ranking-kpi:nth-child(2) { border-right: 0; }
+  .ranking-kpi:nth-child(-n+2) { border-bottom: 1px solid var(--placar-borda); }
+  .ranking-podio { grid-template-columns: 1fr; gap: 10px; }
+  .ranking-podio .ranking-podio-cartao { grid-column: 1; grid-row: auto; min-height: 0; transform: none; }
+  .ranking-podio .ranking-podio-cartao[data-posicao="1"] { order: -1; }
+  .ranking-podio-cartao.placeholder { min-height: 86px; }
+  .ranking-podio-nome { margin-top: 5px; }
+  .ranking-secao-titulo { align-items: start; }
+  .ranking-legenda { max-width: 110px; text-align: right; }
+  .ranking-controles-principal { display: grid; }
+  .ranking-filtros { grid-template-columns: 1fr; }
+  .ranking-segmentado { width: 100%; }
+  .ranking-segmentado button { flex: 1; white-space: normal; }
+  .ranking-lista { padding: 14px; }
+  .ranking-lista-cabecalho { align-items: start; }
+  .ranking-mostrar-todos { max-width: 132px; white-space: normal; }
+  .ranking-chamada { display: grid; }
+  .ranking-chamada .botao { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ranking-pagina *, .ranking-pagina *::before, .ranking-pagina *::after { animation: none !important; transition: none !important; }
+  .ranking-foguete { display: none !important; }
+}

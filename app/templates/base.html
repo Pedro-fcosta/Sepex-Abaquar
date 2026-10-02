@@ -6,8 +6,9 @@
   <title>{% block titulo %}ABAQUAR · SEPEX 2026{% endblock %}</title>
   <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css', v='20261001-header5') }}">
+  {% block estilos %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
   <header class="topo">
     <div class="topo-conteudo">
       <div class="topo-marcas">

@@ -11,6 +11,7 @@ from .db import conexao
 from .estatisticas import distribuicoes, ranking, resumo
 from .simulacoes import importar, revisar
 from .tentativas import registrar
+from .placar import dados_placar
 
 bp = Blueprint('web',__name__)
 
@@ -154,12 +155,20 @@ def resultado(id):
 @bp.get('/ranking')
 def pagina_ranking():
     melhor = request.args.get('melhor') == '1'
-    return render_template('ranking.html',linhas=ranking(melhor),melhor=melhor)
+    telao = request.args.get('display') == '1' or request.args.get('modo') == 'telao'
+    return render_template('ranking.html',dados=dados_placar(),melhor=melhor,telao=telao)
 
 
 @bp.get('/api/ranking')
 def api_ranking():
     return jsonify(ranking(request.args.get('melhor')=='1'))
+
+
+@bp.get('/api/ranking/placar')
+def api_placar():
+    resposta = jsonify(dados_placar())
+    resposta.headers['Cache-Control'] = 'no-store'
+    return resposta
 
 
 @bp.get('/dashboard')

@@ -258,6 +258,28 @@ def verificar():
                 assert pagina.locator('#menu-toggle').get_attribute('aria-expanded') == 'true'
                 pagina.locator('#nav-principal').get_by_role('link', name='Diagnóstico').click()
                 assert pagina.url.endswith('/diagnostico')
+                pagina.goto(origem + '/ranking', wait_until='networkidle')
+                assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
+                assert 'Visitante OpenRocket' in pagina.locator('#ranking-podio').inner_text()
+                assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 0
+                pagina.locator('#ranking-origem').select_option('incluir')
+                assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 1
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
+                pagina.locator('[data-modo="melhor"]').click()
+                assert pagina.locator('[data-modo="melhor"]').get_attribute('aria-pressed') == 'true'
+                pagina.locator('#ranking-busca').fill('Visitante QA')
+                assert pagina.locator('#ranking-vazio').is_visible()
+                assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 1
+                pagina.locator('#ranking-limpar').click()
+                pagina.screenshot(path=str(CAPTURAS / 'ranking-390.png'), full_page=True)
+                pagina.set_viewport_size({'width': 1366, 'height': 768})
+                pagina.goto(origem + '/ranking?display=1', wait_until='networkidle')
+                assert pagina.locator('body').get_attribute('class') == 'ranking-telao'
+                assert pagina.evaluate('document.documentElement.scrollHeight <= innerHeight')
+                assert pagina.locator('#ranking-relogio').is_visible()
+                assert pagina.locator('#logo-cefet').evaluate('(img) => img.naturalWidth > 0')
+                pagina.screenshot(path=str(CAPTURAS / 'ranking-telao-1366.png'))
                 contextoAnimado = navegador.new_context(reduced_motion='no-preference', viewport={'width': 1366, 'height': 768})
                 paginaAnimada = contextoAnimado.new_page()
                 paginaAnimada.on('pageerror', lambda erro: falhas.append(str(erro)))

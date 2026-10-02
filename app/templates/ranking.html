@@ -1,6 +1,42 @@
-{% extends 'base.html' %}{% block titulo %}Ranking · ABAQUAR{% endblock %}{% block conteudo %}
-<section class="cabecalho"><p class="sobretitulo">SEPEX 2026</p><h1>Ranking de voos</h1><p>Maior apogeu, depois maior velocidade e, por fim, registro mais antigo.</p>
-<div class="acoes"><a class="botao {% if melhor %}secundario{% endif %}" href="/ranking">Todas as tentativas</a><a class="botao {% if not melhor %}secundario{% endif %}" href="/ranking?melhor=1">Melhor por participante</a></div></section>
-<section class="painel tabela-area"><table><thead><tr><th>Pos.</th><th>Participante</th><th>Configuração</th><th>Apogeu</th><th>Velocidade</th><th>Tipo</th></tr></thead><tbody>
-{% for linha in linhas %}<tr><td><b>#{{linha.posicao}}</b></td><td>{{linha.nome}}</td><td><code>{{linha.configuracao_codigo}}</code></td><td>{{'%.1f'|format(linha.apogeu_m)}} m</td><td>{% if linha.velocidade_max_ms is not none %}{{'%.1f'|format(linha.velocidade_max_ms)}} m/s{% else %}—{% endif %}</td><td>{% if linha.demonstrativo %}<span class="badge-demo">DEMO</span>{% else %}OpenRocket{% endif %}</td></tr>{% else %}<tr><td colspan="6">Ainda não há tentativas registradas.</td></tr>{% endfor %}
-</tbody></table></section>{% endblock %}
+{% extends 'base.html' %}
+{% block titulo %}Ranking de voos · ABAQUAR{% endblock %}
+{% block body_class %}{% if telao %}ranking-telao{% endif %}{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='css/ranking.css', v='20261001-3') }}">{% endblock %}
+{% block conteudo %}
+<div class="ranking-pagina" id="ranking-pagina" data-telao="{{ '1' if telao else '0' }}" data-melhor="{{ '1' if melhor else '0' }}" data-api="{{ url_for('web.api_placar') }}">
+  <div class="ranking-fundo" aria-hidden="true">
+    <svg class="ranking-trajetoria" viewBox="0 0 1300 560" preserveAspectRatio="none"><path d="M-30 480 C250 460 300 370 490 370 S760 275 860 218 S1080 94 1330 50"/></svg>
+    <svg class="ranking-foguete" viewBox="0 0 34 34"><path d="M17 2c5 5 7 11 7 19l-7 5-7-5c0-8 2-14 7-19Z M10 18l-5 6 5 2m14-8 5 6-5 2M14 27l3 5 3-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="17" cy="14" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+  </div>
+  <section class="ranking-intro" aria-labelledby="ranking-titulo">
+    <div class="ranking-intro-texto"><p class="ranking-eyebrow">SEPEX 2026 · PLACAR OFICIAL</p><h1 id="ranking-titulo">Ranking de voos</h1><p>Maior apogeu, seguido pela maior velocidade e, por fim, pelo registro mais antigo.</p></div>
+    <div class="ranking-intro-lateral"><div class="ranking-ao-vivo" role="status" aria-live="polite"><span class="ranking-ponto-vivo" aria-hidden="true"></span><div><strong id="ranking-conexao">Atualização ao vivo</strong><small id="ranking-atualizado">Aguardando atualização</small></div></div><time class="ranking-relogio" id="ranking-relogio" aria-label="Horário atual"></time>
+      <div class="ranking-modo-acoes">{% if telao %}<a class="ranking-acao-sutil" id="ranking-sair-telao" href="{{ url_for('web.pagina_ranking') }}">Sair do modo telão</a><button class="ranking-acao-sutil" type="button" id="ranking-fullscreen">Tela cheia</button>{% else %}<a class="ranking-acao-sutil ranking-acao-telao" id="ranking-entrar-telao" href="{{ url_for('web.pagina_ranking', display=1) }}">Modo telão <span aria-hidden="true">↗</span></a>{% endif %}</div>
+    </div>
+  </section>
+  <section class="ranking-kpis" aria-label="Indicadores oficiais">
+    <div class="ranking-kpi"><span>Lançamentos oficiais</span><strong id="ranking-kpi-lancamentos">0</strong><small>Resultados classificados</small></div>
+    <div class="ranking-kpi"><span>Participantes únicos</span><strong id="ranking-kpi-participantes">0</strong><small>Na seleção atual</small></div>
+    <div class="ranking-kpi"><span>Recorde de apogeu</span><strong id="ranking-kpi-apogeu">—</strong><small>Maior altitude</small></div>
+    <div class="ranking-kpi"><span>Maior velocidade</span><strong id="ranking-kpi-velocidade">—</strong><small>Máxima registrada</small></div>
+  </section>
+  <section class="ranking-podio-secao" aria-labelledby="ranking-podio-titulo">
+    <div class="ranking-secao-titulo"><div><p class="ranking-eyebrow">DESTAQUES DA COMPETIÇÃO</p><h2 id="ranking-podio-titulo">Pódio da SEPEX</h2></div><span class="ranking-legenda">Resultados oficiais · OpenRocket</span></div>
+    <div class="ranking-recorde" id="ranking-recorde" role="status" aria-live="polite" hidden>NOVO RECORDE DA SEPEX</div>
+    <div class="ranking-podio" id="ranking-podio" aria-live="polite"></div>
+    <div class="ranking-vazio" id="ranking-vazio" hidden><span class="ranking-vazio-simbolo" aria-hidden="true">◇</span><h2>O ranking está pronto para o primeiro lançamento</h2><p>Monte uma configuração e registre o primeiro resultado da SEPEX 2026.</p><a class="botao" href="{{ url_for('web.montagem') }}">Montar foguete <span aria-hidden="true">→</span></a></div>
+  </section>
+  <section class="ranking-controles" aria-label="Controles do ranking">
+    <div class="ranking-controles-principal"><div class="ranking-segmentado" role="group" aria-label="Modo de classificação"><button type="button" data-modo="todas" aria-pressed="{{ 'false' if melhor else 'true' }}">Todas as tentativas</button><button type="button" data-modo="melhor" aria-pressed="{{ 'true' if melhor else 'false' }}">Melhor por participante</button></div><button class="ranking-acao-sutil ranking-filtros-botao" id="ranking-filtros-botao" type="button" aria-controls="ranking-filtros" aria-expanded="false">Filtros <span aria-hidden="true">⌄</span></button></div>
+    <div class="ranking-filtros" id="ranking-filtros"><label>Participante<input id="ranking-busca" type="search" placeholder="Buscar nome" autocomplete="off"></label><label>Configuração<select id="ranking-configuracao"><option value="">Todas as configurações</option></select></label><label>Origem<select id="ranking-origem"><option value="oficiais">Somente oficiais</option><option value="incluir">Incluir demonstrações</option></select></label><button class="ranking-limpar" id="ranking-limpar" type="button">Limpar filtros</button></div>
+  </section>
+  <section class="ranking-lista" aria-labelledby="ranking-lista-titulo">
+    <div class="ranking-lista-cabecalho"><div><p class="ranking-eyebrow">CLASSIFICAÇÃO COMPLETA</p><h2 id="ranking-lista-titulo">Demais posições</h2><p id="ranking-contagem">Aguardando resultados</p></div><label class="ranking-mostrar-todos"><input type="checkbox" id="ranking-mostrar-todos"> Mostrar também o pódio na lista</label></div>
+    <div class="ranking-tabela-viewport"><table class="ranking-tabela"><thead><tr><th scope="col">Pos.</th><th scope="col">Participante</th><th scope="col">Configuração</th><th scope="col">Apogeu</th><th scope="col">Velocidade</th><th scope="col">Origem</th><th scope="col">Diferença para o líder</th></tr></thead><tbody id="ranking-tabela-corpo"></tbody></table></div>
+    <div class="ranking-paginacao" id="ranking-paginacao" hidden><button type="button" id="ranking-anterior" aria-label="Página anterior">←</button><span id="ranking-pagina-atual">Página 1 de 1</span><button type="button" id="ranking-proxima" aria-label="Próxima página">→</button></div>
+  </section>
+  <div class="ranking-chamada"><div><strong>Pronto para disputar o topo?</strong><span>Escolha uma configuração e acompanhe seu resultado no placar.</span></div><a class="botao" href="{{ url_for('web.montagem') }}">Montar novo foguete <span aria-hidden="true">→</span></a></div>
+</div>
+<script type="application/json" id="ranking-dados-iniciais">{{ dados|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/ranking.js', v='20261001-4') }}" defer></script>{% endblock %}
