@@ -67,16 +67,15 @@ def verificar():
                                 return {
                                     abas: abas.top,
                                     tema: tema.top,
-                                    semSobreposicao: abaquar.bottom <= abas.top && cefet.bottom <= abas.top && abas.bottom <= tema.top,
+                                    semSobreposicao: abaquar.right < abas.left && abas.right < cefet.left && abas.bottom <= tema.top,
                                     centralizados: [
-                                        (abaquar.left + cefet.right) / 2,
                                         (abas.left + abas.right) / 2,
                                         (tema.left + tema.right) / 2,
                                     ].every(centro => Math.abs(centro - innerWidth / 2) <= 1),
-                                    larguraMarcas: cefet.right - abaquar.left,
+                                    logosAlinhadas: [abaquar, cefet].every(item => Math.abs((item.top + item.bottom) / 2 - (abas.top + tema.bottom) / 2) <= 2),
                                 };
                             }''')
-                            assert topo['abas'] < 75 and topo['tema'] < 115 and topo['semSobreposicao'] and topo['centralizados'] and topo['larguraMarcas'] < 420, (largura, topo)
+                            assert topo['abas'] < 35 and topo['tema'] < 75 and topo['semSobreposicao'] and topo['centralizados'] and topo['logosAlinhadas'], (largura, topo)
                         if rota == '/':
                             assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0 && getComputedStyle(img).objectFit === "contain"')
                             assert pagina.locator('.inicio-indicadores strong').all_inner_texts() == ['108', '3', '3', '4']
