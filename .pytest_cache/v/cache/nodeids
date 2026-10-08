@@ -1,0 +1,21 @@
+[
+  "tests/test_blueprint.py::test_blueprint_usa_medidas_do_catalogo_e_dados_reais",
+  "tests/test_blueprint.py::test_montagem_carrega_sem_catalogo_inicializado",
+  "tests/test_catalogo.py::test_api_configuracao",
+  "tests/test_catalogo.py::test_gera_108_codigos_unicos_e_comprimento",
+  "tests/test_fluxo.py::test_bloqueio_idempotencia_snapshot_e_paginas",
+  "tests/test_fluxo.py::test_desempate_por_horario_e_id",
+  "tests/test_fluxo.py::test_ranking_desempate_melhor_e_estatisticas",
+  "tests/test_home.py::test_home_mostra_somente_tres_primeiras_tentativas_reais",
+  "tests/test_home.py::test_home_sem_banco_inicializado",
+  "tests/test_previas_openrocket.py::test_lote_importado_libera_todos_os_voos_e_graficos",
+  "tests/test_previas_openrocket.py::test_lote_importado_permite_previa_sem_liberar_ranking",
+  "tests/test_previas_openrocket.py::test_pouso_abaixo_de_zero_apenas_no_ultimo_ponto",
+  "tests/test_previas_openrocket.py::test_reimportacao_ativa_lote_que_ja_estava_pendente",
+  "tests/test_ranking_placar.py::test_placar_publico_preserva_desempate_e_marca_demo",
+  "tests/test_ranking_placar.py::test_placar_vazio_e_modo_telao",
+  "tests/test_simulacoes.py::test_cabecalho_openrocket_com_margem_de_unidade_invisivel",
+  "tests/test_simulacoes.py::test_csv_ingles_unidades",
+  "tests/test_simulacoes.py::test_csv_portugues_serie_e_idempotencia",
+  "tests/test_simulacoes.py::test_csv_resumo_revisao_e_admin"
+]

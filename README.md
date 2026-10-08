@@ -4,7 +4,7 @@ Experiência local de montagem digital de foguetes modulares para a SEPEX 2026. 
 
 ## Começo rápido
 
-Requer Python 3.12. No Windows (PowerShell):
+Requer Python 3.12. O repositório já inclui `instance/sepex.sqlite3` com as 108 configurações e os voos importados. No Windows (PowerShell):
 
 ```powershell
 py -3.12 -m venv .venv
@@ -12,14 +12,10 @@ py -3.12 -m venv .venv
 python -m pip install -r requirements.txt
 $env:SEPEX_ADMIN_TOKEN = 'defina-um-token-longo'
 $env:SEPEX_SECRET_KEY = 'defina-outra-chave-longa'
-python -m flask --app run init-db
-python -m flask --app run seed-configuracoes
-python -m flask --app run demo-criar
-python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"
 python run.py
 ```
 
-Abra `http://127.0.0.1:5000`. Os 21 CSVs do lote ficam disponíveis imediatamente no fluxo de montagem, voo, resultado e ranking. A demonstração usa **números fictícios** em `C2-A3-F4-S2`, claramente marcados. Para usar somente resultados reais, execute `python -m flask --app run demo-limpar` antes do evento. As outras 87 configurações aguardam dados de voo; a interface impede o lançamento delas.
+Abra `http://127.0.0.1:5000`. O banco incluído já permite testar o fluxo de montagem, voo, resultado e ranking. Os 21 CSVs originais também estão no repositório. A demonstração usa **números fictícios** em `C2-A3-F4-S2`, claramente marcados. Para usar somente resultados reais, execute `python -m flask --app run demo-limpar` antes do evento. As outras 87 configurações aguardam dados de voo; a interface impede o lançamento delas. Para começar com um banco vazio, remova `instance/sepex.sqlite3` e execute os comandos de inicialização e importação da seção **Comandos**.
 
 No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`.
 
