@@ -1,6 +1,7 @@
 {% extends 'base.html' %}{% block titulo %}Resultado · ABAQUAR{% endblock %}{% block conteudo %}
 <section class="cabecalho centro"><p class="sobretitulo">MISSÃO CONCLUÍDA · {{tentativa.configuracao_codigo}}</p><h1>Voo de {{tentativa.nome}}</h1>
 {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · valores fictícios para testar o fluxo. Não são resultados OpenRocket.</p>{% endif %}</section>
+{% if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A simulação foi interrompida antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. A maior altura registrada é um resultado parcial.</p>{% endif %}
 <section class="resultado-destaque"><span>APOGEU</span><strong>{{'%.1f'|format(tentativa.apogeu_m)}} <small>m</small></strong><p>Posição atual no ranking: <b>#{{posicao}}</b></p></section>
 <section class="grade tres indicadores"><article class="cartao revelar"><span>Velocidade máxima</span><strong>{% if tentativa.velocidade_max_ms is not none %}{{'%.1f'|format(tentativa.velocidade_max_ms)}} m/s{% else %}Pendente{% endif %}</strong></article>
 <article class="cartao revelar"><span>Aceleração máxima</span><strong>{% if tentativa.aceleracao_max_ms2 is not none %}{{'%.1f'|format(tentativa.aceleracao_max_ms2)}} m/s²{% else %}Pendente{% endif %}</strong></article>

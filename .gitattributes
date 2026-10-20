@@ -1,0 +1,3 @@
+# Preserva os bytes dos arquivos usados como fonte e pelo hash da importação.
+*.csv -text
+*.ork -text

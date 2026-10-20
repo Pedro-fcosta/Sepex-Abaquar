@@ -8,6 +8,7 @@
   "tests/test_fluxo.py::test_ranking_desempate_melhor_e_estatisticas",
   "tests/test_home.py::test_home_mostra_somente_tres_primeiras_tentativas_reais",
   "tests/test_home.py::test_home_sem_banco_inicializado",
+  "tests/test_lote_108.py::test_lote_gerado_libera_108_graficos",
   "tests/test_previas_openrocket.py::test_lote_importado_libera_todos_os_voos_e_graficos",
   "tests/test_previas_openrocket.py::test_lote_importado_permite_previa_sem_liberar_ranking",
   "tests/test_previas_openrocket.py::test_pouso_abaixo_de_zero_apenas_no_ultimo_ponto",

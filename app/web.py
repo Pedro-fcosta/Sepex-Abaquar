@@ -99,11 +99,16 @@ def criar_tentativa():
 
 
 def obter_tentativa(id):
-    linha = conexao().execute('''SELECT t.*,p.nome,s.tempo_apogeu_s,s.duracao_s,s.aviso_estabilidade
+    linha = conexao().execute('''SELECT t.*,p.nome,s.tempo_apogeu_s,s.duracao_s,s.aviso_estabilidade,s.observacoes,
+        (SELECT altitude_m FROM pontos WHERE simulacao_id=s.id ORDER BY tempo_s DESC LIMIT 1) AS altitude_final_m
         FROM tentativas t JOIN participantes p ON p.id=t.participante_id
         JOIN simulacoes s ON s.id=t.simulacao_id WHERE t.id=?''',(id,)).fetchone()
     if not linha: abort(404)
-    return dict(linha)
+    tentativa = dict(linha)
+    tentativa['avisos_exibicao'] = (tentativa['observacoes'] or '').replace(
+        'No recovery device defined in the simulation.',
+        'Nenhum dispositivo de recuperação foi definido na simulação.')
+    return tentativa
 
 
 @bp.get('/voo/<int:id>')

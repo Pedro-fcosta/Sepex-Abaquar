@@ -1,0 +1,876 @@
+{
+  "openrocket": "24.12",
+  "quantidade": 108,
+  "lastro_coifa_kg": 0.025,
+  "semente_vento": 2026,
+  "revisao_tecnica": "pending_review",
+  "observacao": "Parâmetros dos ORKs existentes são preliminares; motor, massas, geometria e condições devem ser revisados.",
+  "simulacoes": [
+    {
+      "codigo": "C1-A1-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S1.ork",
+      "apogeu_m": 333.912,
+      "pontos": 1006,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S2.ork",
+      "apogeu_m": 297.693,
+      "pontos": 832,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S3.ork",
+      "apogeu_m": 268.676,
+      "pontos": 782,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S4.ork",
+      "apogeu_m": 244.156,
+      "pontos": 736,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S1.ork",
+      "apogeu_m": 308.02,
+      "pontos": 927,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S2.ork",
+      "apogeu_m": 277.323,
+      "pontos": 800,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S3.ork",
+      "apogeu_m": 251.921,
+      "pontos": 747,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S4.ork",
+      "apogeu_m": 230.009,
+      "pontos": 703,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S1.ork",
+      "apogeu_m": 286.443,
+      "pontos": 947,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S2.ork",
+      "apogeu_m": 259.848,
+      "pontos": 769,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S3.ork",
+      "apogeu_m": 237.276,
+      "pontos": 717,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A1-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A1/F3/C1-A1-F3-S4.ork",
+      "apogeu_m": 217.481,
+      "pontos": 682,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S1.ork",
+      "apogeu_m": 358.666,
+      "pontos": 961,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S2.ork",
+      "apogeu_m": 315.634,
+      "pontos": 890,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S3.ork",
+      "apogeu_m": 282.2,
+      "pontos": 824,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S4.ork",
+      "apogeu_m": 254.599,
+      "pontos": 773,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S1.ork",
+      "apogeu_m": 335.086,
+      "pontos": 1074,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S2.ork",
+      "apogeu_m": 297.473,
+      "pontos": 868,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S3.ork",
+      "apogeu_m": 267.364,
+      "pontos": 799,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S4.ork",
+      "apogeu_m": 242.08,
+      "pontos": 740,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S1.ork",
+      "apogeu_m": 314.707,
+      "pontos": 1100,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S2.ork",
+      "apogeu_m": 281.313,
+      "pontos": 848,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S3.ork",
+      "apogeu_m": 253.958,
+      "pontos": 772,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A2-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A2/F3/C1-A2-F3-S4.ork",
+      "apogeu_m": 230.655,
+      "pontos": 724,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 340.703,
+      "pontos": 951,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 302.6,
+      "pontos": 847,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 272.397,
+      "pontos": 796,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 247.035,
+      "pontos": 746,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 315.265,
+      "pontos": 972,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 282.773,
+      "pontos": 819,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 256.123,
+      "pontos": 757,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 233.304,
+      "pontos": 712,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 293.924,
+      "pontos": 993,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 265.592,
+      "pontos": 799,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 241.768,
+      "pontos": 732,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C1-A3-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C1/A3/F3/C1-A3-F3-S1.ork",
+      "apogeu_m": 221.039,
+      "pontos": 698,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S1.ork",
+      "apogeu_m": 47.734,
+      "pontos": 80,
+      "status_openrocket": "aborted",
+      "altitude_final_m": 47.734
+    },
+    {
+      "codigo": "C2-A1-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S2.ork",
+      "apogeu_m": 300.596,
+      "pontos": 846,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S3.ork",
+      "apogeu_m": 270.229,
+      "pontos": 790,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S4.ork",
+      "apogeu_m": 244.769,
+      "pontos": 738,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S1.ork",
+      "apogeu_m": 311.589,
+      "pontos": 940,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S2.ork",
+      "apogeu_m": 279.374,
+      "pontos": 821,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S3.ork",
+      "apogeu_m": 252.931,
+      "pontos": 752,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S4.ork",
+      "apogeu_m": 230.271,
+      "pontos": 706,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S1.ork",
+      "apogeu_m": 288.997,
+      "pontos": 985,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S2.ork",
+      "apogeu_m": 261.261,
+      "pontos": 784,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S3.ork",
+      "apogeu_m": 237.862,
+      "pontos": 725,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A1-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A1/F3/C2-A1-F3-S4.ork",
+      "apogeu_m": 217.46,
+      "pontos": 679,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S1.ork",
+      "apogeu_m": 364.582,
+      "pontos": 1066,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S2.ork",
+      "apogeu_m": 319.002,
+      "pontos": 905,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S3.ork",
+      "apogeu_m": 283.979,
+      "pontos": 834,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S4.ork",
+      "apogeu_m": 255.304,
+      "pontos": 774,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S1.ork",
+      "apogeu_m": 339.438,
+      "pontos": 1108,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S2.ork",
+      "apogeu_m": 299.932,
+      "pontos": 888,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S3.ork",
+      "apogeu_m": 268.565,
+      "pontos": 803,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S4.ork",
+      "apogeu_m": 242.409,
+      "pontos": 745,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S1.ork",
+      "apogeu_m": 317.929,
+      "pontos": 1138,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S2.ork",
+      "apogeu_m": 283.069,
+      "pontos": 863,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S3.ork",
+      "apogeu_m": 254.691,
+      "pontos": 780,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A2-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A2/F3/C2-A2-F3-S4.ork",
+      "apogeu_m": 230.674,
+      "pontos": 726,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 345.083,
+      "pontos": 1010,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 305.624,
+      "pontos": 863,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 274.003,
+      "pontos": 801,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 247.668,
+      "pontos": 751,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 319.017,
+      "pontos": 1001,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 284.923,
+      "pontos": 837,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 257.179,
+      "pontos": 765,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 233.578,
+      "pontos": 717,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 296.637,
+      "pontos": 1038,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 267.086,
+      "pontos": 808,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 242.387,
+      "pontos": 731,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C2-A3-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C2/A3/F3/C2-A3-F3-S1.ork",
+      "apogeu_m": 221.027,
+      "pontos": 686,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 28.218,
+      "pontos": 99,
+      "status_openrocket": "aborted",
+      "altitude_final_m": 28.218
+    },
+    {
+      "codigo": "C3-A1-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 297.534,
+      "pontos": 842,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 267.499,
+      "pontos": 781,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 242.268,
+      "pontos": 734,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 308.426,
+      "pontos": 936,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 276.623,
+      "pontos": 820,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 250.436,
+      "pontos": 745,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 227.964,
+      "pontos": 706,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 286.173,
+      "pontos": 985,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 258.753,
+      "pontos": 780,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 235.554,
+      "pontos": 709,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A1-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A1/F3/C3-A1-F3-S1.ork",
+      "apogeu_m": 215.312,
+      "pontos": 665,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 359.993,
+      "pontos": 1070,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 315.411,
+      "pontos": 896,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 280.874,
+      "pontos": 823,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 252.525,
+      "pontos": 764,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 335.424,
+      "pontos": 1108,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 296.615,
+      "pontos": 883,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 265.654,
+      "pontos": 798,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 239.783,
+      "pontos": 745,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 314.271,
+      "pontos": 1141,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 279.98,
+      "pontos": 856,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 251.949,
+      "pontos": 772,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A2-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A2/F3/C3-A2-F3-S1.ork",
+      "apogeu_m": 228.184,
+      "pontos": 707,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F3-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 333.422,
+      "pontos": 1526,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F3-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 302.416,
+      "pontos": 855,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F3-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 271.171,
+      "pontos": 793,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F3-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 245.093,
+      "pontos": 746,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F4-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 315.634,
+      "pontos": 992,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F4-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 282.023,
+      "pontos": 834,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F4-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 254.57,
+      "pontos": 764,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F4-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 231.184,
+      "pontos": 715,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F5-S1",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 293.602,
+      "pontos": 1041,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F5-S2",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 264.427,
+      "pontos": 800,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F5-S3",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 239.967,
+      "pontos": 723,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    },
+    {
+      "codigo": "C3-A3-F5-S4",
+      "modelo_base": "Foguete Modular - Banco/.ork/C3/A3/F3/C3-A3-F3-S1.ork",
+      "apogeu_m": 218.787,
+      "pontos": 680,
+      "status_openrocket": "uptodate",
+      "altitude_final_m": 0.0
+    }
+  ],
+  "vento_medio_ms": 2.0,
+  "vento_desvio_ms": 0.0
+}

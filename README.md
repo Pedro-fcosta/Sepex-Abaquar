@@ -15,7 +15,7 @@ $env:SEPEX_SECRET_KEY = 'defina-outra-chave-longa'
 python run.py
 ```
 
-Abra `http://127.0.0.1:5000`. O banco incluído já permite testar o fluxo de montagem, voo, resultado e ranking. Os 21 CSVs originais também estão no repositório. A demonstração usa **números fictícios** em `C2-A3-F4-S2`, claramente marcados. Para usar somente resultados reais, execute `python -m flask --app run demo-limpar` antes do evento. As outras 87 configurações aguardam dados de voo; a interface impede o lançamento delas. Para começar com um banco vazio, remova `instance/sepex.sqlite3` e execute os comandos de inicialização e importação da seção **Comandos**.
+Abra `http://127.0.0.1:5000`. O banco incluído já permite testar montagem, gráficos, resultado e ranking nas 108 combinações. Os 108 modelos `.ork` e CSVs gerados ficam em `Foguete Modular - Banco/gerados`; os 21 pares originais permanecem em `.ork` e `.csv`. O OpenRocket concluiu 106 voos e interrompeu 2 por instabilidade; esses resultados parciais aparecem identificados na prévia e no resultado. Há duas tentativas históricas marcadas `DEMO`; execute `python -m flask --app run demo-limpar` para removê-las antes do evento. Para começar com um banco vazio, remova `instance/sepex.sqlite3`, execute `init-db`, `seed-configuracoes` e importe `Foguete Modular - Banco/gerados/csv`.
 
 No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`.
 
@@ -32,6 +32,7 @@ python -m flask --app run init-db
 python -m flask --app run seed-configuracoes
 python -m flask --app run importar-csv C2-A3-F4-S2 caminho\voo.csv --condicao "Condição SEPEX 2026"
 python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"
+python -m flask --app run importar-lote "Foguete Modular - Banco/gerados/csv"
 python -m flask --app run pendentes
 python -m flask --app run revisar 1 approved
 python -m flask --app run revisar 1 rejected
@@ -48,7 +49,7 @@ Também há interface administrativa em `/admin/entrar` com o token de `SEPEX_AD
 
 O CSV importado fica disponível imediatamente. Uma nova versão da mesma configuração substitui a versão ativa anterior; tentativas antigas preservam os números registrados. O hash SHA-256 do arquivo e a configuração tornam a importação idempotente. O importador lê cabeçalhos comuns em português/inglês, CSV de resumo ou série temporal, converte unidades para SI e salva as unidades originais. Consulte [guia do OpenRocket](docs/OPENROCKET.md). Os CSV em `data/examples` são **exemplos artificiais de formato**, não simulações reais.
 
-O lote em `Foguete Modular - Banco/.ork` e `Foguete Modular - Banco/.csv` contém 21 pares de modelo e série temporal para teste. Depois de `init-db` e `seed-configuracoes`, importe os CSVs com `python -m flask --app run importar-lote "Foguete Modular - Banco/.csv"`. O comando é idempotente e libera os 21 voos. A montagem dessas combinações permite confirmar, assistir aos dois gráficos animados, ver o resultado e entrar no ranking. O link **Testar gráficos do voo** permite visualizar as curvas sem registrar tentativa. Cinco séries terminam antes do pouso e exibem um aviso. Os CSVs indicam ausência de dispositivo de recuperação; essa informação aparece nos gráficos.
+O gerador `python -m scripts.gerar_108_openrocket --importar` cria os 108 modelos e CSVs, faz backup do banco e importa o lote. Requer [OpenRocket 24.12](https://openrocket.info/downloads.html?vers=latest) instalado; no Windows, usa automaticamente o Java que acompanha o instalador. Também aceita `OPENROCKET_JAR` e `OPENROCKET_JAVA` para caminhos personalizados. A geração usa os 21 `.ork` originais como modelos, 25 g de lastro na coifa e vento constante de 2 m/s, sem turbulência, para repetir os resultados. Motor, geometria, material e local de lançamento são os dos modelos preliminares e **precisam de revisão técnica**; o manifesto em `Foguete Modular - Banco/gerados/manifesto.json` registra a origem e o status de cada voo. Duas simulações foram interrompidas antes do pouso: `C2-A1-F3-S1` e `C3-A1-F3-S1`. Seus CSVs contêm somente a trajetória calculada até a interrupção. O link **Testar gráficos do voo** exibe qualquer combinação sem registrar uma tentativa.
 
 ## Operação e classificação
 

@@ -3,7 +3,7 @@
 ## Antes de abrir
 
 1. Instale dependências e defina `SEPEX_ADMIN_TOKEN` e `SEPEX_SECRET_KEY` no ambiente do processo. Não coloque segredos em arquivos versionados.
-2. Execute `init-db`, `seed-configuracoes`, `importar-lote "Foguete Modular - Banco/.csv"`, `verificar-cobertura` e os testes. Os 21 CSVs existentes ficam disponíveis. Importe as outras configurações quando os respectivos CSVs estiverem prontos. Execute `demo-limpar` se quiser operar somente com resultados do OpenRocket.
+2. A cópia do repositório já inclui o banco com 108 CSVs importados. Em um banco novo, execute `init-db`, `seed-configuracoes`, `importar-lote "Foguete Modular - Banco/gerados/csv"`, `verificar-cobertura` e os testes. Execute `demo-limpar` para retirar as tentativas fictícias históricas. Revise as 2 simulações interrompidas e os parâmetros físicos preliminares antes da competição.
 3. Abra `/diagnostico`: configurações 108, integridade `ok`, quantidade de simulações disponíveis esperada.
 4. Faça backup inicial. Abra montagem, voo, resultado, ranking e dashboard no navegador do evento.
 
