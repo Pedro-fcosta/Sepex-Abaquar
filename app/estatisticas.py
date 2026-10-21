@@ -1,6 +1,7 @@
 import math
 import statistics
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 from .db import conexao
 
 
@@ -29,8 +30,13 @@ def resumo():
         for r in linhas:
             conjunto[str(r[chave])].append(r['apogeu_m'])
         return [{'opcao':k,'tentativas':len(v),'apogeu_medio_m':media(v)} for k,v in sorted(conjunto.items())]
+    horarios = Counter(
+        datetime.fromisoformat(r['horario']).replace(tzinfo=timezone.utc).astimezone().strftime('%Y-%m-%d %H:00')
+        for r in linhas
+    )
     return {
         'total_tentativas':len(linhas), 'participantes_unicos':len({r['participante_id'] for r in linhas}),
+        'total_configuracoes':conexao().execute('SELECT count(*) FROM configuracoes').fetchone()[0],
         'configuracoes_unicas':len({r['configuracao_codigo'] for r in linhas}),
         'apogeu_medio_m':media(alturas),'apogeu_mediana_m':statistics.median(alturas) if alturas else None,
         'apogeu_desvio_padrao_m':statistics.pstdev(alturas) if alturas else None,
@@ -39,7 +45,7 @@ def resumo():
         'aceleracao_media_ms2':media(aceleracoes),'aceleracao_max_ms2':max(aceleracoes,default=None),
         'configuracoes_mais_escolhidas':[{'codigo':k,'tentativas':v} for k,v in Counter(r['configuracao_codigo'] for r in linhas).most_common()],
         'coifas':grupos('coifa'),'aletas':grupos('aleta'),'quantidade_aletas':grupos('quantidade_aletas'),'secoes':grupos('secoes'),
-        'tentativas_ao_longo_do_tempo':[{'data':k,'tentativas':v} for k,v in sorted(Counter(r['horario'][:10] for r in linhas).items())],
+        'tentativas_ao_longo_do_tempo':[{'data':k,'tentativas':v} for k,v in sorted(horarios.items())],
     }
 
 

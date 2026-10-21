@@ -1,9 +1,65 @@
-{% extends 'base.html' %}{% block titulo %}Dashboard · ABAQUAR{% endblock %}{% block conteudo %}
-<section class="cabecalho"><p class="sobretitulo">ACOMPANHAMENTO DO EVENTO</p><h1>Dashboard</h1><p>Participantes únicos e tentativas são métricas distintas. Demonstrações aparecem nas estatísticas, marcadas no ranking.</p></section>
-<section class="grade quatro metricas"><article class="cartao"><span>Tentativas</span><strong>{{dados.total_tentativas}}</strong></article><article class="cartao"><span>Participantes únicos</span><strong>{{dados.participantes_unicos}}</strong></article><article class="cartao"><span>Configurações usadas</span><strong>{{dados.configuracoes_unicas}} / 108</strong></article><article class="cartao"><span>Apogeu médio</span><strong>{% if dados.apogeu_medio_m is not none %}{{'%.1f'|format(dados.apogeu_medio_m)}} m{% else %}—{% endif %}</strong></article></section>
-<section class="grade dois"><article class="painel"><h2>Distribuição dos apogeus</h2><p>Intervalos (m) × quantidade de tentativas</p><label><input type="checkbox" class="curva" data-grafico="apogeu"> Curva normal teórica (referência)</label><div class="grafico"><canvas id="grafico-apogeu"></canvas></div><p id="stats-apogeu" class="nota"></p></article>
-<article class="painel"><h2>Distribuição das velocidades</h2><p>Intervalos (m/s) × quantidade de tentativas</p><label><input type="checkbox" class="curva" data-grafico="velocidade"> Curva normal teórica (referência)</label><div class="grafico"><canvas id="grafico-velocidade"></canvas></div><p id="stats-velocidade" class="nota"></p></article></section>
-<section class="grade quatro metricas"><article class="cartao"><span>Mediana do apogeu</span><strong>{{'%.1f'|format(dados.apogeu_mediana_m) if dados.apogeu_mediana_m is not none else '—'}} m</strong></article><article class="cartao"><span>Desvio padrão</span><strong>{{'%.1f'|format(dados.apogeu_desvio_padrao_m) if dados.apogeu_desvio_padrao_m is not none else '—'}} m</strong></article><article class="cartao"><span>Menor / maior apogeu</span><strong>{{'%.1f'|format(dados.apogeu_min_m) if dados.apogeu_min_m is not none else '—'}} / {{'%.1f'|format(dados.apogeu_max_m) if dados.apogeu_max_m is not none else '—'}} m</strong></article><article class="cartao"><span>Velocidade média / máxima</span><strong>{{'%.1f'|format(dados.velocidade_media_ms) if dados.velocidade_media_ms is not none else '—'}} / {{'%.1f'|format(dados.velocidade_max_ms) if dados.velocidade_max_ms is not none else '—'}} m/s</strong></article><article class="cartao"><span>Aceleração média / máxima</span><strong>{{'%.1f'|format(dados.aceleracao_media_ms2) if dados.aceleracao_media_ms2 is not none else '—'}} / {{'%.1f'|format(dados.aceleracao_max_ms2) if dados.aceleracao_max_ms2 is not none else '—'}} m/s²</strong></article></section>
-<section class="grade dois"><article class="painel"><h2>Peças e medidas</h2><div id="graficos-grupos" class="grade dois"></div></article><article class="painel"><h2>Ao longo do tempo</h2><div class="grafico"><canvas id="grafico-tempo"></canvas></div><h3>Mais escolhidas</h3><ol>{% for item in dados.configuracoes_mais_escolhidas[:5] %}<li><code>{{item.codigo}}</code> · {{item.tentativas}} tentativa(s)</li>{% else %}<li>Sem dados ainda</li>{% endfor %}</ol></article></section>
-<section class="painel"><h2>Ranking</h2><div class="tabela-area"><table><thead><tr><th>Pos.</th><th>Participante</th><th>Configuração</th><th>Apogeu</th></tr></thead><tbody>{% for r in linhas %}<tr><td>#{{r.posicao}}</td><td>{{r.nome}} {% if r.demonstrativo %}<span class="badge-demo">DEMO</span>{% endif %}</td><td>{{r.configuracao_codigo}}</td><td>{{'%.1f'|format(r.apogeu_m)}} m</td></tr>{% else %}<tr><td colspan="4">Sem tentativas</td></tr>{% endfor %}</tbody></table></div></section>
-{% endblock %}{% block scripts %}<script src="{{url_for('static',filename='vendor/chart.umd.min.js')}}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{url_for('static',filename='js/dashboard.js')}}"></script>{% endblock %}
+{% extends 'base.html' %}
+{% block titulo %}Dashboard · ABAQUAR{% endblock %}
+{% block conteudo %}
+{% set total_configuracoes = dados.total_configuracoes or 108 %}
+{% set cobertura = (dados.configuracoes_unicas / total_configuracoes * 100)|round|int %}
+<div class="dashboard-pagina">
+  <section class="dashboard-hero" aria-labelledby="dashboard-titulo">
+    <div class="dashboard-hero-texto">
+      <p class="sobretitulo">SEPEX 2026 · PAINEL DO EVENTO</p>
+      <h1 id="dashboard-titulo">Cada escolha conta.</h1>
+      <p>Acompanhe as participações, descubra os foguetes mais escolhidos e compare os resultados das simulações.</p>
+      <div class="dashboard-hero-acoes"><a class="botao" href="{{ url_for('web.montagem') }}">Montar um foguete →</a><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking</a></div>
+    </div>
+    <div class="dashboard-cobertura" aria-label="{{ dados.configuracoes_unicas }} de {{ total_configuracoes }} configurações já testadas">
+      <div class="dashboard-anel" style="--cobertura: {{ cobertura }}%"><strong>{{ cobertura }}%</strong><span>explorado</span></div>
+      <p><b>{{ dados.configuracoes_unicas }} de {{ total_configuracoes }}</b> combinações escolhidas</p>
+    </div>
+  </section>
+
+  <section class="dashboard-metricas" aria-label="Indicadores do evento">
+    <article class="dashboard-metrica"><span>Participações</span><strong>{{ dados.total_tentativas }}</strong><small>voos registrados no placar</small></article>
+    <article class="dashboard-metrica"><span>Apelidos distintos</span><strong>{{ dados.participantes_unicos }}</strong><small>apelidos iguais contam juntos</small></article>
+    <article class="dashboard-metrica"><span>Configurações usadas</span><strong>{{ dados.configuracoes_unicas }}</strong><small>de {{ total_configuracoes }} possibilidades</small></article>
+    <article class="dashboard-metrica"><span>Altura média</span><strong>{% if dados.apogeu_medio_m is not none %}{{ '%.1f'|format(dados.apogeu_medio_m) }} <em>m</em>{% else %}—{% endif %}</strong><small>média das participações</small></article>
+  </section>
+
+  {% if dados.total_tentativas == 0 %}
+  <section class="dashboard-espera painel" aria-labelledby="dashboard-espera-titulo">
+    <span class="dashboard-espera-icone" aria-hidden="true">↗</span>
+    <div><p class="sobretitulo">O PAINEL COMEÇA AQUI</p><h2 id="dashboard-espera-titulo">Aguardando o primeiro voo</h2><p>Depois da primeira participação, os gráficos, as escolhas populares e o ranking aparecerão aqui.</p></div>
+    <a class="botao" href="{{ url_for('web.montagem') }}">Começar montagem</a>
+  </section>
+  {% else %}
+  <section class="dashboard-secao" aria-labelledby="dashboard-desempenho">
+    <div class="dashboard-secao-topo"><div><p class="sobretitulo">RESULTADOS DE VOO</p><h2 id="dashboard-desempenho">O que os voos alcançaram</h2></div><p>Valores das simulações escolhidas pelos visitantes.</p></div>
+    <div class="dashboard-destaques">
+      <article><span>Maior altura</span><strong>{{ '%.1f'|format(dados.apogeu_max_m) }} <small>m</small></strong><p>{% if linhas %}{{ linhas[0].configuracao_codigo }} · {{ linhas[0].nome }}{% endif %}</p></article>
+      <article><span>Altura mediana</span><strong>{{ '%.1f'|format(dados.apogeu_mediana_m) }} <small>m</small></strong><p>Metade dos voos ficou abaixo deste valor.</p></article>
+      <article><span>Velocidade máxima</span><strong>{% if dados.velocidade_max_ms is not none %}{{ '%.1f'|format(dados.velocidade_max_ms) }} <small>m/s</small>{% else %}—{% endif %}</strong><p>Maior velocidade registrada.</p></article>
+      <article><span>Aceleração máxima</span><strong>{% if dados.aceleracao_max_ms2 is not none %}{{ '%.1f'|format(dados.aceleracao_max_ms2) }} <small>m/s²</small>{% else %}—{% endif %}</strong><p>Maior aceleração registrada.</p></article>
+    </div>
+    <div class="dashboard-graficos">
+      <article class="painel dashboard-grafico-card"><div class="dashboard-card-topo"><div><h3>Alturas alcançadas</h3><p>Quantidade de participações por faixa de apogeu</p></div><span class="dashboard-unidade">m</span></div><div class="grafico"><canvas id="grafico-apogeu" role="img" aria-label="Histograma das alturas alcançadas"></canvas></div><p id="stats-apogeu" class="dashboard-estatistica"></p></article>
+      <article class="painel dashboard-grafico-card"><div class="dashboard-card-topo"><div><h3>Velocidades registradas</h3><p>Quantidade de participações por faixa de velocidade máxima</p></div><span class="dashboard-unidade">m/s</span></div><div class="grafico"><canvas id="grafico-velocidade" role="img" aria-label="Histograma das velocidades máximas"></canvas></div><p id="stats-velocidade" class="dashboard-estatistica"></p></article>
+    </div>
+  </section>
+
+  <section class="dashboard-secao" aria-labelledby="dashboard-escolhas">
+    <div class="dashboard-secao-topo"><div><p class="sobretitulo">ESCOLHAS DOS VISITANTES</p><h2 id="dashboard-escolhas">Como os foguetes foram montados</h2></div><p>Apogeu médio por opção escolhida; veja também quantas vezes cada opção apareceu.</p></div>
+    <div id="graficos-grupos" class="dashboard-grupos"></div>
+  </section>
+
+  <section class="dashboard-secao" aria-labelledby="dashboard-movimento">
+    <div class="dashboard-secao-topo"><div><p class="sobretitulo">MOVIMENTO DA FEIRA</p><h2 id="dashboard-movimento">Participações e destaques</h2></div></div>
+    <div class="dashboard-graficos">
+      <article class="painel dashboard-grafico-card"><h3>Participações por hora</h3><p>Horário local do computador do evento</p><div class="grafico"><canvas id="grafico-tempo" role="img" aria-label="Participações registradas por hora"></canvas></div></article>
+      <article class="painel dashboard-populares"><h3>Configurações favoritas</h3><p>As combinações mais escolhidas até agora</p><ol>{% for item in dados.configuracoes_mais_escolhidas[:5] %}<li><span class="dashboard-popular-posicao">{{ '%02d'|format(loop.index) }}</span><code>{{ item.codigo }}</code><strong>{{ item.tentativas }} {{ 'vez' if item.tentativas == 1 else 'vezes' }}</strong></li>{% endfor %}</ol></article>
+    </div>
+  </section>
+
+  <section class="dashboard-secao painel dashboard-ranking" aria-labelledby="dashboard-ranking-titulo"><div class="dashboard-card-topo"><div><p class="sobretitulo">CLASSIFICAÇÃO</p><h2 id="dashboard-ranking-titulo">Destaques do ranking</h2></div><a href="{{ url_for('web.pagina_ranking') }}">Ver ranking completo →</a></div><div class="tabela-area"><table><thead><tr><th>Posição</th><th>Participante</th><th>Configuração</th><th>Altura</th></tr></thead><tbody>{% for r in linhas[:5] %}<tr><td><strong>#{{ r.posicao }}</strong></td><td>{{ r.nome }} {% if r.demonstrativo %}<span class="badge-demo">DEMO</span>{% endif %}{% if r.altitude_final_m is not none and r.altitude_final_m > 0.5 %}<span class="dashboard-parcial">PARCIAL</span>{% endif %}</td><td><code>{{ r.configuracao_codigo }}</code></td><td>{{ '%.1f'|format(r.apogeu_m) }} m</td></tr>{% endfor %}</tbody></table></div><p class="nota">Resultados parciais indicam simulações interrompidas antes do pouso.</p></section>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}{% if dados.total_tentativas %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{ url_for('static', filename='js/dashboard.js', v='20261020-indicadores') }}"></script>{% endif %}{% endblock %}

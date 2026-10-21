@@ -22,6 +22,19 @@ let consultaAtual = null;
 let numeroConsulta = 0;
 let comprimentoCorpoAtual = null;
 let dadosTecnicos = null;
+let tentativaPendente = null;
+
+async function novoIdentificador() {
+  // getRandomValues funciona também em HTTP na rede local; randomUUID exige origem segura.
+  if (globalThis.crypto?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+  const resposta = await fetch('/api/identificador', { cache: 'no-store' });
+  if (!resposta.ok) throw new Error('Não foi possível preparar a participação. Tente novamente.');
+  return (await resposta.json()).id;
+}
 
 function escolha(nome) {
   return formulario.querySelector(`input[name="${nome}"]:checked`)?.value || null;
@@ -352,13 +365,16 @@ formulario.addEventListener('submit', async evento => {
   mensagemErro.textContent = '';
   const nome = document.getElementById('nome').value.trim();
   const chaveSessao = 'sepex-participacao';
-  let pendente;
-  try { pendente = JSON.parse(sessionStorage.getItem(chaveSessao)); } catch (_) { pendente = null; }
-  if (!pendente || pendente.codigo !== codigoAtual || pendente.nome !== nome) {
-    pendente = { codigo: codigoAtual, nome, id: crypto.randomUUID().replaceAll('-', '') };
-    sessionStorage.setItem(chaveSessao, JSON.stringify(pendente));
-  }
   try {
+    let pendente = tentativaPendente;
+    if (!pendente) {
+      try { pendente = JSON.parse(sessionStorage.getItem(chaveSessao)); } catch (_) { pendente = null; }
+    }
+    if (!pendente || pendente.codigo !== codigoAtual || pendente.nome !== nome) {
+      pendente = { codigo: codigoAtual, nome, id: await novoIdentificador() };
+    }
+    tentativaPendente = pendente;
+    try { sessionStorage.setItem(chaveSessao, JSON.stringify(pendente)); } catch (_) { /* Navegação privada. */ }
     const resposta = await fetch('/api/tentativas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -366,7 +382,8 @@ formulario.addEventListener('submit', async evento => {
     });
     const dados = await resposta.json();
     if (!resposta.ok) throw new Error(dados.erro || 'Não foi possível registrar a tentativa.');
-    sessionStorage.removeItem(chaveSessao);
+    tentativaPendente = null;
+    try { sessionStorage.removeItem(chaveSessao); } catch (_) { /* Navegação privada. */ }
     location.assign(dados.url_voo);
   } catch (erro) {
     mensagemErro.textContent = erro.message || 'Falha ao registrar. Tente novamente.';

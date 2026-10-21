@@ -25,6 +25,7 @@
   <div class="voo-graficos">
     <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-altura">
       <div class="voo-grafico-topo"><div><h2 id="titulo-grafico-altura">Altura × tempo</h2><p>Altitude em metros</p></div><strong id="altura-atual" class="voo-valor">0 m</strong></div>
+      <div id="marco-apogeu" class="voo-marco" role="status" aria-live="polite" hidden><span aria-hidden="true">▲</span><strong id="marco-apogeu-rotulo">Apogeu atingido</strong><span id="marco-apogeu-valor"></span></div>
       <div class="voo-grafico"><canvas id="grafico-altura" role="img" aria-label="Gráfico de altura em metros por tempo em segundos"></canvas></div>
     </article>
     <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-velocidade">
@@ -34,4 +35,4 @@
   </div>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js') }}"></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261020-apogeu') }}"></script>{% endblock %}

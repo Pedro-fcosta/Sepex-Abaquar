@@ -134,7 +134,7 @@ def verificar():
                 pagina.screenshot(path=str(CAPTURAS / 'inicio-escuro-1366.png'), full_page=True)
                 assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0')
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
-                assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
+                assert pagina.get_by_text('Aguardando o primeiro voo').is_visible()
                 pagina.screenshot(path=str(CAPTURAS / 'dashboard-escuro-1366.png'), full_page=True)
                 for rota in ('/', '/ranking', '/diagnostico'):
                     pagina.goto(origem + rota, wait_until='networkidle')
@@ -229,6 +229,8 @@ def verificar():
                 assert cor_resultado == 'rgb(169, 205, 252)', cor_resultado
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
+                pagina.goto(origem + '/dashboard', wait_until='networkidle')
+                assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 pagina.goto(origem, wait_until='networkidle')
                 assert pagina.locator('.inicio-ranking-lista li').count() == 1
                 assert 'Visitante QA' not in pagina.locator('.inicio-ranking-lista').inner_text()

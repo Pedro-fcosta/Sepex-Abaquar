@@ -9,7 +9,7 @@
 
 ## Servidor e quiosque
 
-Por padrão `python run.py` escuta apenas em `127.0.0.1:5000`. Para outros dispositivos na rede local, defina `SEPEX_HOST=0.0.0.0` e libere a porta escolhida (`SEPEX_PORT`) no firewall da rede do evento. Use somente rede confiável; o servidor Flask embutido é adequado para esse MVP local com baixa concorrência, não para exposição pública. Para tela cheia, use F11 ou inicialize Chrome/Edge com `--kiosk http://127.0.0.1:5000`. Desative suspensão automática do computador e mantenha alimentação estável.
+Por padrão `python run.py` escuta apenas em `127.0.0.1:5000`. No Windows, execute `./iniciar-rede.ps1` para aceitar celulares na rede local e mostrar os endereços de acesso. Em outros sistemas, defina `SEPEX_HOST=0.0.0.0` e descubra o IPv4 local do computador. Conecte computador e celulares à mesma rede Wi-Fi; libere a porta escolhida (`SEPEX_PORT`) no firewall e verifique se a rede permite comunicação entre clientes. Teste no celular `http://IP-DO-COMPUTADOR:5000/montagem`, registre uma tentativa e abra o voo, resultado e ranking. O endereço `127.0.0.1` só funciona no próprio computador. Use somente rede confiável; o servidor Flask embutido é adequado para esse MVP local com baixa concorrência, não para exposição pública. Para tela cheia, use F11 ou inicialize Chrome/Edge com `--kiosk http://127.0.0.1:5000`. Desative suspensão automática do computador e mantenha alimentação estável.
 
 ## Durante e após o evento
 

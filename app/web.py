@@ -16,10 +16,24 @@ from .placar import dados_placar
 bp = Blueprint('web',__name__)
 
 
-def admin_autorizado():
+def token_admin_valido():
     token = current_app.config['ADMIN_TOKEN']
-    recebido = request.headers.get('X-Admin-Token') or session.get('admin_token','')
-    return bool(token) and hmac.compare_digest(token,recebido)
+    recebido = request.headers.get('X-Admin-Token', '')
+    return bool(token) and bool(recebido) and hmac.compare_digest(token, recebido)
+
+
+def assinatura_admin():
+    chave = current_app.secret_key
+    if isinstance(chave, str):
+        chave = chave.encode()
+    return hmac.new(chave, current_app.config['ADMIN_TOKEN'].encode(), 'sha256').hexdigest()
+
+
+def admin_autorizado():
+    assinatura = session.get('admin_assinatura', '')
+    return bool(current_app.config['ADMIN_TOKEN']) and (
+        token_admin_valido() or hmac.compare_digest(assinatura, assinatura_admin())
+    )
 
 
 def exige_admin(funcao):
@@ -29,7 +43,7 @@ def exige_admin(funcao):
             if request.method == 'GET' and not request.path.startswith('/api/'):
                 return redirect(url_for('web.admin_entrar'))
             return jsonify(erro='Acesso administrativo não autorizado'),403
-        if request.method == 'POST' and not request.headers.get('X-Admin-Token'):
+        if request.method == 'POST' and not token_admin_valido():
             if not session.get('csrf') or not hmac.compare_digest(session['csrf'],request.form.get('csrf','')):
                 return jsonify(erro='Formulário expirado'),403
         return funcao(*args,**kwargs)
@@ -96,6 +110,13 @@ def criar_tentativa():
     except ValueError as exc:
         return jsonify(erro=str(exc)),422
     return jsonify(id=id_tentativa,criada=criada,url_voo=url_for('web.voo',id=id_tentativa)),201 if criada else 200
+
+
+@bp.get('/api/identificador')
+def identificador():
+    resposta = jsonify(id=secrets.token_hex(16))
+    resposta.headers['Cache-Control'] = 'no-store'
+    return resposta
 
 
 def obter_tentativa(id):
@@ -216,7 +237,8 @@ def admin_entrar():
         token = current_app.config['ADMIN_TOKEN']
         recebido = request.form.get('token','')
         if token and hmac.compare_digest(token,recebido):
-            session['admin_token'] = recebido
+            session.clear()
+            session['admin_assinatura'] = assinatura_admin()
             session['csrf'] = secrets.token_urlsafe(32)
             return redirect(url_for('web.admin_simulacoes'))
         erro = 'Token inválido ou não configurado.'

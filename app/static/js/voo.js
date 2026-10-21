@@ -13,6 +13,7 @@ let quadroPendente = 0;
 let inicioReproducao = 0;
 let baseReproducao = 0;
 let ultimoDesenho = 0;
+let apogeuVoo = null;
 
 function coresGraficos() {
   const escuro = document.documentElement.dataset.theme === 'dark';
@@ -21,6 +22,7 @@ function coresGraficos() {
     grade: escuro ? '#405168' : '#dbe3ef',
     altura: escuro ? '#83beff' : '#003f91',
     velocidade: escuro ? '#d1e5ff' : '#0b5fc0',
+    apogeu: escuro ? '#fbd38d' : '#b45309',
   };
 }
 
@@ -30,8 +32,12 @@ function criarGrafico(id, nome, unidade, dados, minimo, maximo) {
   const grafico = new Chart(document.getElementById(id), {
     type: 'line',
     data: { datasets: [
-      { label: nome === 'altura' ? 'Altura' : 'Velocidade vertical', data: [], parsing: false, borderColor: cor, backgroundColor: `${cor}22`, borderWidth: 3, pointRadius: 0, tension: 0, fill: nome === 'altura' },
+      { label: nome === 'altura' ? 'Altura' : 'Velocidade', data: [], parsing: false, borderColor: cor, backgroundColor: `${cor}22`, borderWidth: 3, pointRadius: 0, tension: 0, fill: nome === 'altura' },
       { label: 'Instante atual', data: [], parsing: false, borderColor: cor, backgroundColor: cor, pointRadius: 5, pointHoverRadius: 6, showLine: false },
+      ...(nome === 'altura' ? [
+        { label: 'Apogeu', data: [], parsing: false, borderColor: cores.apogeu, backgroundColor: cores.apogeu, pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', showLine: false },
+        { label: 'Instante do apogeu', data: [], parsing: false, borderColor: cores.apogeu, borderDash: [5, 5], borderWidth: 1.5, pointRadius: 0, fill: false },
+      ] : []),
     ] },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
@@ -54,6 +60,11 @@ function atualizarTemaGraficos() {
     grafico.data.datasets[0].backgroundColor = `${cor}22`;
     grafico.data.datasets[1].borderColor = cor;
     grafico.data.datasets[1].backgroundColor = cor;
+    if (nome === 'altura') {
+      grafico.data.datasets[2].borderColor = cores.apogeu;
+      grafico.data.datasets[2].backgroundColor = cores.apogeu;
+      grafico.data.datasets[3].borderColor = cores.apogeu;
+    }
     for (const escala of Object.values(grafico.options.scales)) {
       escala.title.color = cores.texto;
       escala.ticks.color = cores.texto;
@@ -112,10 +123,16 @@ function mostrarTempo(tempo) {
   document.getElementById('tempo-atual').textContent = `${tempo.toFixed(1).replace('.', ',')} s`;
   document.getElementById('altura-atual').textContent = `${Math.round(atual.altura)} m`;
   document.getElementById('velocidade-atual').textContent = atual.velocidade == null ? 'Sem dados' : `${atual.velocidade.toFixed(1).replace('.', ',')} m/s`;
+  const apogeuAtingido = apogeuVoo && tempo >= apogeuVoo.tempo;
+  document.getElementById('marco-apogeu').hidden = !apogeuAtingido;
   for (const { grafico, nome, dados } of graficosVoo) {
     const valor = atual[nome];
     grafico.data.datasets[0].data = dados.slice(0, indice);
     grafico.data.datasets[1].data = valor == null ? [] : [{ x: tempo, y: valor }];
+    if (nome === 'altura') {
+      grafico.data.datasets[2].data = apogeuAtingido ? [{ x: apogeuVoo.tempo, y: apogeuVoo.altura }] : [];
+      grafico.data.datasets[3].data = apogeuAtingido ? [{ x: apogeuVoo.tempo, y: 0 }, { x: apogeuVoo.tempo, y: apogeuVoo.altura }] : [];
+    }
     grafico.update('none');
   }
 }
@@ -169,6 +186,11 @@ async function iniciarGraficos() {
       ? dados.pontos.map(p => ({ tempo: p.tempo_s, altura: p.altitude_m, velocidade: p.velocidade_ms }))
       : pontosIlustrativos(dados.tentativa);
     duracaoVoo = serieVoo.at(-1).tempo;
+    apogeuVoo = serieVoo.reduce((pico, ponto) => ponto.altura > pico.altura ? ponto : pico, serieVoo[0]);
+    const resultadoParcial = temSerie && serieVoo.at(-1).altura > 0.5;
+    const rotuloApogeu = resultadoParcial ? 'Maior altura registrada' : 'Apogeu atingido';
+    document.getElementById('marco-apogeu-rotulo').textContent = rotuloApogeu;
+    document.getElementById('marco-apogeu-valor').textContent = `${apogeuVoo.altura.toFixed(1).replace('.', ',')} m · ${apogeuVoo.tempo.toFixed(1).replace('.', ',')} s`;
     document.getElementById('tipo-trajetoria').textContent = temSerie
       ? 'Gráficos baseados na série temporal importada do OpenRocket.'
       : 'Curvas ilustrativas geradas apenas para visualização. Os indicadores registrados não foram alterados.';
@@ -178,6 +200,7 @@ async function iniciarGraficos() {
     const minVelocidade = Math.floor(Math.min(0, ...velocidades) * 1.1 / 10) * 10;
     const maxVelocidade = Math.ceil(Math.max(1, ...velocidades) * 1.1 / 10) * 10;
     criarGrafico('grafico-altura', 'altura', 'm', serieVoo.map(p => ({ x: p.tempo, y: p.altura })), 0, maxAltura);
+    graficosVoo[0].grafico.data.datasets[2].label = rotuloApogeu;
     criarGrafico('grafico-velocidade', 'velocidade', 'm/s', serieVoo.map(p => ({ x: p.tempo, y: p.velocidade })), minVelocidade, maxVelocidade);
     botaoReproduzir.disabled = false;
     controleTempo.disabled = false;

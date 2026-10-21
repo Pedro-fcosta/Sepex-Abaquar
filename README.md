@@ -19,7 +19,11 @@ Abra `http://127.0.0.1:5000`. O banco incluído já permite testar montagem, gr�
 
 O histórico dos ensaios anteriores está preservado em `data/exports/backup-antes-preparo-sepex-2026.sqlite3`; o banco ativo entregue para o evento está sem participantes e sem tentativas.
 
-No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`.
+### Acesso pelos celulares durante a feira
+
+No computador do evento, conectado à mesma rede Wi-Fi dos visitantes, execute `./iniciar-rede.ps1` no PowerShell após instalar as dependências. O script inicia o servidor para a rede local e mostra os endereços `http://IP:5000` que podem ser abertos no navegador dos celulares. Compartilhe o endereço da conexão usada pelos visitantes. Se não abrir, libere a porta 5000 no firewall do computador e desative o isolamento entre clientes da rede Wi-Fi. O acesso não depende de internet, mas os aparelhos precisam alcançar o computador na rede local. Cada visitante pode voltar a **Montagem** para fazer novas participações.
+
+No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`. Para aceitar celulares na rede, execute com `SEPEX_HOST=0.0.0.0` e compartilhe o IP local do computador.
 
 ## Configurações e dados
 
@@ -57,13 +61,13 @@ O gerador `python -m scripts.gerar_108_openrocket --importar` cria os 108 modelo
 
 ## Operação e classificação
 
-O ranking ordena por apogeu decrescente, velocidade máxima decrescente, horário mais antigo e ID crescente. Todas as tentativas do evento são preservadas; a visualização opcional mostra só a melhor de cada participante. Apelidos iguais após normalização de caixa contam como um participante. O dashboard distingue participantes únicos de tentativas, usa histogramas e oferece curva normal teórica apenas como referência. Resultados de séries interrompidas entram no ranking com a marcação `OpenRocket · parcial`. Depois de ensaios, `preparar-evento CAMINHO_DO_BACKUP` guarda o banco completo e zera as tentativas sem apagar os 108 voos. O comando recusa sobrescrever um backup existente.
+O ranking ordena por apogeu decrescente, velocidade máxima decrescente, horário mais antigo e ID crescente. Todas as tentativas do evento são preservadas; a visualização opcional mostra só a melhor de cada participante. Apelidos iguais após normalização de caixa contam como um participante. O dashboard distingue apelidos e participações, mostra cobertura das 108 configurações, recordes, histogramas, escolhas por componente e movimento por hora no fuso local do computador. O gráfico de altura marca o apogeu quando a animação o alcança; nas séries interrompidas, marca a maior altura registrada como resultado parcial. Resultados de séries interrompidas entram no ranking com a marcação `OpenRocket · parcial`. Depois de ensaios, `preparar-evento CAMINHO_DO_BACKUP` guarda o banco completo e zera as tentativas sem apagar os 108 voos. O comando recusa sobrescrever um backup existente.
 
 SQLite usa WAL, chaves estrangeiras e backup pela API do próprio SQLite. O log de erros fica em `instance/sepex.log`. `/diagnostico` mostra cobertura, séries parciais, tentativas de demonstração e integridade. `verificar-prontidao` confere os 108 arquivos ORK/CSV, hashes importados, pontos dos gráficos, banco e variáveis de administração. Ver [operação](docs/OPERACAO-SEPEX.md) para rede local, quiosque, backup e recuperação.
 
 O frontend inclui as imagens fornecidas para as peças em `app/static/img/componentes` como `coifa_c1.png`, `coifa_c2.png`, `coifa_c3.png`, `corpo.png`, `aleta_a1.png`, `aleta_a2.png` e `aleta_a3.png`. A página inicial exibe a ilustração de Katherine Johnson em `app/static/img/katherine johnson home/Katherine Johnson.png`. A montagem guiada tem quatro etapas: coifa, aletas, corpo e confirmação. A prancheta técnica em SVG mostra o perfil lateral, as seções, cotas, vista traseira e o selo da configuração. As medidas vêm do catálogo e da configuração; CG, CP e estabilidade só aparecem quando constam de uma simulação real. A representação é esquemática e não deve ser usada para fabricação. A logo em `app/static/Logo/Logo ABAQUAR.png` aparece no cabeçalho. O tema claro é inicial; a escolha entre claro e escuro fica salva no navegador. Chart.js 4.5.0 está armazenado em `app/static/vendor` com sua licença. Nenhum CDN é chamado em produção.
 
-Para conferir a interface em Chromium nas resoluções de 1920 × 1080, 1366 × 768, 1024 × 768, 768 × 1024 e 390 × 844, instale opcionalmente Playwright (`python -m pip install playwright` e `python -m playwright install chromium`) e execute `python -m scripts.verificar_interface`. As capturas ficam em `data/exports/qa`.
+Para conferir a interface em Chromium nas resoluções de 1920 × 1080, 1366 × 768, 1024 × 768, 768 × 1024 e 390 × 844, instale opcionalmente Playwright (`python -m pip install playwright` e `python -m playwright install chromium`) e execute `python -m scripts.verificar_interface`. As capturas ficam em `data/exports/qa`. Com o computador conectado à rede local, `python -m scripts.verificar_mobile` testa o acesso HTTP por IP, cinco larguras de tela, duas participações seguidas, a marcação do apogeu e o dashboard.
 
 Arquitetura: `app/db.py` contém o esquema e conexão; `app/catalogo.py` gera as combinações; `app/simulacoes.py` importa e revisa CSV; `app/tentativas.py` registra participações; `app/estatisticas.py` calcula ranking e dashboard; `app/web.py` fornece páginas e API; `app/cli.py` contém os comandos. Consulte [arquitetura](docs/ARQUITETURA.md) e [fluxo](docs/FLUXO.md).
 
