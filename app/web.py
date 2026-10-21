@@ -140,7 +140,7 @@ def obter_tentativa(id):
 
 @bp.get('/voo/<int:id>')
 def voo(id):
-    return render_template('voo.html',tentativa=obter_tentativa(id))
+    return render_template('voo.html',tentativa=obter_tentativa(id),margem_minima=MARGEM_MINIMA_CALIBRES)
 
 
 @bp.get('/api/voo/<int:id>')
@@ -167,7 +167,7 @@ def obter_previa(codigo):
 @bp.get('/previa/<codigo>')
 def previa_voo(codigo):
     simulacao = obter_previa(codigo)
-    return render_template('voo.html',tentativa=simulacao,previa=True)
+    return render_template('voo.html',tentativa=simulacao,previa=True,margem_minima=MARGEM_MINIMA_CALIBRES)
 
 
 @bp.get('/api/previa/<codigo>')
@@ -206,7 +206,7 @@ def api_placar():
 
 @bp.get('/dashboard')
 def dashboard():
-    return render_template('dashboard.html',dados=resumo(),distribuicoes=distribuicoes(),linhas=ranking()[:10])
+    return render_template('dashboard.html',dados=resumo(),distribuicoes=distribuicoes(),linhas=ranking()[:10],margem_minima=MARGEM_MINIMA_CALIBRES)
 
 
 @bp.get('/api/dashboard/resumo')

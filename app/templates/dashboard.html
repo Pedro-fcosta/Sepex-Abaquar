@@ -20,7 +20,7 @@
   <section class="dashboard-metricas" aria-label="Indicadores do evento">
     <article class="dashboard-metrica"><span>Participações</span><strong>{{ dados.total_tentativas }}</strong><small>incluindo missões abortadas</small></article>
     <article class="dashboard-metrica"><span>Classificadas</span><strong>{{ dados.voos_validos }}</strong><small>no ranking</small></article>
-    <article class="dashboard-metrica dashboard-metrica-aborto"><span>Abortadas</span><strong>{{ dados.missoes_abortadas }}</strong><small>estabilidade abaixo de 0,5 cal</small></article>
+    <article class="dashboard-metrica dashboard-metrica-aborto"><span>Abortadas</span><strong>{{ dados.missoes_abortadas }}</strong><small>estabilidade abaixo de {{ '%.2f'|format(margem_minima)|replace('.', ',') }} cal</small></article>
     <article class="dashboard-metrica"><span>Configurações usadas</span><strong>{{ dados.configuracoes_unicas }}</strong><small>de {{ total_configuracoes }} possibilidades</small></article>
     <article class="dashboard-metrica"><span>Altura média</span><strong>{% if dados.apogeu_medio_m is not none %}{{ '%.1f'|format(dados.apogeu_medio_m) }} <em>m</em>{% else %}—{% endif %}</strong><small>somente missões classificadas</small></article>
   </section>

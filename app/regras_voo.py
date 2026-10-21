@@ -1,6 +1,6 @@
 """Regras operacionais aplicadas às simulações e ao placar."""
 
-MARGEM_MINIMA_CALIBRES = 0.5
+MARGEM_MINIMA_CALIBRES = 0.15
 
 
 def missao_abortada(margem_calibres):

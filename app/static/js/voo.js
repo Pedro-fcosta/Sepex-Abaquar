@@ -5,6 +5,7 @@ const estadoGraficos = document.getElementById('estado-graficos');
 const graficosVoo = [];
 const movimentoReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const avisoAborto = document.getElementById('aviso-aborto');
+const margemMinima = Number(paginaVoo.dataset.margemMinima);
 
 let serieVoo = [];
 let duracaoVoo = 0;
@@ -154,7 +155,7 @@ function finalizarAborto() {
   quadroPendente = 0;
   avisoAborto.hidden = false;
   botaoReproduzir.textContent = 'Rever início';
-  estadoGraficos.textContent = 'Missão abortada por estabilidade inferior a 0,5 calibre';
+  estadoGraficos.textContent = `Missão abortada por estabilidade inferior a ${margemMinima.toFixed(2).replace('.', ',')} calibre`;
 }
 
 function reproduzir() {

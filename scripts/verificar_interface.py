@@ -201,14 +201,14 @@ def verificar():
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
                 pagina.wait_for_url('**/voo/*')
                 pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
-                assert 1 < pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') < 738
-                assert pagina.locator('#aviso-aborto').is_visible()
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 738
+                assert pagina.locator('#aviso-aborto').is_hidden()
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 pagina.locator('#ver-resultado').click()
-                assert pagina.locator('h1').inner_text() == 'Missão de Visitante OpenRocket'
-                assert pagina.get_by_text('Voo não classificado').is_visible()
+                assert pagina.locator('h1').inner_text() == 'Voo de Visitante OpenRocket'
+                assert pagina.get_by_text('Posição atual no ranking', exact=False).is_visible()
                 pagina.goto(origem, wait_until='networkidle')
-                assert pagina.locator('.inicio-ranking-lista li').count() == 0
+                assert pagina.locator('.inicio-ranking-lista li').count() == 1
 
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
                 for _ in range(3):
@@ -233,7 +233,7 @@ def verificar():
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 pagina.goto(origem, wait_until='networkidle')
-                assert pagina.locator('.inicio-ranking-lista li').count() == 0
+                assert pagina.locator('.inicio-ranking-lista li').count() == 1
                 assert 'Visitante QA' not in pagina.locator('.inicio-ranking-lista').inner_text()
 
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
@@ -264,12 +264,12 @@ def verificar():
                 assert pagina.url.endswith('/diagnostico')
                 pagina.goto(origem + '/ranking', wait_until='networkidle')
                 assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
-                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '0'
-                assert 'Visitante OpenRocket' not in pagina.locator('#ranking-podio').inner_text()
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
+                assert 'Visitante OpenRocket' in pagina.locator('#ranking-podio').inner_text()
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 0
                 pagina.locator('#ranking-origem').select_option('incluir')
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 1
-                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '0'
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
                 pagina.locator('[data-modo="melhor"]').click()
                 assert pagina.locator('[data-modo="melhor"]').get_attribute('aria-pressed') == 'true'
                 pagina.locator('#ranking-busca').fill('Visitante QA')

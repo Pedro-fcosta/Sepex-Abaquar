@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block titulo %}Gráficos do voo · ABAQUAR{% endblock %}
 {% block conteudo %}
-<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}">
+<section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}" data-margem-minima="{{ margem_minima }}">
   <div class="voo-cabecalho">
     <div>
       <p class="sobretitulo">{{ 'VISUALIZAÇÃO DOS GRÁFICOS' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p>
@@ -23,7 +23,7 @@
   </div>
   <div id="aviso-aborto" class="voo-aborto" role="alert" hidden>
     <strong>Missão abortada por segurança</strong>
-    <p>A estabilidade é inferior a 0,5 calibre. Os gráficos foram interrompidos no início do voo e esta tentativa não entra no ranking.</p>
+    <p>A estabilidade é inferior a {{ '%.2f'|format(margem_minima)|replace('.', ',') }} calibre. Os gráficos foram interrompidos no início do voo e esta tentativa não entra no ranking.</p>
   </div>
 
   <div class="voo-graficos">
@@ -39,4 +39,4 @@
   </div>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261021-abortagem') }}"></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261021-limite-015') }}"></script>{% endblock %}

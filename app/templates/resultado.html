@@ -11,7 +11,7 @@
 <section class="resultado-destaque resultado-abortado" aria-labelledby="titulo-aborto">
   <span>DECISÃO DE SEGURANÇA</span>
   <h2 id="titulo-aborto">Voo não classificado</h2>
-  <p>A estabilidade de <strong>{{ '%.2f'|format(tentativa.margem_calibres) }} calibre{{ 's' if tentativa.margem_calibres != 1 else '' }}</strong> está abaixo do mínimo de <strong>{{ '%.1f'|format(margem_minima) }} calibre</strong>. A missão foi abortada no início da animação.</p>
+  <p>A estabilidade de <strong>{{ '%.3f'|format(tentativa.margem_calibres)|replace('.', ',') }} calibre{{ 's' if tentativa.margem_calibres != 1 else '' }}</strong> está abaixo do mínimo de <strong>{{ '%.2f'|format(margem_minima)|replace('.', ',') }} calibre</strong>. A missão foi abortada no início da animação.</p>
   <p>Esta participação fica registrada no histórico, sem apogeu válido nem posição no ranking.</p>
 </section>
 {% else %}

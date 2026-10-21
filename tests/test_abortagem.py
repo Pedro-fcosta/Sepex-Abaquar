@@ -15,11 +15,11 @@ def _simulacao(app, codigo, margem):
             conexao().execute('UPDATE simulacoes SET margem_calibres=? WHERE id=?', (margem, identificador))
 
 
-def test_limiar_05_classificacao_dashboard_e_exportacao(app, cliente):
+def test_limiar_015_classificacao_dashboard_e_exportacao(app, cliente):
     inseguro = 'C1-A1-F3-S1'
     limite = 'C1-A1-F3-S2'
-    _simulacao(app, inseguro, 0.49)
-    _simulacao(app, limite, 0.5)
+    _simulacao(app, inseguro, 0.149)
+    _simulacao(app, limite, 0.15)
     respostas = [cliente.post('/api/tentativas', json={
         'nome': nome, 'codigo': codigo, 'identificador_sessao': sessao,
     }) for nome, codigo, sessao in (
@@ -36,6 +36,8 @@ def test_limiar_05_classificacao_dashboard_e_exportacao(app, cliente):
     assert cliente.get(f'/api/voo/{id_inseguro}').json['tentativa']['posicao_calculada'] is None
     assert cliente.get(f'/api/voo/{id_limite}').json['tentativa']['abortada'] is False
     assert 'MISSÃO ABORTADA' in cliente.get(f'/resultado/{id_inseguro}').get_data(as_text=True)
+    assert '0,149 calibres' in cliente.get(f'/resultado/{id_inseguro}').get_data(as_text=True)
+    assert '0,15 calibre' in cliente.get(f'/resultado/{id_inseguro}').get_data(as_text=True)
     assert 'Posição atual no ranking' not in cliente.get(f'/resultado/{id_inseguro}').get_data(as_text=True)
     assert 'MISSÃO CONCLUÍDA' in cliente.get(f'/resultado/{id_limite}').get_data(as_text=True)
     assert [linha['id'] for linha in cliente.get('/api/ranking').json] == [id_limite]

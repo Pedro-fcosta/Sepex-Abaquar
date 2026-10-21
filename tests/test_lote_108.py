@@ -22,6 +22,8 @@ def test_lote_gerado_libera_108_graficos(app, cliente):
         assert len(resposta.json['pontos']) >= 10, codigo
         assert resposta.json['origem_trajetoria'] == 'serie_openrocket'
 
+    assert cliente.get('/api/previa/C2-A3-F4-S2').json['tentativa']['abortada'] is False
+
     codigo_parcial = 'C2-A1-F3-S1'
     assert cliente.get(f'/api/previa/{codigo_parcial}').json['tentativa']['abortada'] is True
     tentativa = cliente.post('/api/tentativas', json={
