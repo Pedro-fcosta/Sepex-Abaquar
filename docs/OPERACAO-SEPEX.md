@@ -4,7 +4,7 @@
 
 1. Instale dependências e defina `SEPEX_ADMIN_TOKEN` e `SEPEX_SECRET_KEY` no ambiente do processo. Não coloque segredos em arquivos versionados.
 2. A cópia do repositório já inclui o banco com 108 CSVs importados e placar vazio. Em um banco novo, execute `init-db`, `seed-configuracoes` e `importar-lote "Foguete Modular - Banco/gerados/csv" --condicao "OpenRocket 24.12 - lote automatizado preliminar"`; preencha a condição com `condicao-configurar`, usando os parâmetros documentados do modelo. Depois de ensaios no banco de operação, execute `preparar-evento data/exports/backup-antes-evento.sqlite3` com um nome de backup ainda não usado. O comando preserva os 108 voos e remove todas as tentativas e demonstrações, após guardar o histórico.
-3. Execute `python -m flask --app run verificar-prontidao` com as variáveis de administração definidas. Abra `/diagnostico`: 108/108 voos com gráficos, integridade `ok`, zero referências órfãs e zero tentativas de demonstração. Não há dispositivo de recuperação no modelo por decisão do projeto. Configurações com estabilidade inferior a 0,15 calibre iniciam a animação, são abortadas e não entram no ranking.
+3. Execute `python -m flask --app run verificar-prontidao` com as variáveis de administração definidas. Abra `/diagnostico`: 108/108 voos com gráficos, integridade `ok`, zero referências órfãs e zero tentativas de demonstração. Não há dispositivo de recuperação no modelo por decisão do projeto. Configurações com estabilidade inferior a 0,10 calibre iniciam a animação, são abortadas e não entram no ranking.
 4. Faça backup inicial. Abra montagem, voo, resultado, ranking e dashboard no navegador do evento.
 
 ## Servidor e quiosque
