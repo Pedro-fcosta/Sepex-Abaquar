@@ -3,6 +3,25 @@ const graficos = [];
 
 function numero(valor) { return valor == null ? '—' : valor.toFixed(1).replace('.', ','); }
 
+const rosca = document.getElementById('grafico-missoes');
+if (rosca) {
+  const grafico = new Chart(rosca, {
+    type: 'doughnut',
+    data: {
+      labels: ['Classificadas', 'Abortadas'],
+      datasets: [{ data: [dados.resumo.voos_validos, dados.resumo.missoes_abortadas], borderWidth: 4, hoverOffset: 6 }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '73%', animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: item => `${item.label}: ${item.parsed} ${item.parsed === 1 ? 'participação' : 'participações'}` } },
+      },
+    },
+  });
+  graficos.push({ grafico, tipo: 'missoes' });
+}
+
 for (const chave of ['apogeu', 'velocidade']) {
   if (!document.getElementById(`grafico-${chave}`)) continue;
   const hist = dados.distribuicoes[chave];
@@ -66,6 +85,12 @@ function atualizarTemaGraficos() {
   const grade = escuro ? '#405168' : '#dbe3ef';
   const azul = escuro ? '#83beff' : '#0b5fc0';
   for (const { grafico, tipo } of graficos) {
+    if (tipo === 'missoes') {
+      grafico.data.datasets[0].backgroundColor = escuro ? ['#55d68a', '#ff7770'] : ['#198754', '#c8393b'];
+      grafico.data.datasets[0].borderColor = escuro ? '#14243a' : '#fff';
+      grafico.update('none');
+      continue;
+    }
     grafico.options.plugins.legend.labels.color = texto;
     for (const escala of Object.values(grafico.options.scales)) {
       escala.ticks.color = texto;

@@ -25,6 +25,22 @@
     <article class="dashboard-metrica"><span>Altura média</span><strong>{% if dados.apogeu_medio_m is not none %}{{ '%.1f'|format(dados.apogeu_medio_m) }} <em>m</em>{% else %}—{% endif %}</strong><small>somente missões classificadas</small></article>
   </section>
 
+  <section class="dashboard-secao painel dashboard-missoes" aria-labelledby="dashboard-missoes-titulo">
+    <div class="dashboard-missoes-texto">
+      <p class="sobretitulo">SEGURANÇA DO VOO</p>
+      <h2 id="dashboard-missoes-titulo">Lançamentos classificados e abortados</h2>
+      <p>Distribuição das {{ dados.total_tentativas }} participações registradas.</p>
+      <div class="dashboard-missoes-legenda" aria-label="Contagem das missões">
+        <div><span class="dashboard-missoes-cor dashboard-missoes-cor-valida" aria-hidden="true"></span><span>Classificadas</span><strong>{{ dados.voos_validos }}</strong></div>
+        <div><span class="dashboard-missoes-cor dashboard-missoes-cor-abortada" aria-hidden="true"></span><span>Abortadas</span><strong>{{ dados.missoes_abortadas }}</strong></div>
+      </div>
+    </div>
+    <div class="dashboard-missoes-rosca">
+      {% if dados.total_tentativas %}<canvas id="grafico-missoes" role="img" aria-label="Gráfico de rosca: {{ dados.voos_validos }} {{ 'missão classificada' if dados.voos_validos == 1 else 'missões classificadas' }} e {{ dados.missoes_abortadas }} {{ 'abortada' if dados.missoes_abortadas == 1 else 'abortadas' }}"></canvas>{% else %}<div class="dashboard-missoes-vazia" role="img" aria-label="Nenhuma participação registrada"></div>{% endif %}
+      <div class="dashboard-missoes-centro" aria-hidden="true"><strong>{{ dados.total_tentativas }}</strong><span>{{ 'participação' if dados.total_tentativas == 1 else 'participações' }}</span></div>
+    </div>
+  </section>
+
   {% if dados.total_tentativas == 0 %}
   <section class="dashboard-espera painel" aria-labelledby="dashboard-espera-titulo">
     <span class="dashboard-espera-icone" aria-hidden="true">↗</span>
@@ -67,4 +83,4 @@
   {% endif %}
 </div>
 {% endblock %}
-{% block scripts %}{% if dados.total_tentativas %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{ url_for('static', filename='js/dashboard.js', v='20261021-abortagem') }}"></script>{% endif %}{% endblock %}
+{% block scripts %}{% if dados.total_tentativas %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{ url_for('static', filename='js/dashboard.js', v='20261021-rosca') }}"></script>{% endif %}{% endblock %}

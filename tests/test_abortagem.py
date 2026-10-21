@@ -46,6 +46,9 @@ def test_limiar_010_classificacao_dashboard_e_exportacao(app, cliente):
     assert (resumo['total_tentativas'], resumo['voos_validos'], resumo['missoes_abortadas']) == (2, 1, 1)
     assert resumo['apogeu_medio_m'] == 100
     assert sum(cliente.get('/api/dashboard/distribuicoes').json['apogeu']['contagens']) == 1
+    painel = cliente.get('/dashboard').get_data(as_text=True)
+    assert 'grafico-missoes' in painel
+    assert 'Gráfico de rosca: 1 missão classificada e 1 abortada' in painel
     with app.app_context():
         linhas = list(csv.DictReader(io.StringIO(csv_tentativas().lstrip('\ufeff'))))
     assert [linha['posicao_calculada'] for linha in linhas] == ['', '1']
@@ -62,8 +65,15 @@ def test_dashboard_so_com_abortada(app, cliente):
     pagina = cliente.get('/dashboard').get_data(as_text=True)
     assert 'Aguardando uma missão classificada' in pagina
     assert 'grafico-tempo' in pagina
+    assert 'grafico-missoes' in pagina
     assert 'grafico-apogeu' not in pagina
     assert cliente.get('/api/ranking/placar').json['linhas'] == []
+
+
+def test_dashboard_vazio_exibe_rosca_neutra(cliente):
+    pagina = cliente.get('/dashboard').get_data(as_text=True)
+    assert 'dashboard-missoes-vazia' in pagina
+    assert '0</strong><span>participações' in pagina
 
 
 def test_admin_local_only_restringe_dispositivos_remotos(app, cliente):

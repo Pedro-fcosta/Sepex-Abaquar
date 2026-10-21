@@ -135,6 +135,7 @@ def verificar():
                 assert pagina.locator('.inicio-ilustracao img').evaluate('(img) => img.naturalWidth > 0')
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
                 assert pagina.get_by_text('Aguardando o primeiro voo').is_visible()
+                assert pagina.locator('.dashboard-missoes-vazia').is_visible()
                 pagina.screenshot(path=str(CAPTURAS / 'dashboard-escuro-1366.png'), full_page=True)
                 for rota in ('/', '/ranking', '/diagnostico'):
                     pagina.goto(origem + rota, wait_until='networkidle')
@@ -231,6 +232,7 @@ def verificar():
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
+                assert pagina.locator('#grafico-missoes').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.join(",")') == '2,0'
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 pagina.goto(origem, wait_until='networkidle')
                 assert pagina.locator('.inicio-ranking-lista li').count() == 1

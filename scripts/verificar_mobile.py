@@ -100,11 +100,13 @@ def verificar():
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
                 assert pagina.locator('.dashboard-metrica').first.locator('strong').inner_text() == '3'
                 assert pagina.locator('.dashboard-metrica-aborto strong').inner_text() == '1'
+                assert pagina.locator('#grafico-missoes').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.join(",")') == '2,1'
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 pagina.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-dashboard-mobile.png'), full_page=True)
                 pagina.locator('#tema').click()
                 assert pagina.locator('html').get_attribute('data-theme') == 'dark'
+                assert pagina.locator('#grafico-missoes').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].backgroundColor') == ['#55d68a', '#ff7770']
                 pagina.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-dashboard-mobile-dark.png'), full_page=True)
                 desktop = navegador.new_page(viewport={'width': 1366, 'height': 900})
                 desktop.goto(origem + '/dashboard', wait_until='networkidle')
