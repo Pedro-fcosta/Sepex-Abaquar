@@ -235,7 +235,7 @@ def verificar():
 
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
                 assert pagina.get_by_text('não registra tentativa nem altera o ranking', exact=False).is_visible()
-                assert pagina.get_by_text('Nenhum dispositivo de recuperação', exact=False).is_visible()
+                assert pagina.get_by_text('Sem dispositivo de recuperação, conforme o projeto', exact=False).is_visible()
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
                 assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
                 assert pagina.locator('#tempo-graficos').input_value() == '1000'

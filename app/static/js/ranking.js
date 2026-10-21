@@ -123,7 +123,7 @@
     if (!linha) return `<article class="ranking-podio-cartao placeholder" data-posicao="${posicao}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><strong>Espaço reservado para um novo voo</strong><span>O próximo resultado oficial pode ocupar esta posição.</span></article>`;
     const velocidade = numero(linha.velocidade_max_ms, 'm/s');
     const diferenca = posicao === 1 ? 'Líder da classificação' : `−${numero(lider.apogeu_m - linha.apogeu_m, 'm')} do líder`;
-    return `<article class="ranking-podio-cartao" data-posicao="${posicao}" data-id="${linha.id}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><h3 class="ranking-podio-nome">${escapar(linha.nome)}</h3><strong class="ranking-podio-apogeu">${formatoDecimal.format(linha.apogeu_m)} <small>m</small></strong><div class="ranking-podio-dados"><code>${escapar(linha.configuracao_codigo)}</code><span>${velocidade}</span></div><div class="ranking-podio-rodape"><span class="ranking-badge ranking-badge-oficial">OpenRocket</span><span>${diferenca}</span></div></article>`;
+    return `<article class="ranking-podio-cartao" data-posicao="${posicao}" data-id="${linha.id}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><h3 class="ranking-podio-nome">${escapar(linha.nome)}</h3><strong class="ranking-podio-apogeu">${formatoDecimal.format(linha.apogeu_m)} <small>m</small></strong><div class="ranking-podio-dados"><code>${escapar(linha.configuracao_codigo)}</code><span>${velocidade}</span></div><div class="ranking-podio-rodape"><span class="ranking-badge ranking-badge-oficial">${linha.parcial ? 'OpenRocket · parcial' : 'OpenRocket'}</span><span>${diferenca}</span></div></article>`;
   }
   function renderizarPodio(oficiais) {
     const podio = $('#ranking-podio');
@@ -149,7 +149,7 @@
     const demo = Boolean(linha.demonstrativo);
     const classe = animacoesLinhas.get(linha.id) || '';
     const diferenca = demo || !lider ? '—' : posicao === 1 ? 'Líder' : `−${numero(lider.apogeu_m - linha.apogeu_m, 'm')} do líder`;
-    const origemHtml = demo ? '<span class="ranking-badge ranking-badge-demo">DEMO</span><span class="ranking-demo-nota">Resultado demonstrativo — não participa da classificação oficial</span>' : '<span class="ranking-badge ranking-badge-oficial">OpenRocket</span>';
+    const origemHtml = demo ? '<span class="ranking-badge ranking-badge-demo">DEMO</span><span class="ranking-demo-nota">Resultado demonstrativo — não participa da classificação oficial</span>' : `<span class="ranking-badge ranking-badge-oficial">${linha.parcial ? 'OpenRocket · parcial' : 'OpenRocket'}</span>`;
     return `<tr class="${demo ? 'demo ' : ''}${classe}" data-id="${linha.id}"><td><span class="ranking-posicao ${posicao && posicao <= 3 ? `podio podio-${posicao}` : ''}">${demo ? '—' : `#${posicao}`}</span></td><td>${escapar(linha.nome)}</td><td><code class="ranking-config-chip">${escapar(linha.configuracao_codigo)}</code></td><td class="ranking-apogeu">${numero(linha.apogeu_m, 'm')}</td><td>${numero(linha.velocidade_max_ms, 'm/s')}</td><td>${origemHtml}</td><td class="ranking-diferenca">${diferenca}</td></tr>`;
   }
   function renderizarTabela(oficiais, demonstracoes) {

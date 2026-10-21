@@ -23,7 +23,7 @@ def test_blueprint_usa_medidas_do_catalogo_e_dados_reais(app, cliente):
     medidas = json.loads(html.unescape(atributo))
     assert medidas['diametro_mm'] == 42
     assert medidas['secao_mm'] == 200
-    assert medidas['aletas']['A1']['corda_raiz_mm'] == 60
+    assert medidas['aletas']['A1']['corda_raiz_mm'] == 70
 
     real = cliente.get('/api/configuracoes/C1-A1-F3-S1').json
     assert real['dados_tecnicos'] == {'cg_m': .15, 'cp_m': .2, 'margem_calibres': 1.25}

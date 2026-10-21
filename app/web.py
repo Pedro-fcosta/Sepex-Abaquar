@@ -107,7 +107,7 @@ def obter_tentativa(id):
     tentativa = dict(linha)
     tentativa['avisos_exibicao'] = (tentativa['observacoes'] or '').replace(
         'No recovery device defined in the simulation.',
-        'Nenhum dispositivo de recuperação foi definido na simulação.')
+        'Sem dispositivo de recuperação, conforme o projeto.')
     return tentativa
 
 
@@ -132,7 +132,7 @@ def obter_previa(codigo):
     simulacao['altitude_final_m'] = ultimo['altitude_m']
     simulacao['avisos_exibicao'] = (simulacao['observacoes'] or '').replace(
         'No recovery device defined in the simulation.',
-        'Nenhum dispositivo de recuperação foi definido na simulação.')
+        'Sem dispositivo de recuperação, conforme o projeto.')
     return simulacao
 
 
@@ -194,11 +194,19 @@ def api_distribuicoes():
 @bp.get('/diagnostico')
 def diagnostico():
     db = conexao()
+    cobertura = db.execute('''SELECT count(DISTINCT configuracao_codigo) FROM simulacoes s
+        WHERE status='approved' AND demonstrativo=0
+        AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id)''').fetchone()[0]
+    parciais = db.execute('''SELECT count(*) FROM simulacoes s WHERE status='approved' AND demonstrativo=0
+        AND (SELECT altitude_m FROM pontos p WHERE p.simulacao_id=s.id ORDER BY tempo_s DESC LIMIT 1)>0.5''').fetchone()[0]
+    demonstracoes = db.execute('SELECT count(*) FROM tentativas WHERE demonstrativo=1').fetchone()[0]
     return render_template('diagnostico.html',
         configuracoes=db.execute('SELECT count(*) FROM configuracoes').fetchone()[0],
         aprovadas=db.execute("SELECT count(*) FROM simulacoes WHERE status='approved'").fetchone()[0],
         tentativas=db.execute('SELECT count(*) FROM tentativas').fetchone()[0],
-        integridade=db.execute('PRAGMA integrity_check').fetchone()[0])
+        integridade=db.execute('PRAGMA integrity_check').fetchone()[0],
+        chaves_orfas=len(db.execute('PRAGMA foreign_key_check').fetchall()),
+        cobertura=cobertura, parciais=parciais, demonstracoes=demonstracoes)
 
 
 @bp.route('/admin/entrar',methods=['GET','POST'])

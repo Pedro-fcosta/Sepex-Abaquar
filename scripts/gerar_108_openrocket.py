@@ -152,6 +152,13 @@ def importar_lote(pasta):
     comando = [sys.executable, '-m', 'flask', '--app', 'run', 'importar-lote', str(pasta),
                '--condicao', 'OpenRocket 24.12 - lote automatizado preliminar']
     subprocess.run(comando, cwd=RAIZ, check=True)
+    subprocess.run([sys.executable, '-m', 'flask', '--app', 'run', 'condicao-configurar',
+                    'OpenRocket 24.12 - lote automatizado preliminar', '--motor', 'Estes D12',
+                    '--vento-ms', '2', '--direcao-vento-graus', '90', '--altitude-local-m', '0',
+                    '--trilho', 'Haste de lançamento de 1 m', '--versao-openrocket', '24.12',
+                    '--observacoes', 'Modelo de referência: atmosfera ISA; coordenadas 28.61, -80.6; '
+                    'sem recuperação por decisão do projeto. Local e peças físicas não medidos.'],
+                   cwd=RAIZ, check=True)
     print(f'Backup anterior à importação: {backup}')
 
 

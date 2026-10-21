@@ -30,4 +30,7 @@ def test_lote_gerado_libera_108_graficos(app, cliente):
     })
     assert tentativa.status_code == 201
     assert 'Resultado parcial' in cliente.get(tentativa.json['url_voo']).get_data(as_text=True)
-    assert 'resultado parcial' in cliente.get(f'/resultado/{tentativa.json["id"]}').get_data(as_text=True)
+    resultado = cliente.get(f'/resultado/{tentativa.json["id"]}').get_data(as_text=True)
+    assert 'resultado parcial' in resultado
+    assert 'SIMULAÇÃO INTERROMPIDA' in resultado
+    assert cliente.get('/api/ranking/placar').json['linhas'][0]['parcial'] is True

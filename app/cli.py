@@ -124,6 +124,36 @@ def registrar_comandos(app):
                 db.execute('DELETE FROM participantes WHERE id=? AND NOT EXISTS(SELECT 1 FROM tentativas WHERE participante_id=?)',(participante,participante))
         click.echo('Dados fictícios removidos.')
 
+    @app.cli.command('preparar-evento')
+    @click.argument('backup', type=click.Path(path_type=Path))
+    def preparar_evento(backup):
+        """Guarda o histórico e zera o placar sem perder os 108 voos."""
+        db = conexao()
+        if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok' or db.execute('PRAGMA foreign_key_check').fetchone():
+            raise click.ClickException('O banco não passou na verificação de integridade.')
+        disponiveis = db.execute('''SELECT count(DISTINCT configuracao_codigo) FROM simulacoes
+            WHERE status='approved' AND demonstrativo=0''').fetchone()[0]
+        if disponiveis != 108:
+            raise click.ClickException(f'Apenas {disponiveis}/108 configurações têm simulação disponível.')
+        if backup.resolve() == Path(app.config['DATABASE']).resolve():
+            raise click.ClickException('O backup deve ter caminho diferente do banco ativo.')
+        if backup.exists():
+            raise click.ClickException('O arquivo de backup já existe; escolha outro nome.')
+        backup.parent.mkdir(parents=True, exist_ok=True)
+        destino = sqlite3.connect(backup)
+        try:
+            with destino:
+                db.backup(destino)
+        finally:
+            destino.close()
+        tentativas = db.execute('SELECT count(*) FROM tentativas').fetchone()[0]
+        with db:
+            db.execute('DELETE FROM tentativas')
+            db.execute('DELETE FROM participantes')
+            db.execute('DELETE FROM simulacoes WHERE demonstrativo=1')
+            db.execute("DELETE FROM condicoes WHERE nome='DEMONSTRAÇÃO' AND NOT EXISTS(SELECT 1 FROM simulacoes WHERE condicao_id=condicoes.id)")
+        click.echo(f'Backup: {backup}. Placar zerado ({tentativas} tentativas removidas); {disponiveis}/108 voos preservados.')
+
     @app.cli.command('exportar-tentativas')
     @click.argument('arquivo',type=click.Path(path_type=Path))
     def exportar(arquivo):
@@ -150,3 +180,44 @@ def registrar_comandos(app):
         click.echo(f'{total-len(faltantes)}/{total} configurações cadastradas com simulação aprovada (esperadas: 108).')
         if faltantes:
             click.echo('Pendentes: '+', '.join(faltantes))
+
+    @app.cli.command('verificar-prontidao')
+    def verificar_prontidao():
+        """Confere o pacote local antes de abrir o atendimento."""
+        db = conexao()
+        falhas = []
+        if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
+            falhas.append('integridade do SQLite')
+        if db.execute('PRAGMA foreign_key_check').fetchone():
+            falhas.append('referências órfãs no SQLite')
+        simulacoes = db.execute('''SELECT configuracao_codigo, hash_arquivo,
+            (SELECT count(*) FROM pontos WHERE simulacao_id=s.id) AS total_pontos
+            FROM simulacoes s WHERE status='approved' AND demonstrativo=0''').fetchall()
+        codigos = {linha['configuracao_codigo'] for linha in simulacoes}
+        if len(simulacoes) != 108 or len(codigos) != 108:
+            falhas.append(f'cobertura dos voos ({len(codigos)}/108)')
+        pasta = Path(__file__).resolve().parent.parent / 'Foguete Modular - Banco' / 'gerados'
+        for linha in simulacoes:
+            codigo = linha['configuracao_codigo']
+            partes = codigo.split('-')
+            relativo = Path(*partes[:3]) / codigo
+            csv = pasta / 'csv' / relativo.with_suffix('.csv')
+            ork = pasta / 'ork' / relativo.with_suffix('.ork')
+            if not csv.is_file() or not ork.is_file():
+                falhas.append(f'arquivo ORK/CSV ausente: {codigo}')
+            elif hashlib.sha256(csv.read_bytes()).hexdigest() != linha['hash_arquivo']:
+                falhas.append(f'CSV diferente do importado: {codigo}')
+            if linha['total_pontos'] < 10:
+                falhas.append(f'série temporal insuficiente: {codigo}')
+        demonstracoes = db.execute('SELECT count(*) FROM tentativas WHERE demonstrativo=1').fetchone()[0]
+        if demonstracoes:
+            falhas.append(f'{demonstracoes} tentativas de demonstração no placar')
+        if not app.config['ADMIN_TOKEN']:
+            falhas.append('SEPEX_ADMIN_TOKEN não configurado')
+        if not os.getenv('SEPEX_SECRET_KEY'):
+            falhas.append('SEPEX_SECRET_KEY não configurada')
+        if falhas:
+            raise click.ClickException('; '.join(falhas))
+        tentativas = db.execute('SELECT count(*) FROM tentativas').fetchone()[0]
+        click.echo(f'Pronto para atendimento: 108/108 ORKs, CSVs e gráficos íntegros; {tentativas} tentativas no placar; SQLite ok.')
+        click.echo('Modelo conforme o projeto: sem recuperação; estabilidade variável; séries interrompidas são exibidas como parciais.')

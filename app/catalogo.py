@@ -24,11 +24,12 @@ def gerar_configuracoes():
     coifa_mm = int(os.getenv('SEPEX_COIFA_MM', '100'))
     material_impresso = os.getenv('SEPEX_MATERIAL_IMPRESSO', 'PETG')
     material_tubo = os.getenv('SEPEX_MATERIAL_TUBO', 'papel kraft')
-    espessura_mm = float(os.getenv('SEPEX_ESPESSURA_ALETA_MM', '2'))
-    corda_mm = float(os.getenv('SEPEX_CORDA_RAIZ_MM', '60'))
-    envergadura_mm = float(os.getenv('SEPEX_ENVERGADURA_MM', '40'))
+    espessura_mm = float(os.getenv('SEPEX_ESPESSURA_ALETA_MM', '3'))
+    corda_mm = float(os.getenv('SEPEX_CORDA_RAIZ_MM', '70'))
+    corda_a3_mm = float(os.getenv('SEPEX_CORDA_RAIZ_A3_MM', '64'))
+    envergadura_mm = float(os.getenv('SEPEX_ENVERGADURA_MM', '30'))
     opcoes = [(c, 'coifa', n, f'Coifa {n.lower()}', f'coifa_{c.lower()}.png', {'comprimento_mm': coifa_mm, 'material_sugerido': material_impresso, 'revisao': 'pending_review'}) for c, n in COIFAS.items()]
-    opcoes += [(a, 'aleta', n, f'Aleta {n.lower()}', f'aleta_{a.lower()}.png', {'espessura_mm': espessura_mm, 'corda_raiz_mm': corda_mm, 'envergadura_mm': envergadura_mm, 'material_sugerido': material_impresso, 'revisao': 'pending_review'}) for a, n in ALETAS.items()]
+    opcoes += [(a, 'aleta', n, f'Aleta {n.lower()}', f'aleta_{a.lower()}.png', {'espessura_mm': espessura_mm, 'corda_raiz_mm': corda_a3_mm if a == 'A3' else corda_mm, 'envergadura_mm': envergadura_mm, 'material_sugerido': material_impresso, 'revisao': 'pending_review'}) for a, n in ALETAS.items()]
     opcoes += [('CORPO', 'corpo', 'Tubo do corpo', 'Seção modular', 'corpo.png', {'diametro_externo_mm': diametro_mm, 'comprimento_secao_mm': secao_mm, 'material_sugerido': material_tubo, 'revisao': 'pending_review'})]
     for c, cat, nome, descricao, imagem, props in opcoes:
         db.execute('INSERT OR IGNORE INTO componentes(codigo,categoria,nome,descricao,imagem,propriedades_json) VALUES (?,?,?,?,?,?)', (c,cat,nome,descricao,imagem,json.dumps(props,ensure_ascii=False)))

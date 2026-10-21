@@ -21,6 +21,7 @@ def dados_placar():
                 'velocidade_max_ms': linha['velocidade_max_ms'],
                 'horario': linha['horario'],
                 'demonstrativo': bool(linha['demonstrativo']),
+                'parcial': linha['altitude_final_m'] is not None and linha['altitude_final_m'] > 0.5,
             }
             for linha in linhas
         ],

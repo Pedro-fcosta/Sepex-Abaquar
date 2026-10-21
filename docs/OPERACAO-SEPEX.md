@@ -3,8 +3,8 @@
 ## Antes de abrir
 
 1. Instale dependências e defina `SEPEX_ADMIN_TOKEN` e `SEPEX_SECRET_KEY` no ambiente do processo. Não coloque segredos em arquivos versionados.
-2. A cópia do repositório já inclui o banco com 108 CSVs importados. Em um banco novo, execute `init-db`, `seed-configuracoes`, `importar-lote "Foguete Modular - Banco/gerados/csv"`, `verificar-cobertura` e os testes. Execute `demo-limpar` para retirar as tentativas fictícias históricas. Revise as 2 simulações interrompidas e os parâmetros físicos preliminares antes da competição.
-3. Abra `/diagnostico`: configurações 108, integridade `ok`, quantidade de simulações disponíveis esperada.
+2. A cópia do repositório já inclui o banco com 108 CSVs importados e placar vazio. Em um banco novo, execute `init-db`, `seed-configuracoes` e `importar-lote "Foguete Modular - Banco/gerados/csv" --condicao "OpenRocket 24.12 - lote automatizado preliminar"`; preencha a condição com `condicao-configurar`, usando os parâmetros documentados do modelo. Depois de ensaios no banco de operação, execute `preparar-evento data/exports/backup-antes-evento.sqlite3` com um nome de backup ainda não usado. O comando preserva os 108 voos e remove todas as tentativas e demonstrações, após guardar o histórico.
+3. Execute `python -m flask --app run verificar-prontidao` com as variáveis de administração definidas. Abra `/diagnostico`: 108/108 voos com gráficos, integridade `ok`, zero referências órfãs e zero tentativas de demonstração. As 2 séries interrompidas são resultados parciais identificados no programa. Não há dispositivo de recuperação no modelo por decisão do projeto, e a estabilidade baixa de algumas combinações é esperada.
 4. Faça backup inicial. Abra montagem, voo, resultado, ranking e dashboard no navegador do evento.
 
 ## Servidor e quiosque

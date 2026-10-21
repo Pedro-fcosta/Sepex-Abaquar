@@ -5,7 +5,8 @@ from .db import conexao
 
 
 def ranking(melhor_por_participante=False):
-    linhas = [dict(r) for r in conexao().execute('''SELECT t.*,p.nome,c.coifa,c.aleta,c.quantidade_aletas,c.secoes
+    linhas = [dict(r) for r in conexao().execute('''SELECT t.*,p.nome,c.coifa,c.aleta,c.quantidade_aletas,c.secoes,
+        (SELECT altitude_m FROM pontos WHERE simulacao_id=t.simulacao_id ORDER BY tempo_s DESC LIMIT 1) AS altitude_final_m
         FROM tentativas t JOIN participantes p ON p.id=t.participante_id
         JOIN configuracoes c ON c.codigo=t.configuracao_codigo''')]
     linhas.sort(key=lambda r:(-r['apogeu_m'],-(r['velocidade_max_ms'] or 0),r['horario'],r['id']))

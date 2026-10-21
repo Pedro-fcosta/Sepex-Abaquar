@@ -12,7 +12,7 @@
   </div>
   {% if previa|default(false) %}<p class="nota">Visualização dos gráficos: não registra tentativa nem altera o ranking.</p>{% endif %}
   {% if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. Resultado parcial.</p>{% endif %}
-  {% if tentativa.avisos_exibicao %}<p class="nota">Aviso do arquivo: {{tentativa.avisos_exibicao}}</p>{% endif %}
+  {% if tentativa.avisos_exibicao %}<p class="nota">Notas da simulação: {{tentativa.avisos_exibicao}}</p>{% endif %}
   {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
 
   <div class="voo-controles painel">
