@@ -205,6 +205,12 @@ def verificar():
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 738
                 assert pagina.locator('#aviso-aborto').is_hidden()
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
+                serie_valida = contexto.request.get(origem + pagina.locator('.voo-pagina').get_attribute('data-url')).json()['pontos']
+                apogeu_valido = max(serie_valida, key=lambda ponto: ponto['altitude_m'])
+                assert pagina.locator('#kpi-apogeu').inner_text() == f'{apogeu_valido["altitude_m"]:.1f}'.replace('.', ',') + ' m'
+                assert pagina.locator('#kpi-tempo-apogeu').inner_text() == f'{apogeu_valido["tempo_s"]:.1f}'.replace('.', ',') + ' s'
+                assert pagina.locator('#marco-apogeu').is_visible()
+                pagina.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-voo-desktop.png'), full_page=True)
                 pagina.locator('#ver-resultado').click()
                 assert pagina.locator('h1').inner_text() == 'Voo de Visitante OpenRocket'
                 assert pagina.get_by_text('Posição atual no ranking', exact=False).is_visible()
@@ -248,8 +254,11 @@ def verificar():
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 assert pagina.locator('#foguete-voo').count() == 0
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#83beff'
+                pagina.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-voo-dark.png'), full_page=True)
                 pagina.locator('#tema').click()
-                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#003f91'
+                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].borderColor') == '#0866d9'
+                assert pagina.locator('#kpi-tempo-apogeu').inner_text() == 'Não atingido'
+                assert pagina.locator('#marco-apogeu').is_hidden()
                 pagina.screenshot(path=str(CAPTURAS / 'previa-1366.png'), full_page=True)
                 with app.app_context():
                     assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 2
@@ -297,6 +306,9 @@ def verificar():
                 assert 'pausada' in paginaAnimada.locator('#estado-graficos').inner_text()
                 paginaAnimada.evaluate("() => { const tempo = document.getElementById('tempo-graficos'); tempo.value = '500'; tempo.dispatchEvent(new Event('input', { bubbles: true })); }")
                 assert paginaAnimada.locator('#tempo-graficos').input_value() == '500'
+                paginaAnimada.locator('#reiniciar-graficos').click()
+                assert paginaAnimada.locator('#tempo-graficos').input_value() == '0'
+                assert paginaAnimada.locator('#tempo-atual').inner_text() == '0,0 s'
                 contextoAnimado.close()
                 contexto.close()
                 navegador.close()

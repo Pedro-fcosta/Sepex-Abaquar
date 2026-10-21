@@ -1,5 +1,6 @@
 const paginaVoo = document.querySelector('.voo-pagina');
 const botaoReproduzir = document.getElementById('reproduzir-graficos');
+const botaoReiniciar = document.getElementById('reiniciar-graficos');
 const controleTempo = document.getElementById('tempo-graficos');
 const estadoGraficos = document.getElementById('estado-graficos');
 const graficosVoo = [];
@@ -18,15 +19,62 @@ let inicioReproducao = 0;
 let baseReproducao = 0;
 let ultimoDesenho = 0;
 let apogeuVoo = null;
+let resultadoParcial = false;
+
+function numero(valor, casas = 1) {
+  return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+}
+
+function indicador(valor) {
+  return valor == null || !Number.isFinite(Number(valor)) ? null : Number(valor);
+}
+
+function textoBotao(rotulo, icone = 'play') {
+  botaoReproduzir.querySelector('.voo-botao-texto').textContent = rotulo;
+  botaoReproduzir.setAttribute('aria-label', `${rotulo} simulação`);
+  document.getElementById('icone-reproducao').setAttribute('href', `#icone-${icone}`);
+}
+
+function preencherIndicadores(temSerie, tentativa) {
+  const trecho = serieVoo.filter(ponto => ponto.tempo <= limiteVoo);
+  if (missaoAbortada && trecho.at(-1)?.tempo < limiteVoo) trecho.push(amostraNoTempo(limiteVoo, indiceAte(limiteVoo)));
+  const velocidades = (missaoAbortada ? trecho : serieVoo).map(ponto => ponto.velocidade).filter(Number.isFinite);
+  const velocidadeMaxima = temSerie ? velocidades.length ? Math.max(...velocidades) : null : missaoAbortada ? null : indicador(tentativa.velocidade_max_ms);
+  const apogeu = missaoAbortada ? null : temSerie ? indicador(apogeuVoo?.altura) : indicador(tentativa.apogeu_m);
+  const tempoApogeu = missaoAbortada ? null : temSerie ? indicador(apogeuVoo?.tempo) : indicador(tentativa.tempo_apogeu_s);
+  const duracao = missaoAbortada ? temSerie ? limiteVoo : null : temSerie ? duracaoVoo : indicador(tentativa.duracao_s);
+  const rotuloAltura = missaoAbortada ? 'Altitude no aborto' : resultadoParcial ? 'Maior altura registrada' : 'Apogeu máximo';
+  document.getElementById('rotulo-kpi-apogeu').textContent = rotuloAltura;
+  document.getElementById('rotulo-max-altura').textContent = rotuloAltura;
+  document.getElementById('rotulo-kpi-duracao').textContent = missaoAbortada ? 'Trecho exibido' : resultadoParcial ? 'Tempo registrado' : 'Tempo total do voo';
+  document.getElementById('rotulo-kpi-tempo-apogeu').textContent = missaoAbortada ? 'Tempo até o apogeu' : resultadoParcial ? 'Tempo até maior altura' : 'Tempo até o apogeu';
+  const alturaExibida = missaoAbortada ? temSerie ? trecho.at(-1)?.altura : null : apogeu;
+  const textoAltura = Number.isFinite(alturaExibida) ? `${numero(alturaExibida)} m` : 'Indisponível';
+  const textoVelocidade = Number.isFinite(velocidadeMaxima) ? `${numero(velocidadeMaxima)} m/s` : 'Indisponível';
+  document.getElementById('kpi-apogeu').textContent = textoAltura;
+  document.getElementById('altura-maxima').textContent = textoAltura;
+  document.getElementById('kpi-velocidade').textContent = textoVelocidade;
+  document.getElementById('velocidade-maxima').textContent = textoVelocidade;
+  document.getElementById('kpi-duracao').textContent = Number.isFinite(duracao) ? `${numero(duracao)} s` : 'Indisponível';
+  document.getElementById('kpi-tempo-apogeu').textContent = Number.isFinite(tempoApogeu) ? `${numero(tempoApogeu)} s` : missaoAbortada ? 'Não atingido' : 'Indisponível';
+  document.getElementById('tempo-total').textContent = `${numero(limiteVoo)} s`;
+  document.getElementById('insight-apogeu-titulo').textContent = missaoAbortada ? 'Operação abortada' : rotuloAltura;
+  document.getElementById('insight-apogeu').textContent = missaoAbortada
+    ? `Estabilidade abaixo de ${numero(margemMinima, 2)} cal`
+    : tempoApogeu == null ? textoAltura : `${textoAltura} em ${numero(tempoApogeu)} s`;
+  document.getElementById('insight-duracao-titulo').textContent = missaoAbortada ? 'Trecho inicial' : resultadoParcial ? 'Tempo registrado' : 'Duração da simulação';
+  document.getElementById('insight-duracao').textContent = duracao == null ? 'Indisponível' : `${numero(duracao)} s`;
+  document.getElementById('insight-dados').textContent = tentativa.demonstrativo ? 'Dados de demonstração' : temSerie ? 'Série temporal OpenRocket' : 'Curva ilustrativa';
+}
 
 function coresGraficos() {
   const escuro = document.documentElement.dataset.theme === 'dark';
   return {
     texto: escuro ? '#cbd5e1' : '#5f6f89',
     grade: escuro ? '#405168' : '#dbe3ef',
-    altura: escuro ? '#83beff' : '#003f91',
-    velocidade: escuro ? '#d1e5ff' : '#0b5fc0',
-    apogeu: escuro ? '#fbd38d' : '#b45309',
+    altura: escuro ? '#83beff' : '#0866d9',
+    velocidade: escuro ? '#a9d2ff' : '#0866d9',
+    apogeu: escuro ? '#fbd38d' : '#df9a13',
   };
 }
 
@@ -36,7 +84,7 @@ function criarGrafico(id, nome, unidade, dados, minimo, maximo) {
   const grafico = new Chart(document.getElementById(id), {
     type: 'line',
     data: { datasets: [
-      { label: nome === 'altura' ? 'Altura' : 'Velocidade', data: [], parsing: false, borderColor: cor, backgroundColor: `${cor}22`, borderWidth: 3, pointRadius: 0, tension: 0, fill: nome === 'altura' },
+      { label: nome === 'altura' ? 'Altitude' : 'Velocidade', data: [], parsing: false, borderColor: cor, backgroundColor: `${cor}20`, borderWidth: 2.7, pointRadius: 0, tension: 0, fill: true },
       { label: 'Instante atual', data: [], parsing: false, borderColor: cor, backgroundColor: cor, pointRadius: 5, pointHoverRadius: 6, showLine: false },
       ...(nome === 'altura' ? [
         { label: 'Apogeu', data: [], parsing: false, borderColor: cores.apogeu, backgroundColor: cores.apogeu, pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', showLine: false },
@@ -45,7 +93,8 @@ function criarGrafico(id, nome, unidade, dados, minimo, maximo) {
     ] },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: item => `${item.dataset.label}: ${Number(item.parsed.y).toFixed(1)} ${unidade}` } } },
+      interaction: { intersect: false, mode: 'nearest' },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: cores.texto === '#cbd5e1' ? '#0c182a' : '#082b5c', padding: 10, cornerRadius: 8, callbacks: { title: items => `Tempo: ${numero(items[0].parsed.x)} s`, label: item => `${item.dataset.label}: ${numero(item.parsed.y)} ${unidade}` } } },
       scales: {
         x: { type: 'linear', min: 0, max: limiteVoo, title: { display: true, text: 'Tempo (s)', color: cores.texto }, ticks: { color: cores.texto, maxTicksLimit: 7 }, grid: { color: cores.grade } },
         y: { min: minimo, max: maximo, title: { display: true, text: `${nome === 'altura' ? 'Altura' : 'Velocidade'} (${unidade})`, color: cores.texto }, ticks: { color: cores.texto, maxTicksLimit: 7 }, grid: { color: cores.grade } },
@@ -61,7 +110,7 @@ function atualizarTemaGraficos() {
   for (const { grafico, nome } of graficosVoo) {
     const cor = cores[nome];
     grafico.data.datasets[0].borderColor = cor;
-    grafico.data.datasets[0].backgroundColor = `${cor}22`;
+    grafico.data.datasets[0].backgroundColor = `${cor}20`;
     grafico.data.datasets[1].borderColor = cor;
     grafico.data.datasets[1].backgroundColor = cor;
     if (nome === 'altura') {
@@ -125,9 +174,10 @@ function mostrarTempo(tempo) {
   const atual = amostraNoTempo(tempo, indice);
   progressoVoo = limiteVoo ? tempo / limiteVoo : 1;
   controleTempo.value = String(Math.round(progressoVoo * 1000));
-  document.getElementById('tempo-atual').textContent = `${tempo.toFixed(1).replace('.', ',')} s`;
-  document.getElementById('altura-atual').textContent = `${Math.round(atual.altura)} m`;
-  document.getElementById('velocidade-atual').textContent = atual.velocidade == null ? 'Sem dados' : `${atual.velocidade.toFixed(1).replace('.', ',')} m/s`;
+  document.getElementById('tempo-atual').textContent = `${numero(tempo)} s`;
+  controleTempo.style.setProperty('--voo-progresso', `${progressoVoo * 100}%`);
+  document.getElementById('altura-atual').textContent = `${numero(atual.altura)} m agora`;
+  document.getElementById('velocidade-atual').textContent = atual.velocidade == null ? 'Sem dados agora' : `${numero(atual.velocidade)} m/s agora`;
   const apogeuAtingido = !missaoAbortada && apogeuVoo && tempo >= apogeuVoo.tempo;
   document.getElementById('marco-apogeu').hidden = !apogeuAtingido;
   for (const { grafico, nome, dados } of graficosVoo) {
@@ -146,7 +196,7 @@ function pausar() {
   if (quadroPendente) cancelAnimationFrame(quadroPendente);
   quadroPendente = 0;
   reproduzindo = false;
-  botaoReproduzir.textContent = 'Reproduzir';
+  textoBotao('Reproduzir');
   estadoGraficos.textContent = 'Animação pausada';
 }
 
@@ -154,7 +204,7 @@ function finalizarAborto() {
   reproduzindo = false;
   quadroPendente = 0;
   avisoAborto.hidden = false;
-  botaoReproduzir.textContent = 'Rever início';
+  textoBotao('Rever início');
   estadoGraficos.textContent = `Missão abortada por estabilidade inferior a ${margemMinima.toFixed(2).replace('.', ',')} calibre`;
 }
 
@@ -173,7 +223,7 @@ function reproduzir() {
   inicioReproducao = performance.now();
   ultimoDesenho = 0;
   reproduzindo = true;
-  botaoReproduzir.textContent = 'Pausar';
+  textoBotao('Pausar', 'pausa');
   estadoGraficos.textContent = missaoAbortada ? 'Analisando a segurança do voo' : 'Reproduzindo gráficos';
   function animar(agora) {
     if (!reproduzindo) return;
@@ -188,7 +238,7 @@ function reproduzir() {
       else {
         reproduzindo = false;
         quadroPendente = 0;
-        botaoReproduzir.textContent = 'Reproduzir novamente';
+        textoBotao('Reproduzir novamente');
         estadoGraficos.textContent = 'Gráficos completos';
       }
     }
@@ -215,13 +265,14 @@ async function iniciarGraficos() {
       document.getElementById('rotulo-tempo').textContent = 'Trecho inicial';
       controleTempo.setAttribute('aria-label', 'Posição no trecho inicial antes da abortagem');
     }
-    const resultadoParcial = temSerie && serieVoo.at(-1).altura > 0.5;
+    resultadoParcial = temSerie && serieVoo.at(-1).altura > 0.5;
     const rotuloApogeu = resultadoParcial ? 'Maior altura registrada' : 'Apogeu atingido';
     document.getElementById('marco-apogeu-rotulo').textContent = rotuloApogeu;
     document.getElementById('marco-apogeu-valor').textContent = `${apogeuVoo.altura.toFixed(1).replace('.', ',')} m · ${apogeuVoo.tempo.toFixed(1).replace('.', ',')} s`;
     document.getElementById('tipo-trajetoria').textContent = temSerie
       ? 'Gráficos baseados na série temporal importada do OpenRocket.'
       : 'Curvas ilustrativas geradas apenas para visualização. Os indicadores registrados não foram alterados.';
+    preencherIndicadores(temSerie, dados.tentativa);
     const pontosExibidos = missaoAbortada ? serieVoo.slice(0, indiceAte(limiteVoo) + 1) : serieVoo;
     const alturas = pontosExibidos.map(p => p.altura);
     const velocidades = pontosExibidos.map(p => p.velocidade).filter(Number.isFinite);
@@ -232,16 +283,18 @@ async function iniciarGraficos() {
     graficosVoo[0].grafico.data.datasets[2].label = rotuloApogeu;
     criarGrafico('grafico-velocidade', 'velocidade', 'm/s', serieVoo.map(p => ({ x: p.tempo, y: p.velocidade })), minVelocidade, maxVelocidade);
     botaoReproduzir.disabled = false;
+    botaoReiniciar.disabled = false;
     controleTempo.disabled = false;
     mostrarTempo(0);
     if (movimentoReduzido) {
       mostrarTempo(limiteVoo);
       if (missaoAbortada) finalizarAborto();
       else {
-        botaoReproduzir.textContent = 'Gráficos completos';
+        textoBotao('Gráficos completos');
         estadoGraficos.textContent = 'Gráficos completos';
       }
       botaoReproduzir.disabled = true;
+      botaoReiniciar.disabled = true;
     } else reproduzir();
   } catch (erro) {
     estadoGraficos.textContent = erro.message || 'Erro ao carregar os gráficos.';
@@ -250,6 +303,13 @@ async function iniciarGraficos() {
 }
 
 botaoReproduzir.addEventListener('click', () => reproduzindo ? pausar() : reproduzir());
+botaoReiniciar.addEventListener('click', () => {
+  if (reproduzindo) pausar();
+  mostrarTempo(0);
+  avisoAborto.hidden = true;
+  textoBotao('Reproduzir');
+  estadoGraficos.textContent = 'Pronto para reproduzir';
+});
 controleTempo.addEventListener('input', () => {
   if (reproduzindo) pausar();
   mostrarTempo(Number(controleTempo.value) / 1000 * limiteVoo);

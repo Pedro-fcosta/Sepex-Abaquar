@@ -66,6 +66,10 @@ def verificar():
                     pagina.locator('#confirmar').click()
                     pagina.wait_for_url('**/voo/*')
                     pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
+                    assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                    dados = contexto.request.get(origem + pagina.locator('.voo-pagina').get_attribute('data-url')).json()
+                    altura_maxima = max(ponto['altitude_m'] for ponto in dados['pontos'])
+                    assert pagina.locator('#kpi-apogeu').inner_text() == f'{altura_maxima:.1f}'.replace('.', ',') + ' m'
                     pagina.evaluate('''() => { const controle = document.getElementById('tempo-graficos'); controle.value = '0'; controle.dispatchEvent(new Event('input', { bubbles: true })); }''')
                     assert pagina.locator('#marco-apogeu').is_hidden()
                     pagina.evaluate('''() => { const controle = document.getElementById('tempo-graficos'); controle.value = '1000'; controle.dispatchEvent(new Event('input', { bubbles: true })); }''')

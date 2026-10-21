@@ -1,42 +1,68 @@
 {% extends 'base.html' %}
-{% block titulo %}Gráficos do voo · ABAQUAR{% endblock %}
+{% block titulo %}Resultados do voo · ABAQUAR{% endblock %}
 {% block conteudo %}
 <section class="voo-pagina" data-url="{{ url_for('web.dados_previa', codigo=tentativa.configuracao_codigo) if previa|default(false) else url_for('web.dados_voo', id=tentativa.id) }}" data-margem-minima="{{ margem_minima }}">
-  <div class="voo-cabecalho">
-    <div>
-      <p class="sobretitulo">{{ 'VISUALIZAÇÃO DOS GRÁFICOS' if previa|default(false) else 'MISSÃO' }} {{tentativa.configuracao_codigo}}</p>
-      <h1 id="titulo-voo">Altura e velocidade ao longo do tempo</h1>
-      <p id="tipo-trajetoria" class="nota">Carregando dados do voo...</p>
-    </div>
-    <a id="ver-resultado" class="botao secundario" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else ('Ver decisão →' if tentativa.abortada else 'Ver resultados →') }}</a>
-  </div>
-  {% if previa|default(false) %}<p class="nota">Visualização dos gráficos: não registra tentativa nem altera o ranking.</p>{% endif %}
-  {% if not tentativa.abortada and tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. Resultado parcial.</p>{% endif %}
-  {% if tentativa.avisos_exibicao %}<p class="nota">Notas da simulação: {{tentativa.avisos_exibicao}}</p>{% endif %}
-  {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
+  <svg class="voo-simbolos" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icone-altitude" viewBox="0 0 24 24"><path d="m2 19 6.2-9 3.1 4 3.2-8L22 19H2Z"/><path d="m13.5 9 1.1 1.3L16 9"/></symbol>
+    <symbol id="icone-velocidade" viewBox="0 0 24 24"><path d="M4.5 17a9 9 0 1 1 15 0"/><path d="m12 13 4-5M9 18h6M5 12H3m18 0h-2M12 3v2"/></symbol>
+    <symbol id="icone-tempo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="icone-marco" viewBox="0 0 24 24"><path d="M4 19h16L12 4 4 19Z"/><path d="M12 4v15"/></symbol>
+    <symbol id="icone-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+    <symbol id="icone-pausa" viewBox="0 0 24 24"><path d="M7 5v14M17 5v14"/></symbol>
+    <symbol id="icone-reiniciar" viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2.3 6.7M4 5v6h6"/></symbol>
+    <symbol id="icone-dados" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-8m5 8V3"/></symbol>
+    <symbol id="icone-nota" viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M15 3v5h4M9 12h6M9 16h6"/></symbol>
+  </svg>
 
-  <div class="voo-controles painel">
-    <button id="reproduzir-graficos" class="botao" type="button" disabled>Carregando...</button>
-    <label for="tempo-graficos"><span id="rotulo-tempo">Tempo da simulação</span> <strong id="tempo-atual">0,0 s</strong></label>
-    <input id="tempo-graficos" type="range" min="0" max="1000" value="0" disabled aria-label="Posição na linha do tempo da simulação">
-    <span id="estado-graficos" class="nota" role="status" aria-live="polite">Carregando série temporal...</span>
+  <div class="voo-cabecalho">
+    <div class="voo-introducao">
+      <span class="voo-missao"><svg class="voo-icone" aria-hidden="true"><use href="#icone-marco"/></svg>{{ 'PRÉVIA' if previa|default(false) else 'MISSÃO' }} {{ tentativa.configuracao_codigo }}</span>
+      <h1 id="titulo-voo">Resultados do voo</h1>
+      <p class="voo-subtitulo">Análise da altitude, velocidade e principais marcos da simulação.</p>
+    </div>
+    <a id="ver-resultado" class="botao secundario voo-link-resultado" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}"><svg class="voo-icone" aria-hidden="true"><use href="#icone-dados"/></svg>{{ 'Voltar à montagem' if previa|default(false) else ('Ver decisão →' if tentativa.abortada else 'Ver resultado →') }}</a>
   </div>
-  <div id="aviso-aborto" class="voo-aborto" role="alert" hidden>
-    <strong>Missão abortada por segurança</strong>
-    <p>A estabilidade é inferior a {{ '%.2f'|format(margem_minima)|replace('.', ',') }} calibre. Os gráficos foram interrompidos no início do voo e esta tentativa não entra no ranking.</p>
+
+  <div class="voo-avisos">
+    {% if previa|default(false) %}<p class="nota">Prévia dos gráficos: não registra tentativa nem altera o ranking.</p>{% endif %}
+    {% if not tentativa.abortada and tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. Resultado parcial.</p>{% endif %}
+    {% if tentativa.avisos_exibicao %}<p class="nota">Notas da simulação: {{tentativa.avisos_exibicao}}</p>{% endif %}
+    {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
+    <p id="tipo-trajetoria" class="voo-origem">Carregando dados do voo...</p>
   </div>
+
+  <div class="voo-indicadores" aria-label="Indicadores da simulação">
+    <article class="voo-indicador"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-altitude"/></svg></span><div><h2 id="rotulo-kpi-apogeu">Apogeu máximo</h2><strong id="kpi-apogeu">—</strong></div></article>
+    <article class="voo-indicador"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-velocidade"/></svg></span><div><h2>Velocidade máxima</h2><strong id="kpi-velocidade">—</strong></div></article>
+    <article class="voo-indicador"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-tempo"/></svg></span><div><h2 id="rotulo-kpi-duracao">Tempo total do voo</h2><strong id="kpi-duracao">—</strong></div></article>
+    <article class="voo-indicador"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-marco"/></svg></span><div><h2 id="rotulo-kpi-tempo-apogeu">Tempo até o apogeu</h2><strong id="kpi-tempo-apogeu">—</strong></div></article>
+  </div>
+
+  <div class="voo-controles painel" aria-label="Reprodução da simulação">
+    <div class="voo-controles-titulo"><span class="voo-icone-circulo voo-icone-circulo-menor"><svg class="voo-icone" aria-hidden="true"><use href="#icone-play"/></svg></span><div><strong>Reprodução da simulação</strong><small>Explore a evolução do voo ao longo do tempo.</small></div></div>
+    <div class="voo-controles-acoes">
+      <button id="reproduzir-graficos" class="voo-botao-play" type="button" disabled aria-label="Reproduzir simulação"><svg class="voo-icone" aria-hidden="true"><use id="icone-reproducao" href="#icone-play"/></svg><span class="voo-botao-texto">Reproduzir</span></button>
+      <button id="reiniciar-graficos" class="voo-botao-reiniciar" type="button" disabled aria-label="Reiniciar simulação" title="Reiniciar simulação"><svg class="voo-icone" aria-hidden="true"><use href="#icone-reiniciar"/></svg></button>
+    </div>
+    <div class="voo-linha-tempo"><label for="tempo-graficos"><span id="rotulo-tempo" class="visualmente-oculto">Tempo da simulação</span><strong id="tempo-atual">0,0 s</strong><span aria-hidden="true">/</span><span id="tempo-total">—</span></label><input id="tempo-graficos" type="range" min="0" max="1000" value="0" disabled aria-label="Posição na linha do tempo da simulação"></div>
+    <span id="estado-graficos" class="voo-estado" role="status" aria-live="polite">Carregando série temporal...</span>
+  </div>
+
+  <div id="aviso-aborto" class="voo-aborto" role="alert" hidden><strong>Missão abortada por segurança</strong><p>A estabilidade é inferior a {{ '%.2f'|format(margem_minima)|replace('.', ',') }} calibre. Os gráficos foram interrompidos no início do voo e esta tentativa não entra no ranking.</p></div>
 
   <div class="voo-graficos">
     <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-altura">
-      <div class="voo-grafico-topo"><div><h2 id="titulo-grafico-altura">Altura × tempo</h2><p>Altitude em metros</p></div><strong id="altura-atual" class="voo-valor">0 m</strong></div>
-      <div id="marco-apogeu" class="voo-marco" role="status" aria-live="polite" hidden><span aria-hidden="true">▲</span><strong id="marco-apogeu-rotulo">Apogeu atingido</strong><span id="marco-apogeu-valor"></span></div>
-      <div class="voo-grafico"><canvas id="grafico-altura" role="img" aria-label="Gráfico de altura em metros por tempo em segundos"></canvas></div>
+      <div class="voo-grafico-topo"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-altitude"/></svg></span><div class="voo-grafico-descricao"><h2 id="titulo-grafico-altura">Altitude × tempo</h2><p>Altitude em metros ao longo da simulação.</p></div><div class="voo-grafico-destaque"><span id="rotulo-max-altura">Apogeu máximo</span><strong id="altura-maxima">—</strong><small id="altura-atual">0 m agora</small></div></div>
+      <div id="marco-apogeu" class="voo-marco" role="status" aria-live="polite" hidden><svg class="voo-icone" aria-hidden="true"><use href="#icone-marco"/></svg><span><strong id="marco-apogeu-rotulo">Apogeu atingido</strong><small id="marco-apogeu-valor"></small></span></div>
+      <div class="voo-grafico"><canvas id="grafico-altura" role="img" aria-label="Gráfico de altitude em metros por tempo em segundos"></canvas></div>
     </article>
     <article class="painel voo-grafico-card" aria-labelledby="titulo-grafico-velocidade">
-      <div class="voo-grafico-topo"><div><h2 id="titulo-grafico-velocidade">Velocidade × tempo</h2><p>Velocidade total em metros por segundo</p></div><strong id="velocidade-atual" class="voo-valor">0 m/s</strong></div>
-      <div class="voo-grafico"><canvas id="grafico-velocidade" role="img" aria-label="Gráfico de velocidade total em metros por segundo por tempo em segundos"></canvas></div>
+      <div class="voo-grafico-topo"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-velocidade"/></svg></span><div class="voo-grafico-descricao"><h2 id="titulo-grafico-velocidade">Velocidade × tempo</h2><p>Velocidade exportada em metros por segundo.</p></div><div class="voo-grafico-destaque"><span>Velocidade máxima</span><strong id="velocidade-maxima">—</strong><small id="velocidade-atual">0 m/s agora</small></div></div>
+      <div class="voo-grafico"><canvas id="grafico-velocidade" role="img" aria-label="Gráfico de velocidade em metros por segundo por tempo em segundos"></canvas></div>
     </article>
   </div>
+
+  <section class="voo-insights painel" aria-labelledby="titulo-insights"><div class="voo-insights-intro"><span class="voo-icone-circulo"><svg class="voo-icone" aria-hidden="true"><use href="#icone-dados"/></svg></span><div><h2 id="titulo-insights">Principais insights</h2><p>Marcos registrados nesta simulação.</p></div></div><div class="voo-insight"><svg class="voo-icone" aria-hidden="true"><use href="#icone-marco"/></svg><div><strong id="insight-apogeu-titulo">Altitude máxima</strong><span id="insight-apogeu">Aguardando dados</span></div></div><div class="voo-insight"><svg class="voo-icone" aria-hidden="true"><use href="#icone-tempo"/></svg><div><strong id="insight-duracao-titulo">Duração</strong><span id="insight-duracao">Aguardando dados</span></div></div><div class="voo-insight"><svg class="voo-icone" aria-hidden="true"><use href="#icone-nota"/></svg><div><strong id="insight-dados-titulo">Origem dos dados</strong><span id="insight-dados">Aguardando dados</span></div></div></section>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261021-limite-010') }}"></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261021-redesign') }}"></script>{% endblock %}
