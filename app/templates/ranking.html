@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block titulo %}Ranking de voos · ABAQUAR{% endblock %}
 {% block body_class %}{% if telao %}ranking-telao{% endif %}{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='css/ranking.css', v='20261001-3') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='css/ranking.css', v='20261021-resultados') }}">{% endblock %}
 {% block conteudo %}
-<div class="ranking-pagina" id="ranking-pagina" data-telao="{{ '1' if telao else '0' }}" data-melhor="{{ '1' if melhor else '0' }}" data-api="{{ url_for('web.api_placar') }}">
+<div class="ranking-pagina" id="ranking-pagina" data-telao="{{ '1' if telao else '0' }}" data-melhor="{{ '1' if melhor else '0' }}" data-api="{{ url_for('web.api_placar') }}" data-voo-url="{{ url_for('web.voo', id=0) }}">
   <div class="ranking-fundo" aria-hidden="true">
     <svg class="ranking-trajetoria" viewBox="0 0 1300 560" preserveAspectRatio="none"><path d="M-30 480 C250 460 300 370 490 370 S760 275 860 218 S1080 94 1330 50"/></svg>
     <svg class="ranking-foguete" viewBox="0 0 34 34"><path d="M17 2c5 5 7 11 7 19l-7 5-7-5c0-8 2-14 7-19Z M10 18l-5 6 5 2m14-8 5 6-5 2M14 27l3 5 3-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="17" cy="14" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
@@ -39,4 +39,4 @@
 </div>
 <script type="application/json" id="ranking-dados-iniciais">{{ dados|tojson }}</script>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='js/ranking.js', v='20261020-1') }}" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/ranking.js', v='20261021-resultados') }}" defer></script>{% endblock %}

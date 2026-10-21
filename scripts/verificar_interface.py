@@ -5,6 +5,7 @@ import logging
 import tempfile
 import threading
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from playwright.sync_api import sync_playwright
 from werkzeug.serving import make_server
@@ -201,6 +202,7 @@ def verificar():
                 pagina.locator('#nome').fill('Visitante OpenRocket')
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
                 pagina.wait_for_url('**/voo/*')
+                url_voo_oficial = pagina.url
                 pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 738
                 assert pagina.locator('#aviso-aborto').is_hidden()
@@ -224,6 +226,7 @@ def verificar():
                 pagina.locator('#nome').fill('Visitante QA')
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
                 pagina.wait_for_url('**/voo/*')
+                url_voo_demo = pagina.url
                 pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
                 assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 121
                 assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => !!Chart.getChart(canvas)')
@@ -277,9 +280,22 @@ def verificar():
                 assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
                 assert 'Visitante OpenRocket' in pagina.locator('#ranking-podio').inner_text()
+                link_oficial = pagina.locator('#ranking-podio .ranking-ver-resultados')
+                assert link_oficial.get_attribute('href') == urlsplit(url_voo_oficial).path
+                link_oficial.click()
+                pagina.wait_for_url(url_voo_oficial)
+                assert pagina.locator('#grafico-altura').is_visible()
+                assert pagina.locator('#grafico-velocidade').is_visible()
+                pagina.goto(origem + '/ranking', wait_until='networkidle')
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 0
                 pagina.locator('#ranking-origem').select_option('incluir')
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 1
+                link_demo = pagina.locator('#ranking-tabela-corpo .demo .ranking-ver-resultados')
+                assert link_demo.get_attribute('href') == urlsplit(url_voo_demo).path
+                link_demo.click()
+                pagina.wait_for_url(url_voo_demo)
+                assert pagina.locator('#grafico-altura').is_visible()
+                pagina.goto(origem + '/ranking?origem=incluir', wait_until='networkidle')
                 assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
                 pagina.locator('[data-modo="melhor"]').click()
                 assert pagina.locator('[data-modo="melhor"]').get_attribute('aria-pressed') == 'true'

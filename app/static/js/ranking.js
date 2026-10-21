@@ -119,11 +119,17 @@
     contar('#ranking-kpi-velocidade', velocidades.length ? Math.max(...velocidades) : NaN, 'm/s');
   }
   const medalha = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 2 5 7 5-7M5 4l7 9 7-9M12 11a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"/><path d="m12 14 1 2.2 2.4.3-1.7 1.6.4 2.4-2.1-1.1-2.1 1.1.4-2.4-1.7-1.6 2.4-.3Z"/></svg>';
+  function linkResultados(linha) {
+    const id = Number(linha.id);
+    if (!Number.isSafeInteger(id) || id <= 0) return '';
+    const url = raiz.dataset.vooUrl.replace(/0$/, String(id));
+    return `<a class="ranking-ver-resultados" href="${url}" aria-label="Ver resultados de ${escapar(linha.nome)}">Ver resultados</a>`;
+  }
   function cartao(linha, posicao, lider) {
     if (!linha) return `<article class="ranking-podio-cartao placeholder" data-posicao="${posicao}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><strong>Espaço reservado para um novo voo</strong><span>O próximo resultado oficial pode ocupar esta posição.</span></article>`;
     const velocidade = numero(linha.velocidade_max_ms, 'm/s');
     const diferenca = posicao === 1 ? 'Líder da classificação' : `−${numero(lider.apogeu_m - linha.apogeu_m, 'm')} do líder`;
-    return `<article class="ranking-podio-cartao" data-posicao="${posicao}" data-id="${linha.id}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><h3 class="ranking-podio-nome">${escapar(linha.nome)}</h3><strong class="ranking-podio-apogeu">${formatoDecimal.format(linha.apogeu_m)} <small>m</small></strong><div class="ranking-podio-dados"><code>${escapar(linha.configuracao_codigo)}</code><span>${velocidade}</span></div><div class="ranking-podio-rodape"><span class="ranking-badge ranking-badge-oficial">${linha.parcial ? 'OpenRocket · parcial' : 'OpenRocket'}</span><span>${diferenca}</span></div></article>`;
+    return `<article class="ranking-podio-cartao" data-posicao="${posicao}" data-id="${linha.id}"><span class="ranking-medalha">${medalha} ${posicao}º lugar</span><h3 class="ranking-podio-nome">${escapar(linha.nome)}</h3><strong class="ranking-podio-apogeu">${formatoDecimal.format(linha.apogeu_m)} <small>m</small></strong><div class="ranking-podio-dados"><code>${escapar(linha.configuracao_codigo)}</code><span>${velocidade}</span></div><div class="ranking-podio-rodape"><span class="ranking-badge ranking-badge-oficial">${linha.parcial ? 'OpenRocket · parcial' : 'OpenRocket'}</span><span>${diferenca}</span></div>${linkResultados(linha)}</article>`;
   }
   function renderizarPodio(oficiais) {
     const podio = $('#ranking-podio');
@@ -150,7 +156,7 @@
     const classe = animacoesLinhas.get(linha.id) || '';
     const diferenca = demo || !lider ? '—' : posicao === 1 ? 'Líder' : `−${numero(lider.apogeu_m - linha.apogeu_m, 'm')} do líder`;
     const origemHtml = demo ? '<span class="ranking-badge ranking-badge-demo">DEMO</span><span class="ranking-demo-nota">Resultado demonstrativo — não participa da classificação oficial</span>' : `<span class="ranking-badge ranking-badge-oficial">${linha.parcial ? 'OpenRocket · parcial' : 'OpenRocket'}</span>`;
-    return `<tr class="${demo ? 'demo ' : ''}${classe}" data-id="${linha.id}"><td><span class="ranking-posicao ${posicao && posicao <= 3 ? `podio podio-${posicao}` : ''}">${demo ? '—' : `#${posicao}`}</span></td><td>${escapar(linha.nome)}</td><td><code class="ranking-config-chip">${escapar(linha.configuracao_codigo)}</code></td><td class="ranking-apogeu">${numero(linha.apogeu_m, 'm')}</td><td>${numero(linha.velocidade_max_ms, 'm/s')}</td><td>${origemHtml}</td><td class="ranking-diferenca">${diferenca}</td></tr>`;
+    return `<tr class="${demo ? 'demo ' : ''}${classe}" data-id="${linha.id}"><td><span class="ranking-posicao ${posicao && posicao <= 3 ? `podio podio-${posicao}` : ''}">${demo ? '—' : `#${posicao}`}</span></td><td>${escapar(linha.nome)}</td><td><div class="ranking-config-acao"><code class="ranking-config-chip">${escapar(linha.configuracao_codigo)}</code>${linkResultados(linha)}</div></td><td class="ranking-apogeu">${numero(linha.apogeu_m, 'm')}</td><td>${numero(linha.velocidade_max_ms, 'm/s')}</td><td>${origemHtml}</td><td class="ranking-diferenca">${diferenca}</td></tr>`;
   }
   function renderizarTabela(oficiais, demonstracoes) {
     const lider = oficiais[0];

@@ -86,6 +86,10 @@
 .ranking-podio-dados { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 12px; color: var(--placar-muted); font-size: .74rem; }
 .ranking-podio-dados code, .ranking-config-chip { padding: 4px 6px; border: 1px solid var(--placar-borda); border-radius: 6px; background: var(--placar-elevado); color: var(--placar-escuro); font-family: Consolas, 'Courier New', monospace; font-size: .75rem; font-weight: 800; white-space: nowrap; }
 .ranking-podio-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; color: var(--placar-muted); font-size: .72rem; }
+.ranking-ver-resultados { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 5px 9px; border: 1px solid var(--placar-azul); border-radius: 7px; background: var(--placar-superficie); color: var(--placar-escuro); font-size: .72rem; font-weight: 800; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+.ranking-ver-resultados:hover { background: var(--placar-elevado); }
+.ranking-ver-resultados:focus-visible { outline: 3px solid var(--placar-azul); outline-offset: 2px; }
+.ranking-podio-cartao > .ranking-ver-resultados { margin-top: 9px; }
 .ranking-badge { display: inline-flex; align-items: center; border-radius: 99px; padding: 3px 8px; font-size: .67rem; font-weight: 800; white-space: nowrap; }
 .ranking-badge-oficial { background: color-mix(in srgb, var(--placar-azul), transparent 89%); color: var(--placar-escuro); }
 .ranking-badge-demo { background: var(--amarelo-bg); color: var(--amarelo-texto); }
@@ -131,6 +135,7 @@
 .ranking-tabela tbody tr.demo td { background: color-mix(in srgb, var(--amarelo-bg), transparent 68%); }
 .ranking-tabela td.ranking-apogeu { color: var(--placar-escuro); font-weight: 900; font-variant-numeric: tabular-nums; }
 .ranking-tabela td.ranking-diferenca { color: var(--placar-muted); }
+.ranking-config-acao { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 .ranking-tabela .ranking-posicao { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; min-height: 30px; border-radius: 8px; background: var(--placar-elevado); color: var(--placar-escuro); font-weight: 900; }
 .ranking-tabela .ranking-posicao.podio { background: color-mix(in srgb, var(--placar-ouro), transparent 85%); }
 .ranking-tabela .ranking-posicao.podio-2 { background: color-mix(in srgb, var(--placar-prata), transparent 78%); }
@@ -179,6 +184,7 @@ body.ranking-telao { height: 100vh; overflow: hidden; }
 .ranking-telao .ranking-podio-apogeu { font-size: 2.2rem; }
 .ranking-telao .ranking-podio-dados { margin-top: 7px; }
 .ranking-telao .ranking-podio-rodape { margin-top: 6px; }
+.ranking-telao .ranking-podio-cartao > .ranking-ver-resultados { min-height: 26px; margin-top: 5px; padding: 3px 8px; }
 .ranking-telao .ranking-controles { position: relative; padding: 5px 10px; }
 .ranking-telao .ranking-filtros-botao { display: inline-flex; }
 .ranking-telao .ranking-filtros { display: none; }
