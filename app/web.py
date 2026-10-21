@@ -13,6 +13,7 @@ from .simulacoes import importar, revisar
 from .tentativas import registrar
 from .placar import dados_placar
 from .regras_voo import MARGEM_MINIMA_CALIBRES, missao_abortada
+from .massas import massa_inicial_kg
 
 bp = Blueprint('web',__name__)
 
@@ -101,10 +102,12 @@ def configuracoes():
 def configuracao(codigo):
     linha = conexao().execute('SELECT * FROM configuracoes WHERE codigo=?',(codigo,)).fetchone()
     if not linha: abort(404)
-    sim = conexao().execute("SELECT id,demonstrativo,cg_m,cp_m,margem_calibres FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
+    sim = conexao().execute("SELECT id,demonstrativo,cg_m,cp_m,margem_calibres,hash_arquivo FROM simulacoes WHERE configuracao_codigo=? AND status='approved' ORDER BY id DESC LIMIT 1",(codigo,)).fetchone()
     previa = conexao().execute("""SELECT s.id FROM simulacoes s WHERE s.configuracao_codigo=? AND s.status IN ('approved','pending_review')
         AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY (s.status='approved') DESC,s.id DESC LIMIT 1""",(codigo,)).fetchone()
     dados_tecnicos = {campo: sim[campo] for campo in ('cg_m','cp_m','margem_calibres')} if sim and not sim['demonstrativo'] else None
+    if dados_tecnicos is not None:
+        dados_tecnicos['massa_inicial_kg'] = massa_inicial_kg(codigo, sim['hash_arquivo'])
     return jsonify({**dict(linha),'disponivel':bool(sim),'demonstrativo':bool(sim and sim['demonstrativo']),
                    'dados_tecnicos':dados_tecnicos,
                    'url_previa':url_for('web.previa_voo',codigo=codigo) if previa else None})

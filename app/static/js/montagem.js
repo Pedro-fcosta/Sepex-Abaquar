@@ -95,6 +95,9 @@ function renderRocketBlueprint(estado) {
   const narizMm = Number(medidasBlueprint.coifas[coifa]);
   const corpoMm = comprimentoCorpoAtual ?? secoes * Number(medidasBlueprint.secao_mm);
   const secaoMm = corpoMm / secoes;
+  const massaKg = dadosTecnicos?.massa_inicial_kg;
+  const massaInicial = typeof massaKg === 'number' && Number.isFinite(massaKg) && massaKg > 0
+    ? `${Math.round(massaKg * 1000).toLocaleString('pt-BR')} g` : '—';
   const raizMm = Number(medidasBlueprint.aletas[aleta].corda_raiz_mm);
   const envergaduraMm = Number(medidasBlueprint.aletas[aleta].envergadura_mm);
   const totalMm = narizMm + corpoMm;
@@ -208,7 +211,7 @@ function renderRocketBlueprint(estado) {
 
   selo.append(criarSvg('rect', { x: 14, y: 542, width: 472, height: 136, class: 'blueprint-selo-moldura' }));
   for (const y of [576, 610, 644]) linhaSvg(selo, 14, y, 486, y, 'blueprint-selo-linha');
-  for (const [x, y1, y2] of [[249, 542, 644], [167, 644, 678], [344, 644, 678]]) linhaSvg(selo, x, y1, x, y2, 'blueprint-selo-linha');
+  for (const [x, y1, y2] of [[249, 542, 644], [136, 644, 678], [256, 644, 678], [376, 644, 678]]) linhaSvg(selo, x, y1, x, y2, 'blueprint-selo-linha');
   const campo = (x, y, rotulo, valor, classe = 'blueprint-selo-valor') => {
     textoSvg(selo, x, y + 11, rotulo, 'blueprint-selo-rotulo');
     return textoSvg(selo, x, y + 28, valor, classe);
@@ -221,19 +224,22 @@ function renderRocketBlueprint(estado) {
   campo(22, 610, 'COIFA', `${coifa} ${nomesCoifa[coifa].toUpperCase()}`);
   campo(257, 610, 'ALETA', `${aleta} ${nomesAleta[aleta].toUpperCase()}`);
   campo(22, 644, 'QUANTIDADE', `${quantidade} ALETAS`);
-  campo(175, 644, 'ESCALA', 'ESQUEMÁTICA');
-  campo(352, 644, 'REVISÃO', 'REV. 00');
+  campo(144, 644, 'MASSA INICIAL', massaInicial);
+  campo(264, 644, 'ESCALA', 'ESQUEMÁTICA');
+  campo(384, 644, 'REVISÃO', 'REV. 00');
   textoSvg(selo, 250, 692, 'REPRESENTAÇÃO TÉCNICA ESQUEMÁTICA · NÃO UTILIZAR PARA FABRICAÇÃO', 'blueprint-rodape', { 'text-anchor': 'middle' });
   document.getElementById('blueprint-codigo-movel').textContent = codigo;
   document.getElementById('blueprint-corpo-movel').textContent = `${corpoMm} mm · ${secoes} SEÇÕES`;
   document.getElementById('blueprint-coifa-movel').textContent = `${coifa} ${nomesCoifa[coifa].toUpperCase()}`;
   document.getElementById('blueprint-aleta-movel').textContent = `${aleta} ${nomesAleta[aleta].toUpperCase()}`;
   document.getElementById('blueprint-quantidade-movel').textContent = `${quantidade} ALETAS`;
+  document.getElementById('blueprint-massa-movel').textContent = massaInicial;
 
   const posicoes = dadosTecnicos && typeof dadosTecnicos.cg_m === 'number' && typeof dadosTecnicos.cp_m === 'number'
     ? `, CG ${Math.round(dadosTecnicos.cg_m * 1000)} milímetros, CP ${Math.round(dadosTecnicos.cp_m * 1000)} milímetros`
     : '';
-  blueprint.setAttribute('aria-label', `Prancheta técnica ${codigo}: coifa ${nomesCoifa[coifa]}, aleta ${nomesAleta[aleta]}, ${quantidade} aletas, corpo de ${corpoMm} milímetros e diâmetro de ${diametroMm} milímetros${posicoes}`);
+  const massaAcessivel = massaInicial === '—' ? '' : `, massa inicial ${massaInicial}`;
+  blueprint.setAttribute('aria-label', `Prancheta técnica ${codigo}: coifa ${nomesCoifa[coifa]}, aleta ${nomesAleta[aleta]}, ${quantidade} aletas, corpo de ${corpoMm} milímetros e diâmetro de ${diametroMm} milímetros${massaAcessivel}${posicoes}`);
   blueprint.classList.remove('blueprint-atualizado');
   void blueprint.getBoundingClientRect();
   blueprint.classList.add('blueprint-atualizado');

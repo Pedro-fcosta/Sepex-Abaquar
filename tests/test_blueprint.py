@@ -1,6 +1,7 @@
 import html
 import json
 import re
+from pathlib import Path
 
 from app import criar_app
 from app.db import conexao
@@ -26,13 +27,21 @@ def test_blueprint_usa_medidas_do_catalogo_e_dados_reais(app, cliente):
     assert medidas['aletas']['A1']['corda_raiz_mm'] == 70
 
     real = cliente.get('/api/configuracoes/C1-A1-F3-S1').json
-    assert real['dados_tecnicos'] == {'cg_m': .15, 'cp_m': .2, 'margem_calibres': 1.25}
+    assert real['dados_tecnicos'] == {'cg_m': .15, 'cp_m': .2, 'margem_calibres': 1.25, 'massa_inicial_kg': None}
     assert real['comprimento_corpo_mm'] == 200
     resultado = app.test_cli_runner().invoke(args=['demo-criar'])
     assert resultado.exit_code == 0, resultado.output
     demonstracao = cliente.get('/api/configuracoes/C2-A3-F4-S2').json
     assert demonstracao['demonstrativo'] is True
     assert demonstracao['dados_tecnicos'] is None
+
+    csvs = Path(__file__).resolve().parent.parent / 'Foguete Modular - Banco' / 'gerados' / 'csv'
+    with app.app_context():
+        for codigo in ('C1-A1-F3-S1', 'C1-A1-F3-S4'):
+            arquivo = csvs / codigo[:2] / codigo[3:5] / codigo[6:8] / f'{codigo}.csv'
+            importar(arquivo.read_bytes(), arquivo.name, codigo)
+    assert cliente.get('/api/configuracoes/C1-A1-F3-S1').json['dados_tecnicos']['massa_inicial_kg'] == .107
+    assert cliente.get('/api/configuracoes/C1-A1-F3-S4').json['dados_tecnicos']['massa_inicial_kg'] == .147
 
 
 def test_montagem_carrega_sem_catalogo_inicializado(tmp_path):
