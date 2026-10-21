@@ -12,6 +12,7 @@ from .estatisticas import distribuicoes, ranking, resumo
 from .simulacoes import importar, revisar
 from .tentativas import registrar
 from .placar import dados_placar
+from .regras_voo import MARGEM_MINIMA_CALIBRES, missao_abortada
 
 bp = Blueprint('web',__name__)
 
@@ -39,6 +40,8 @@ def admin_autorizado():
 def exige_admin(funcao):
     @wraps(funcao)
     def interna(*args,**kwargs):
+        if current_app.config['ADMIN_LOCAL_ONLY'] and request.remote_addr not in ('127.0.0.1', '::1'):
+            abort(403)
         if not admin_autorizado():
             if request.method == 'GET' and not request.path.startswith('/api/'):
                 return redirect(url_for('web.admin_entrar'))
@@ -126,6 +129,9 @@ def obter_tentativa(id):
         JOIN simulacoes s ON s.id=t.simulacao_id WHERE t.id=?''',(id,)).fetchone()
     if not linha: abort(404)
     tentativa = dict(linha)
+    tentativa['abortada'] = missao_abortada(tentativa['margem_calibres'])
+    if tentativa['abortada']:
+        tentativa['posicao_calculada'] = None
     tentativa['avisos_exibicao'] = (tentativa['observacoes'] or '').replace(
         'No recovery device defined in the simulation.',
         'Sem dispositivo de recuperação, conforme o projeto.')
@@ -149,6 +155,7 @@ def obter_previa(codigo):
         AND EXISTS(SELECT 1 FROM pontos p WHERE p.simulacao_id=s.id) ORDER BY (s.status='approved') DESC,s.id DESC LIMIT 1""",(codigo,)).fetchone()
     if not linha: abort(404)
     simulacao = dict(linha)
+    simulacao['abortada'] = missao_abortada(simulacao['margem_calibres'])
     ultimo = conexao().execute('SELECT altitude_m FROM pontos WHERE simulacao_id=? ORDER BY tempo_s DESC LIMIT 1',(simulacao['id'],)).fetchone()
     simulacao['altitude_final_m'] = ultimo['altitude_m']
     simulacao['avisos_exibicao'] = (simulacao['observacoes'] or '').replace(
@@ -167,7 +174,7 @@ def previa_voo(codigo):
 def dados_previa(codigo):
     simulacao = obter_previa(codigo)
     pontos = [dict(r) for r in conexao().execute('SELECT tempo_s,altitude_m,velocidade_ms,aceleracao_ms2 FROM pontos WHERE simulacao_id=? ORDER BY tempo_s',(simulacao['id'],))]
-    indicadores = {campo:simulacao[campo] for campo in ('apogeu_m','tempo_apogeu_s','duracao_s')}
+    indicadores = {campo:simulacao[campo] for campo in ('apogeu_m','tempo_apogeu_s','duracao_s','margem_calibres','abortada')}
     return jsonify(tentativa=indicadores,pontos=pontos,origem_trajetoria='serie_openrocket',previa=True)
 
 
@@ -175,7 +182,7 @@ def dados_previa(codigo):
 def resultado(id):
     tentativa = obter_tentativa(id)
     posicao = next((r['posicao'] for r in ranking() if r['id']==id),None)
-    return render_template('resultado.html',tentativa=tentativa,posicao=posicao)
+    return render_template('resultado.html',tentativa=tentativa,posicao=posicao,margem_minima=MARGEM_MINIMA_CALIBRES)
 
 
 @bp.get('/ranking')
@@ -232,6 +239,8 @@ def diagnostico():
 
 @bp.route('/admin/entrar',methods=['GET','POST'])
 def admin_entrar():
+    if current_app.config['ADMIN_LOCAL_ONLY'] and request.remote_addr not in ('127.0.0.1', '::1'):
+        abort(403)
     erro = None
     if request.method == 'POST':
         token = current_app.config['ADMIN_TOKEN']
@@ -285,11 +294,14 @@ def admin_rejeitar(id):
 
 def csv_tentativas():
     saida = io.StringIO()
-    campos = ('id','nome','configuracao_codigo','horario','apogeu_m','velocidade_max_ms','aceleracao_max_ms2','margem_calibres','posicao_calculada','demonstrativo')
+    campos = ('id','nome','configuracao_codigo','horario','apogeu_m','velocidade_max_ms','aceleracao_max_ms2','margem_calibres','estado_missao','posicao_calculada','demonstrativo')
     escritor = csv.DictWriter(saida,fieldnames=campos,extrasaction='ignore')
     escritor.writeheader()
+    posicoes_atuais = {linha['id']: linha['posicao'] for linha in ranking()}
     for linha in conexao().execute('''SELECT t.*,p.nome FROM tentativas t JOIN participantes p ON p.id=t.participante_id ORDER BY t.id'''):
         dados = dict(linha)
+        dados['estado_missao'] = 'abortada' if missao_abortada(dados['margem_calibres']) else 'classificada'
+        dados['posicao_calculada'] = posicoes_atuais.get(dados['id'])
         if dados['nome'].startswith(('=','+','-','@')):
             dados['nome'] = "'" + dados['nome']
         escritor.writerow(dados)

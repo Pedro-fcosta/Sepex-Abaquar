@@ -18,10 +18,11 @@
   </section>
 
   <section class="dashboard-metricas" aria-label="Indicadores do evento">
-    <article class="dashboard-metrica"><span>Participações</span><strong>{{ dados.total_tentativas }}</strong><small>voos registrados no placar</small></article>
-    <article class="dashboard-metrica"><span>Apelidos distintos</span><strong>{{ dados.participantes_unicos }}</strong><small>apelidos iguais contam juntos</small></article>
+    <article class="dashboard-metrica"><span>Participações</span><strong>{{ dados.total_tentativas }}</strong><small>incluindo missões abortadas</small></article>
+    <article class="dashboard-metrica"><span>Classificadas</span><strong>{{ dados.voos_validos }}</strong><small>no ranking</small></article>
+    <article class="dashboard-metrica dashboard-metrica-aborto"><span>Abortadas</span><strong>{{ dados.missoes_abortadas }}</strong><small>estabilidade abaixo de 0,5 cal</small></article>
     <article class="dashboard-metrica"><span>Configurações usadas</span><strong>{{ dados.configuracoes_unicas }}</strong><small>de {{ total_configuracoes }} possibilidades</small></article>
-    <article class="dashboard-metrica"><span>Altura média</span><strong>{% if dados.apogeu_medio_m is not none %}{{ '%.1f'|format(dados.apogeu_medio_m) }} <em>m</em>{% else %}—{% endif %}</strong><small>média das participações</small></article>
+    <article class="dashboard-metrica"><span>Altura média</span><strong>{% if dados.apogeu_medio_m is not none %}{{ '%.1f'|format(dados.apogeu_medio_m) }} <em>m</em>{% else %}—{% endif %}</strong><small>somente missões classificadas</small></article>
   </section>
 
   {% if dados.total_tentativas == 0 %}
@@ -31,6 +32,7 @@
     <a class="botao" href="{{ url_for('web.montagem') }}">Começar montagem</a>
   </section>
   {% else %}
+  {% if dados.voos_validos %}
   <section class="dashboard-secao" aria-labelledby="dashboard-desempenho">
     <div class="dashboard-secao-topo"><div><p class="sobretitulo">RESULTADOS DE VOO</p><h2 id="dashboard-desempenho">O que os voos alcançaram</h2></div><p>Valores das simulações escolhidas pelos visitantes.</p></div>
     <div class="dashboard-destaques">
@@ -49,6 +51,9 @@
     <div class="dashboard-secao-topo"><div><p class="sobretitulo">ESCOLHAS DOS VISITANTES</p><h2 id="dashboard-escolhas">Como os foguetes foram montados</h2></div><p>Apogeu médio por opção escolhida; veja também quantas vezes cada opção apareceu.</p></div>
     <div id="graficos-grupos" class="dashboard-grupos"></div>
   </section>
+  {% else %}
+  <section class="dashboard-espera painel" aria-labelledby="dashboard-espera-titulo"><span class="dashboard-espera-icone" aria-hidden="true">!</span><div><p class="sobretitulo">SEGURANÇA EM PRIMEIRO LUGAR</p><h2 id="dashboard-espera-titulo">Aguardando uma missão classificada</h2><p>As participações abortadas ficam no histórico, mas não entram nas médias, nos gráficos de desempenho nem no ranking.</p></div><a class="botao" href="{{ url_for('web.montagem') }}">Tentar outra configuração</a></section>
+  {% endif %}
 
   <section class="dashboard-secao" aria-labelledby="dashboard-movimento">
     <div class="dashboard-secao-topo"><div><p class="sobretitulo">MOVIMENTO DA FEIRA</p><h2 id="dashboard-movimento">Participações e destaques</h2></div></div>
@@ -58,8 +63,8 @@
     </div>
   </section>
 
-  <section class="dashboard-secao painel dashboard-ranking" aria-labelledby="dashboard-ranking-titulo"><div class="dashboard-card-topo"><div><p class="sobretitulo">CLASSIFICAÇÃO</p><h2 id="dashboard-ranking-titulo">Destaques do ranking</h2></div><a href="{{ url_for('web.pagina_ranking') }}">Ver ranking completo →</a></div><div class="tabela-area"><table><thead><tr><th>Posição</th><th>Participante</th><th>Configuração</th><th>Altura</th></tr></thead><tbody>{% for r in linhas[:5] %}<tr><td><strong>#{{ r.posicao }}</strong></td><td>{{ r.nome }} {% if r.demonstrativo %}<span class="badge-demo">DEMO</span>{% endif %}{% if r.altitude_final_m is not none and r.altitude_final_m > 0.5 %}<span class="dashboard-parcial">PARCIAL</span>{% endif %}</td><td><code>{{ r.configuracao_codigo }}</code></td><td>{{ '%.1f'|format(r.apogeu_m) }} m</td></tr>{% endfor %}</tbody></table></div><p class="nota">Resultados parciais indicam simulações interrompidas antes do pouso.</p></section>
+  {% if dados.voos_validos %}<section class="dashboard-secao painel dashboard-ranking" aria-labelledby="dashboard-ranking-titulo"><div class="dashboard-card-topo"><div><p class="sobretitulo">CLASSIFICAÇÃO</p><h2 id="dashboard-ranking-titulo">Destaques do ranking</h2></div><a href="{{ url_for('web.pagina_ranking') }}">Ver ranking completo →</a></div><div class="tabela-area"><table><thead><tr><th>Posição</th><th>Participante</th><th>Configuração</th><th>Altura</th></tr></thead><tbody>{% for r in linhas[:5] %}<tr><td><strong>#{{ r.posicao }}</strong></td><td>{{ r.nome }} {% if r.demonstrativo %}<span class="badge-demo">DEMO</span>{% endif %}{% if r.altitude_final_m is not none and r.altitude_final_m > 0.5 %}<span class="dashboard-parcial">PARCIAL</span>{% endif %}</td><td><code>{{ r.configuracao_codigo }}</code></td><td>{{ '%.1f'|format(r.apogeu_m) }} m</td></tr>{% endfor %}</tbody></table></div><p class="nota">Resultados parciais indicam simulações interrompidas antes do pouso.</p></section>{% endif %}
   {% endif %}
 </div>
 {% endblock %}
-{% block scripts %}{% if dados.total_tentativas %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{ url_for('static', filename='js/dashboard.js', v='20261020-indicadores') }}"></script>{% endif %}{% endblock %}
+{% block scripts %}{% if dados.total_tentativas %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script id="dados-dashboard" type="application/json">{{ {'resumo':dados,'distribuicoes':distribuicoes}|tojson }}</script><script src="{{ url_for('static', filename='js/dashboard.js', v='20261021-abortagem') }}"></script>{% endif %}{% endblock %}

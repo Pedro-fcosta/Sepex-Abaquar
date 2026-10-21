@@ -16,4 +16,4 @@ Write-Host 'Se o celular não abrir, confira o firewall e o isolamento entre cli
 $python = Join-Path $PSScriptRoot '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $python)) { $python = 'python' }
 Push-Location $PSScriptRoot
-try { & $python run.py } finally { Pop-Location }
+try { & $python servir.py } finally { Pop-Location }

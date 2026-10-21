@@ -14,6 +14,7 @@ def criar_app(configuracao=None):
         SECRET_KEY=os.getenv('SEPEX_SECRET_KEY') or secrets.token_hex(32),
         DATABASE=str(raiz / os.getenv('SEPEX_DATABASE', 'instance/sepex.sqlite3')),
         ADMIN_TOKEN=os.getenv('SEPEX_ADMIN_TOKEN', ''),
+        ADMIN_LOCAL_ONLY=os.getenv('SEPEX_ADMIN_LOCAL_ONLY') == '1',
         MAX_CONTENT_LENGTH=10 * 1024 * 1024,
     )
     if configuracao:

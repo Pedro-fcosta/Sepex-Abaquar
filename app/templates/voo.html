@@ -8,18 +8,22 @@
       <h1 id="titulo-voo">Altura e velocidade ao longo do tempo</h1>
       <p id="tipo-trajetoria" class="nota">Carregando dados do voo...</p>
     </div>
-    <a id="ver-resultado" class="botao secundario" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else 'Ver resultados →' }}</a>
+    <a id="ver-resultado" class="botao secundario" href="{{ url_for('web.montagem') if previa|default(false) else url_for('web.resultado',id=tentativa.id) }}">{{ 'Voltar à montagem' if previa|default(false) else ('Ver decisão →' if tentativa.abortada else 'Ver resultados →') }}</a>
   </div>
   {% if previa|default(false) %}<p class="nota">Visualização dos gráficos: não registra tentativa nem altera o ranking.</p>{% endif %}
-  {% if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. Resultado parcial.</p>{% endif %}
+  {% if not tentativa.abortada and tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A série termina antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. Resultado parcial.</p>{% endif %}
   {% if tentativa.avisos_exibicao %}<p class="nota">Notas da simulação: {{tentativa.avisos_exibicao}}</p>{% endif %}
   {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · dados fictícios, sem origem no OpenRocket</p>{% endif %}
 
   <div class="voo-controles painel">
     <button id="reproduzir-graficos" class="botao" type="button" disabled>Carregando...</button>
-    <label for="tempo-graficos">Tempo da simulação <strong id="tempo-atual">0,0 s</strong></label>
+    <label for="tempo-graficos"><span id="rotulo-tempo">Tempo da simulação</span> <strong id="tempo-atual">0,0 s</strong></label>
     <input id="tempo-graficos" type="range" min="0" max="1000" value="0" disabled aria-label="Posição na linha do tempo da simulação">
     <span id="estado-graficos" class="nota" role="status" aria-live="polite">Carregando série temporal...</span>
+  </div>
+  <div id="aviso-aborto" class="voo-aborto" role="alert" hidden>
+    <strong>Missão abortada por segurança</strong>
+    <p>A estabilidade é inferior a 0,5 calibre. Os gráficos foram interrompidos no início do voo e esta tentativa não entra no ranking.</p>
   </div>
 
   <div class="voo-graficos">
@@ -35,4 +39,4 @@
   </div>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261020-apogeu') }}"></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script><script src="{{ url_for('static', filename='js/voo.js', v='20261021-abortagem') }}"></script>{% endblock %}

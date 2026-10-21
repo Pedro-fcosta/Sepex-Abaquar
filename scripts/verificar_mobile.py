@@ -56,8 +56,12 @@ def verificar():
                 assert pagina.evaluate('!isSecureContext && typeof crypto.randomUUID === "undefined"')
                 assert pagina.evaluate('typeof crypto.getRandomValues === "function"')
                 for nome in ('Visitante Mobile', 'Outro Visitante'):
-                    for _ in range(3):
-                        pagina.locator('#continuar').click()
+                    pagina.locator('input[name="coifa"][value="C1"]').check()
+                    pagina.locator('#continuar').click()
+                    pagina.locator('input[name="aleta"][value="A1"]').check()
+                    pagina.locator('#continuar').click()
+                    pagina.locator('input[name="secoes"][value="3"]').check()
+                    pagina.locator('#continuar').click()
                     pagina.locator('#nome').fill(nome)
                     pagina.locator('#confirmar').click()
                     pagina.wait_for_url('**/voo/*')
@@ -73,13 +77,29 @@ def verificar():
                     assert nome in pagina.locator('h1').inner_text()
                     pagina.get_by_role('link', name='Nova participação').click()
 
-                pagina.goto(origem + '/previa/C2-A1-F3-S1', wait_until='networkidle')
-                assert 'Maior altura registrada' in pagina.locator('#marco-apogeu').inner_text()
-                assert pagina.locator('#marco-apogeu').is_visible()
+                animada = navegador.new_page(viewport={'width': 390, 'height': 844}, reduced_motion='no-preference')
+                animada.goto(origem + '/previa/C3-A1-F5-S1', wait_until='domcontentloaded')
+                animada.locator('#estado-graficos').get_by_text('Analisando a segurança do voo').wait_for()
+                assert animada.locator('#aviso-aborto').is_hidden()
+                animada.locator('#aviso-aborto').wait_for(state='visible', timeout=5000)
+                assert animada.locator('#marco-apogeu').is_hidden()
+                assert animada.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') > 1
+                assert animada.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).options.scales.x.max') < 2
+                animada.close()
+
+                abortada = contexto.request.post(origem + '/api/tentativas', data={
+                    'nome': 'Visitante Abortado', 'codigo': 'C3-A1-F5-S1',
+                    'identificador_sessao': 'mobile-abortado-12345',
+                })
+                assert abortada.status == 201
+                pagina.goto(origem + f'/resultado/{abortada.json()["id"]}', wait_until='networkidle')
+                assert pagina.get_by_text('Voo não classificado').is_visible()
+                assert pagina.get_by_text('Posição atual no ranking').count() == 0
 
                 pagina.set_viewport_size({'width': 360, 'height': 800})
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
-                assert pagina.locator('.dashboard-metrica').first.locator('strong').inner_text() == '2'
+                assert pagina.locator('.dashboard-metrica').first.locator('strong').inner_text() == '3'
+                assert pagina.locator('.dashboard-metrica-aborto strong').inner_text() == '1'
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 pagina.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-dashboard-mobile.png'), full_page=True)
@@ -91,7 +111,7 @@ def verificar():
                 desktop.screenshot(path=str(Path(tempfile.gettempdir()) / 'sepex-dashboard-desktop.png'), full_page=True)
                 assert not erros, erros
                 navegador.close()
-                print('Mobile HTTP por IP: 5 larguras, 5 rotas, 2 participações, apogeu e dashboard OK')
+                print('Mobile HTTP por IP: 5 larguras, 5 rotas, 3 participações, abortagem, apogeu e dashboard OK')
         finally:
             servidor.shutdown()
             thread.join(timeout=5)

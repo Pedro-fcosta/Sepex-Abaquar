@@ -4,9 +4,12 @@ const controleTempo = document.getElementById('tempo-graficos');
 const estadoGraficos = document.getElementById('estado-graficos');
 const graficosVoo = [];
 const movimentoReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const avisoAborto = document.getElementById('aviso-aborto');
 
 let serieVoo = [];
 let duracaoVoo = 0;
+let limiteVoo = 0;
+let missaoAbortada = false;
 let progressoVoo = 0;
 let reproduzindo = false;
 let quadroPendente = 0;
@@ -43,7 +46,7 @@ function criarGrafico(id, nome, unidade, dados, minimo, maximo) {
       responsive: true, maintainAspectRatio: false, animation: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: item => `${item.dataset.label}: ${Number(item.parsed.y).toFixed(1)} ${unidade}` } } },
       scales: {
-        x: { type: 'linear', min: 0, max: duracaoVoo, title: { display: true, text: 'Tempo (s)', color: cores.texto }, ticks: { color: cores.texto, maxTicksLimit: 7 }, grid: { color: cores.grade } },
+        x: { type: 'linear', min: 0, max: limiteVoo, title: { display: true, text: 'Tempo (s)', color: cores.texto }, ticks: { color: cores.texto, maxTicksLimit: 7 }, grid: { color: cores.grade } },
         y: { min: minimo, max: maximo, title: { display: true, text: `${nome === 'altura' ? 'Altura' : 'Velocidade'} (${unidade})`, color: cores.texto }, ticks: { color: cores.texto, maxTicksLimit: 7 }, grid: { color: cores.grade } },
       },
     },
@@ -116,18 +119,19 @@ function amostraNoTempo(tempo, indice) {
 }
 
 function mostrarTempo(tempo) {
+  tempo = Math.min(tempo, limiteVoo);
   const indice = indiceAte(tempo);
   const atual = amostraNoTempo(tempo, indice);
-  progressoVoo = duracaoVoo ? tempo / duracaoVoo : 1;
+  progressoVoo = limiteVoo ? tempo / limiteVoo : 1;
   controleTempo.value = String(Math.round(progressoVoo * 1000));
   document.getElementById('tempo-atual').textContent = `${tempo.toFixed(1).replace('.', ',')} s`;
   document.getElementById('altura-atual').textContent = `${Math.round(atual.altura)} m`;
   document.getElementById('velocidade-atual').textContent = atual.velocidade == null ? 'Sem dados' : `${atual.velocidade.toFixed(1).replace('.', ',')} m/s`;
-  const apogeuAtingido = apogeuVoo && tempo >= apogeuVoo.tempo;
+  const apogeuAtingido = !missaoAbortada && apogeuVoo && tempo >= apogeuVoo.tempo;
   document.getElementById('marco-apogeu').hidden = !apogeuAtingido;
   for (const { grafico, nome, dados } of graficosVoo) {
     const valor = atual[nome];
-    grafico.data.datasets[0].data = dados.slice(0, indice);
+    grafico.data.datasets[0].data = [...dados.slice(0, indice), ...(indice < dados.length && tempo > dados[Math.max(0, indice - 1)].x ? [{ x: tempo, y: valor }] : [])];
     grafico.data.datasets[1].data = valor == null ? [] : [{ x: tempo, y: valor }];
     if (nome === 'altura') {
       grafico.data.datasets[2].data = apogeuAtingido ? [{ x: apogeuVoo.tempo, y: apogeuVoo.altura }] : [];
@@ -145,32 +149,47 @@ function pausar() {
   estadoGraficos.textContent = 'Animação pausada';
 }
 
+function finalizarAborto() {
+  reproduzindo = false;
+  quadroPendente = 0;
+  avisoAborto.hidden = false;
+  botaoReproduzir.textContent = 'Rever início';
+  estadoGraficos.textContent = 'Missão abortada por estabilidade inferior a 0,5 calibre';
+}
+
 function reproduzir() {
   if (movimentoReduzido) {
-    mostrarTempo(duracaoVoo);
-    estadoGraficos.textContent = 'Gráficos completos';
+    mostrarTempo(limiteVoo);
+    if (missaoAbortada) finalizarAborto();
+    else estadoGraficos.textContent = 'Gráficos completos';
     return;
   }
-  if (progressoVoo >= 1) mostrarTempo(0);
+  if (progressoVoo >= 1) {
+    mostrarTempo(0);
+    if (missaoAbortada) avisoAborto.hidden = true;
+  }
   baseReproducao = progressoVoo;
   inicioReproducao = performance.now();
   ultimoDesenho = 0;
   reproduzindo = true;
   botaoReproduzir.textContent = 'Pausar';
-  estadoGraficos.textContent = 'Reproduzindo gráficos';
+  estadoGraficos.textContent = missaoAbortada ? 'Analisando a segurança do voo' : 'Reproduzindo gráficos';
   function animar(agora) {
     if (!reproduzindo) return;
-    const progresso = Math.min(1, baseReproducao + (agora - inicioReproducao) / 7000);
+    const progresso = Math.min(1, baseReproducao + (agora - inicioReproducao) / (missaoAbortada ? 1800 : 7000));
     if (agora - ultimoDesenho >= 50 || progresso === 1) {
-      mostrarTempo(progresso * duracaoVoo);
+      mostrarTempo(progresso * limiteVoo);
       ultimoDesenho = agora;
     }
     if (progresso < 1) quadroPendente = requestAnimationFrame(animar);
     else {
-      reproduzindo = false;
-      quadroPendente = 0;
-      botaoReproduzir.textContent = 'Reproduzir novamente';
-      estadoGraficos.textContent = 'Gráficos completos';
+      if (missaoAbortada) finalizarAborto();
+      else {
+        reproduzindo = false;
+        quadroPendente = 0;
+        botaoReproduzir.textContent = 'Reproduzir novamente';
+        estadoGraficos.textContent = 'Gráficos completos';
+      }
     }
   }
   quadroPendente = requestAnimationFrame(animar);
@@ -187,6 +206,14 @@ async function iniciarGraficos() {
       : pontosIlustrativos(dados.tentativa);
     duracaoVoo = serieVoo.at(-1).tempo;
     apogeuVoo = serieVoo.reduce((pico, ponto) => ponto.altura > pico.altura ? ponto : pico, serieVoo[0]);
+    missaoAbortada = Boolean(dados.tentativa.abortada);
+    limiteVoo = missaoAbortada
+      ? Math.max(.05, Math.min(1.5, apogeuVoo.tempo * .22, duracaoVoo * .1))
+      : duracaoVoo;
+    if (missaoAbortada) {
+      document.getElementById('rotulo-tempo').textContent = 'Trecho inicial';
+      controleTempo.setAttribute('aria-label', 'Posição no trecho inicial antes da abortagem');
+    }
     const resultadoParcial = temSerie && serieVoo.at(-1).altura > 0.5;
     const rotuloApogeu = resultadoParcial ? 'Maior altura registrada' : 'Apogeu atingido';
     document.getElementById('marco-apogeu-rotulo').textContent = rotuloApogeu;
@@ -194,8 +221,9 @@ async function iniciarGraficos() {
     document.getElementById('tipo-trajetoria').textContent = temSerie
       ? 'Gráficos baseados na série temporal importada do OpenRocket.'
       : 'Curvas ilustrativas geradas apenas para visualização. Os indicadores registrados não foram alterados.';
-    const alturas = serieVoo.map(p => p.altura);
-    const velocidades = serieVoo.map(p => p.velocidade).filter(Number.isFinite);
+    const pontosExibidos = missaoAbortada ? serieVoo.slice(0, indiceAte(limiteVoo) + 1) : serieVoo;
+    const alturas = pontosExibidos.map(p => p.altura);
+    const velocidades = pontosExibidos.map(p => p.velocidade).filter(Number.isFinite);
     const maxAltura = Math.ceil(Math.max(1, ...alturas) * 1.08 / 10) * 10;
     const minVelocidade = Math.floor(Math.min(0, ...velocidades) * 1.1 / 10) * 10;
     const maxVelocidade = Math.ceil(Math.max(1, ...velocidades) * 1.1 / 10) * 10;
@@ -206,10 +234,13 @@ async function iniciarGraficos() {
     controleTempo.disabled = false;
     mostrarTempo(0);
     if (movimentoReduzido) {
-      mostrarTempo(duracaoVoo);
-      botaoReproduzir.textContent = 'Gráficos completos';
+      mostrarTempo(limiteVoo);
+      if (missaoAbortada) finalizarAborto();
+      else {
+        botaoReproduzir.textContent = 'Gráficos completos';
+        estadoGraficos.textContent = 'Gráficos completos';
+      }
       botaoReproduzir.disabled = true;
-      estadoGraficos.textContent = 'Gráficos completos';
     } else reproduzir();
   } catch (erro) {
     estadoGraficos.textContent = erro.message || 'Erro ao carregar os gráficos.';
@@ -220,8 +251,9 @@ async function iniciarGraficos() {
 botaoReproduzir.addEventListener('click', () => reproduzindo ? pausar() : reproduzir());
 controleTempo.addEventListener('input', () => {
   if (reproduzindo) pausar();
-  mostrarTempo(Number(controleTempo.value) / 1000 * duracaoVoo);
-  estadoGraficos.textContent = 'Posição ajustada na linha do tempo';
+  mostrarTempo(Number(controleTempo.value) / 1000 * limiteVoo);
+  if (missaoAbortada && progressoVoo >= 1) finalizarAborto();
+  else estadoGraficos.textContent = 'Posição ajustada na linha do tempo';
 });
 document.addEventListener('sepex:themechange', atualizarTemaGraficos);
 iniciarGraficos();

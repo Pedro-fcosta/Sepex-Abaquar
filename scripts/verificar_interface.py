@@ -201,13 +201,14 @@ def verificar():
                 pagina.evaluate("() => { const botao = document.getElementById('confirmar'); botao.click(); botao.click(); }")
                 pagina.wait_for_url('**/voo/*')
                 pagina.wait_for_function("() => !!Chart.getChart(document.getElementById('grafico-altura'))")
-                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 738
+                assert 1 < pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') < 738
+                assert pagina.locator('#aviso-aborto').is_visible()
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 pagina.locator('#ver-resultado').click()
-                assert pagina.locator('h1').inner_text() == 'Voo de Visitante OpenRocket'
+                assert pagina.locator('h1').inner_text() == 'Missão de Visitante OpenRocket'
+                assert pagina.get_by_text('Voo não classificado').is_visible()
                 pagina.goto(origem, wait_until='networkidle')
-                assert pagina.locator('.inicio-ranking-lista li').count() == 1
-                assert 'Visitante OpenRocket' in pagina.locator('.inicio-ranking-lista').inner_text()
+                assert pagina.locator('.inicio-ranking-lista li').count() == 0
 
                 pagina.goto(origem + '/montagem', wait_until='networkidle')
                 for _ in range(3):
@@ -232,14 +233,15 @@ def verificar():
                 pagina.goto(origem + '/dashboard', wait_until='networkidle')
                 assert pagina.locator('#grafico-apogeu').evaluate('(canvas) => !!Chart.getChart(canvas)')
                 pagina.goto(origem, wait_until='networkidle')
-                assert pagina.locator('.inicio-ranking-lista li').count() == 1
+                assert pagina.locator('.inicio-ranking-lista li').count() == 0
                 assert 'Visitante QA' not in pagina.locator('.inicio-ranking-lista').inner_text()
 
                 pagina.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
                 assert pagina.get_by_text('não registra tentativa nem altera o ranking', exact=False).is_visible()
                 assert pagina.get_by_text('Sem dispositivo de recuperação, conforme o projeto', exact=False).is_visible()
-                assert pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
-                assert pagina.locator('#grafico-velocidade').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') == 974
+                assert 1 < pagina.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') < 974
+                assert 1 < pagina.locator('#grafico-velocidade').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length') < 974
+                assert pagina.locator('#aviso-aborto').is_visible()
                 assert pagina.locator('#tempo-graficos').input_value() == '1000'
                 assert 'série temporal importada do OpenRocket' in pagina.locator('#tipo-trajetoria').inner_text()
                 assert pagina.locator('#foguete-voo').count() == 0
@@ -262,12 +264,12 @@ def verificar():
                 assert pagina.url.endswith('/diagnostico')
                 pagina.goto(origem + '/ranking', wait_until='networkidle')
                 assert pagina.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
-                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
-                assert 'Visitante OpenRocket' in pagina.locator('#ranking-podio').inner_text()
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '0'
+                assert 'Visitante OpenRocket' not in pagina.locator('#ranking-podio').inner_text()
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 0
                 pagina.locator('#ranking-origem').select_option('incluir')
                 assert pagina.locator('#ranking-tabela-corpo .ranking-badge-demo').count() == 1
-                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '1'
+                assert pagina.locator('#ranking-kpi-lancamentos').inner_text() == '0'
                 pagina.locator('[data-modo="melhor"]').click()
                 assert pagina.locator('[data-modo="melhor"]').get_attribute('aria-pressed') == 'true'
                 pagina.locator('#ranking-busca').fill('Visitante QA')
@@ -286,7 +288,7 @@ def verificar():
                 paginaAnimada = contextoAnimado.new_page()
                 paginaAnimada.on('pageerror', lambda erro: falhas.append(str(erro)))
                 paginaAnimada.goto(origem + '/previa/C1-A1-F3-S1', wait_until='networkidle')
-                paginaAnimada.wait_for_function("() => Chart.getChart(document.getElementById('grafico-altura'))?.data.datasets[0].data.length > 4")
+                paginaAnimada.wait_for_function("() => window.Chart && Chart.getChart(document.getElementById('grafico-altura'))?.data.datasets[0].data.length > 4")
                 pontosVisiveis = paginaAnimada.locator('#grafico-altura').evaluate('(canvas) => Chart.getChart(canvas).data.datasets[0].data.length')
                 assert 4 < pontosVisiveis < 974, pontosVisiveis
                 paginaAnimada.locator('#reproduzir-graficos').click()

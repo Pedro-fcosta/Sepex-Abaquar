@@ -15,7 +15,7 @@ $env:SEPEX_SECRET_KEY = 'defina-outra-chave-longa'
 python run.py
 ```
 
-Abra `http://127.0.0.1:5000`. O banco incluído já permite testar montagem, gráficos, resultado e ranking nas 108 combinações, com o placar inicialmente vazio. Os 108 modelos `.ork` e CSVs gerados ficam em `Foguete Modular - Banco/gerados`; os 21 pares originais permanecem em `.ork` e `.csv`. O OpenRocket concluiu 106 voos e interrompeu 2; esses resultados parciais permanecem disponíveis e identificados na prévia, no resultado e no ranking. O modelo não possui dispositivo de recuperação por decisão do projeto e algumas combinações, principalmente S1 e S2, têm estabilidade baixa. Para começar com um banco vazio, remova `instance/sepex.sqlite3`, execute `init-db`, `seed-configuracoes` e importe `Foguete Modular - Banco/gerados/csv`.
+Abra `http://127.0.0.1:5000`. O banco incluído já permite testar montagem, gráficos e resultado nas 108 combinações. Os 108 modelos `.ork` e CSVs gerados ficam em `Foguete Modular - Banco/gerados`; os 21 pares originais permanecem em `.ork` e `.csv`. O OpenRocket concluiu 106 voos e interrompeu 2. A estabilidade inferior a **0,5 calibre** aborta a missão após o começo dos gráficos, sem registrar apogeu válido ou posição no ranking. A tentativa continua no histórico e no total de participações do dashboard. O modelo não possui dispositivo de recuperação por decisão do projeto. Para começar com um banco vazio, remova `instance/sepex.sqlite3`, execute `init-db`, `seed-configuracoes` e importe `Foguete Modular - Banco/gerados/csv`.
 
 O histórico dos ensaios anteriores está preservado em `data/exports/backup-antes-preparo-sepex-2026.sqlite3`; o banco ativo entregue para o evento está sem participantes e sem tentativas.
 
@@ -23,7 +23,11 @@ O histórico dos ensaios anteriores está preservado em `data/exports/backup-ant
 
 No computador do evento, conectado à mesma rede Wi-Fi dos visitantes, execute `./iniciar-rede.ps1` no PowerShell após instalar as dependências. O script inicia o servidor para a rede local e mostra os endereços `http://IP:5000` que podem ser abertos no navegador dos celulares. Compartilhe o endereço da conexão usada pelos visitantes. Se não abrir, libere a porta 5000 no firewall do computador e desative o isolamento entre clientes da rede Wi-Fi. O acesso não depende de internet, mas os aparelhos precisam alcançar o computador na rede local. Cada visitante pode voltar a **Montagem** para fazer novas participações.
 
-No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`. Para aceitar celulares na rede, execute com `SEPEX_HOST=0.0.0.0` e compartilhe o IP local do computador.
+No Linux/macOS, substitua `py -3.12` por `python3.12`, ative com `source .venv/bin/activate` e defina variáveis com `export`. Para aceitar celulares na rede, execute `python servir.py` com `SEPEX_HOST=0.0.0.0` e compartilhe o IP local do computador.
+
+### Acesso pela internet
+
+Defina `SEPEX_ADMIN_TOKEN` e `SEPEX_SECRET_KEY` com valores fortes e execute `./iniciar-internet.ps1` no computador que hospeda o programa. O script usa Waitress, escuta em `0.0.0.0:5000` (ou `SEPEX_PORT`), mostra o IP público consultado e restringe a administração ao próprio computador. O endereço que os visitantes abrirão é `http://IP-PUBLICO:5000`. **O script sozinho não torna a porta pública**: o roteador precisa encaminhar a porta TCP ao IPv4 local do computador e o firewall deve permiti-la. Teste de um celular com Wi-Fi desligado, usando dados móveis. Redes de campus podem bloquear conexões de entrada ou usar CGNAT; nesse caso, solicite à TI um IP público alcançável e o encaminhamento ou um proxy/túnel gerenciado. Para uso aberto na internet, coloque HTTPS na frente do servidor. O endereço informado é uma possibilidade até ser testado externamente.
 
 ## Configurações e dados
 
@@ -53,7 +57,7 @@ python -m flask --app run backup-db data\exports\backup.sqlite3
 python -m pytest -q
 ```
 
-Também há interface administrativa em `/admin/entrar` com o token de `SEPEX_ADMIN_TOKEN`. As rotas de escrita e exportação administrativas exigem esse token. Sem token configurado, elas ficam bloqueadas. O login web usa sessão assinada e token de formulário. Configure `SEPEX_SECRET_KEY` estável para preservar sessões entre reinicializações. Não exponha o servidor à internet pública.
+Também há interface administrativa em `/admin/entrar` com o token de `SEPEX_ADMIN_TOKEN`. As rotas de escrita e exportação administrativas exigem esse token. Sem token configurado, elas ficam bloqueadas. O login web usa sessão assinada e token de formulário. Configure `SEPEX_SECRET_KEY` estável para preservar sessões entre reinicializações. `iniciar-internet.ps1` ativa `SEPEX_ADMIN_LOCAL_ONLY=1`, bloqueando administração por IP remoto; acesse a administração em `http://127.0.0.1:5000` no computador do evento.
 
 O CSV importado fica disponível imediatamente. Uma nova versão da mesma configuração substitui a versão ativa anterior; tentativas antigas preservam os números registrados. O hash SHA-256 do arquivo e a configuração tornam a importação idempotente. O importador lê cabeçalhos comuns em português/inglês, CSV de resumo ou série temporal, converte unidades para SI e salva as unidades originais. Consulte [guia do OpenRocket](docs/OPENROCKET.md). Os CSV em `data/examples` são **exemplos artificiais de formato**, não simulações reais.
 
@@ -61,7 +65,7 @@ O gerador `python -m scripts.gerar_108_openrocket --importar` cria os 108 modelo
 
 ## Operação e classificação
 
-O ranking ordena por apogeu decrescente, velocidade máxima decrescente, horário mais antigo e ID crescente. Todas as tentativas do evento são preservadas; a visualização opcional mostra só a melhor de cada participante. Apelidos iguais após normalização de caixa contam como um participante. O dashboard distingue apelidos e participações, mostra cobertura das 108 configurações, recordes, histogramas, escolhas por componente e movimento por hora no fuso local do computador. O gráfico de altura marca o apogeu quando a animação o alcança; nas séries interrompidas, marca a maior altura registrada como resultado parcial. Resultados de séries interrompidas entram no ranking com a marcação `OpenRocket · parcial`. Depois de ensaios, `preparar-evento CAMINHO_DO_BACKUP` guarda o banco completo e zera as tentativas sem apagar os 108 voos. O comando recusa sobrescrever um backup existente.
+O ranking ordena as missões classificadas por apogeu decrescente, velocidade máxima decrescente, horário mais antigo e ID crescente. Abaixo de 0,5 calibre, os dois gráficos exibem apenas o trecho inicial e a operação é abortada antes do apogeu. O limite de 0,5 calibre é classificado. Todas as tentativas são preservadas; abortadas contam no histórico, nas escolhas e no movimento do dashboard, mas ficam fora do ranking e dos indicadores de desempenho. A visualização opcional do ranking mostra só a melhor de cada participante. Apelidos iguais após normalização de caixa contam como um participante. O gráfico de altura marca o apogeu apenas nas missões classificadas. Uma simulação interrompida antes do pouso só recebe a marcação de resultado parcial se também passar no limite de estabilidade. Depois de ensaios, `preparar-evento CAMINHO_DO_BACKUP` guarda o banco completo e zera as tentativas sem apagar os 108 voos. O comando recusa sobrescrever um backup existente.
 
 SQLite usa WAL, chaves estrangeiras e backup pela API do próprio SQLite. O log de erros fica em `instance/sepex.log`. `/diagnostico` mostra cobertura, séries parciais, tentativas de demonstração e integridade. `verificar-prontidao` confere os 108 arquivos ORK/CSV, hashes importados, pontos dos gráficos, banco e variáveis de administração. Ver [operação](docs/OPERACAO-SEPEX.md) para rede local, quiosque, backup e recuperação.
 

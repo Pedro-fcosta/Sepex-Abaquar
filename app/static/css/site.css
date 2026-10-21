@@ -340,6 +340,12 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
 .resultado-destaque strong { display: block; color: var(--azul-principal); font-size: clamp(3.6rem, 9vw, 7rem); line-height: 1.15; }
 .resultado-destaque strong small { font-size: .4em; }
 [data-theme="dark"] .resultado-destaque > span, [data-theme="dark"] .resultado-destaque strong { color: #a9cdfc; }
+.resultado-abortado { max-width: 980px; margin-inline: auto; background: var(--vermelho-bg); border-color: var(--vermelho-texto); }
+.resultado-abortado > span, .resultado-abortado h2 { color: var(--vermelho-texto); }
+[data-theme="dark"] .resultado-abortado > span, [data-theme="dark"] .resultado-abortado h2 { color: var(--vermelho-texto); }
+.resultado-abortado h2 { margin: 15px 0; font-size: clamp(2rem, 5vw, 3.6rem); }
+.resultado-abortado p { max-width: 690px; margin: 10px auto 0; color: var(--text-main); font-size: 1rem; line-height: 1.6; }
+.resultado-abortado p strong { display: inline; color: var(--vermelho-texto); font-size: inherit; line-height: inherit; }
 .indicadores .cartao { display: flex; flex-direction: column; gap: 13px; }
 .indicadores .cartao span { color: var(--text-muted); }
 .indicadores .cartao strong { font-size: 1.4rem; }
@@ -369,6 +375,9 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
 .voo-marco { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; width: fit-content; margin-top: 13px; padding: 8px 12px; border: 1px solid #e4ba7b; border-radius: 9px; background: #fff5df; color: #87410b; font-size: .86rem; font-variant-numeric: tabular-nums; }
 .voo-marco > span:first-child { font-size: .9rem; }
 [data-theme="dark"] .voo-marco { border-color: #9b7440; background: #40301d; color: #ffdfa5; }
+.voo-aborto { padding: 20px 24px; border: 1px solid var(--vermelho-texto); border-left-width: 5px; border-radius: 13px; background: var(--vermelho-bg); color: var(--vermelho-texto); }
+.voo-aborto strong { display: block; margin-bottom: 5px; font-size: 1.25rem; }
+.voo-aborto p { margin: 0; color: var(--text-main); }
 
 /* Dashboard */
 .dashboard-pagina { display: grid; gap: clamp(30px, 4vw, 52px); }
@@ -383,13 +392,17 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
 .dashboard-anel span { color: var(--text-muted); font-size: .86rem; font-weight: 700; }
 .dashboard-cobertura p { margin: 0; color: var(--text-muted); font-size: .9rem; }
 .dashboard-cobertura b { color: var(--text-main); }
-.dashboard-metricas, .dashboard-destaques { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.dashboard-metricas, .dashboard-destaques { display: grid; gap: 14px; }
+.dashboard-metricas { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.dashboard-destaques { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .dashboard-metrica, .dashboard-destaques article { min-width: 0; padding: 22px; border: 1px solid var(--border-soft); border-radius: 16px; background: var(--bg-card); box-shadow: var(--shadow-soft); }
 .dashboard-metrica { display: grid; align-content: space-between; min-height: 148px; }
 .dashboard-metrica > span, .dashboard-destaques article > span { color: var(--text-muted); font-size: .9rem; font-weight: 700; }
 .dashboard-metrica > strong { color: var(--home-azul-escuro); font-size: clamp(1.8rem, 3vw, 2.7rem); letter-spacing: -.04em; line-height: 1.15; font-variant-numeric: tabular-nums; }
 .dashboard-metrica > strong em { font-size: .48em; font-style: normal; letter-spacing: 0; }
 .dashboard-metrica > small { color: var(--text-soft); font-size: .78rem; }
+.dashboard-metrica-aborto { border-top: 3px solid var(--vermelho-texto); }
+.dashboard-metrica-aborto > strong { color: var(--vermelho-texto); }
 .dashboard-secao { min-width: 0; }
 .dashboard-secao-topo { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 17px; }
 .dashboard-secao-topo .sobretitulo { margin: 0 0 7px; }
@@ -483,6 +496,7 @@ td button { padding: 6px 9px; border-radius: 7px; color: var(--azul-principal); 
   .dashboard-anel strong { font-size: 1.65rem; }
   .dashboard-anel span { font-size: .68rem; }
   .dashboard-metricas, .dashboard-destaques { gap: 9px; }
+  .dashboard-metrica:last-child { grid-column: 1 / -1; }
   .dashboard-metrica, .dashboard-destaques article { padding: 16px 13px; }
   .dashboard-metrica { min-height: 132px; }
   .dashboard-metrica > strong { font-size: clamp(1.5rem, 6vw, 2.1rem); }

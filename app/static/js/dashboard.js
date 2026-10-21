@@ -4,6 +4,7 @@ const graficos = [];
 function numero(valor) { return valor == null ? '—' : valor.toFixed(1).replace('.', ','); }
 
 for (const chave of ['apogeu', 'velocidade']) {
+  if (!document.getElementById(`grafico-${chave}`)) continue;
   const hist = dados.distribuicoes[chave];
   document.getElementById(`stats-${chave}`).textContent = `Média ${numero(hist.media)} · Mediana ${numero(hist.mediana)} · Desvio ${numero(hist.desvio_padrao)}`;
   const grafico = new Chart(document.getElementById(`grafico-${chave}`), {
@@ -27,13 +28,13 @@ for (const chave of ['apogeu', 'velocidade']) {
 }
 
 const grupos = [['coifas', 'Coifas'], ['aletas', 'Aletas'], ['quantidade_aletas', 'Quantidade de aletas'], ['secoes', 'Seções do corpo']];
-for (const [chave, titulo] of grupos) {
+for (const [chave, titulo] of document.getElementById('graficos-grupos') ? grupos : []) {
   const painel = document.createElement('article');
   painel.className = 'painel dashboard-grupo-card';
   const subtitulo = document.createElement('h3');
   subtitulo.textContent = titulo;
   const descricao = document.createElement('p');
-  descricao.textContent = 'Apogeu médio (m) · número de escolhas ao passar o dedo ou cursor';
+  descricao.textContent = 'Apogeu médio (m) das missões classificadas · toque nas barras para ver quantas escolhas';
   const area = document.createElement('div');
   area.className = 'grafico';
   const canvas = document.createElement('canvas');

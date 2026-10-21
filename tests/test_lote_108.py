@@ -23,14 +23,14 @@ def test_lote_gerado_libera_108_graficos(app, cliente):
         assert resposta.json['origem_trajetoria'] == 'serie_openrocket'
 
     codigo_parcial = 'C2-A1-F3-S1'
-    assert 'Resultado parcial' in cliente.get(f'/previa/{codigo_parcial}').get_data(as_text=True)
+    assert cliente.get(f'/api/previa/{codigo_parcial}').json['tentativa']['abortada'] is True
     tentativa = cliente.post('/api/tentativas', json={
         'nome': 'Teste parcial', 'codigo': codigo_parcial,
         'identificador_sessao': 'lote-108-parcial',
     })
     assert tentativa.status_code == 201
-    assert 'Resultado parcial' in cliente.get(tentativa.json['url_voo']).get_data(as_text=True)
+    assert 'Ver decisão' in cliente.get(tentativa.json['url_voo']).get_data(as_text=True)
     resultado = cliente.get(f'/resultado/{tentativa.json["id"]}').get_data(as_text=True)
-    assert 'resultado parcial' in resultado
-    assert 'SIMULAÇÃO INTERROMPIDA' in resultado
-    assert cliente.get('/api/ranking/placar').json['linhas'][0]['parcial'] is True
+    assert 'MISSÃO ABORTADA' in resultado
+    assert 'Voo não classificado' in resultado
+    assert cliente.get('/api/ranking/placar').json['linhas'] == []

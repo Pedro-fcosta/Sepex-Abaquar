@@ -3,6 +3,7 @@ import sqlite3
 import unicodedata
 from .db import conexao
 from .estatisticas import ranking
+from .regras_voo import missao_abortada
 
 
 def registrar(nome, codigo, sessao):
@@ -30,8 +31,9 @@ def registrar(nome, codigo, sessao):
                 velocidade_max_ms,aceleracao_max_ms2,margem_calibres,identificador_sessao,demonstrativo)
                 VALUES (?,?,?,?,?,?,?,?,?)''',(participante,codigo,sim['id'],sim['apogeu_m'],sim['velocidade_max_ms'],sim['aceleracao_max_ms2'],sim['margem_calibres'],sessao,sim['demonstrativo']))
             id_tentativa = cursor.lastrowid
-            posicao = next(r['posicao'] for r in ranking() if r['id']==id_tentativa)
-            db.execute('UPDATE tentativas SET posicao_calculada=? WHERE id=?',(posicao,id_tentativa))
+            if not missao_abortada(sim['margem_calibres']):
+                posicao = next(r['posicao'] for r in ranking() if r['id']==id_tentativa)
+                db.execute('UPDATE tentativas SET posicao_calculada=? WHERE id=?',(posicao,id_tentativa))
     except sqlite3.IntegrityError:
         repetida = db.execute('SELECT id FROM tentativas WHERE identificador_sessao=?',(sessao,)).fetchone()
         if not repetida:

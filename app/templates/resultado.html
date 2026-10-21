@@ -1,10 +1,27 @@
-{% extends 'base.html' %}{% block titulo %}Resultado · ABAQUAR{% endblock %}{% block conteudo %}
-<section class="cabecalho centro"><p class="sobretitulo">{{ 'SIMULAÇÃO INTERROMPIDA' if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 else 'MISSÃO CONCLUÍDA' }} · {{tentativa.configuracao_codigo}}</p><h1>Voo de {{tentativa.nome}}</h1>
-{% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · valores fictícios para testar o fluxo. Não são resultados OpenRocket.</p>{% endif %}</section>
-{% if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A simulação foi interrompida antes do pouso, a {{'%.1f'|format(tentativa.altitude_final_m)}} m de altitude. A maior altura registrada é um resultado parcial.</p>{% endif %}
-<section class="resultado-destaque"><span>{{ 'MAIOR ALTURA REGISTRADA' if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 else 'APOGEU' }}</span><strong>{{'%.1f'|format(tentativa.apogeu_m)}} <small>m</small></strong><p>Posição atual no ranking: <b>#{{posicao}}</b></p></section>
-<section class="grade tres indicadores"><article class="cartao revelar"><span>Velocidade máxima</span><strong>{% if tentativa.velocidade_max_ms is not none %}{{'%.1f'|format(tentativa.velocidade_max_ms)}} m/s{% else %}Pendente{% endif %}</strong></article>
-<article class="cartao revelar"><span>Aceleração máxima</span><strong>{% if tentativa.aceleracao_max_ms2 is not none %}{{'%.1f'|format(tentativa.aceleracao_max_ms2)}} m/s²{% else %}Pendente{% endif %}</strong></article>
-<article class="cartao revelar"><span>Estabilidade</span><strong>{% if tentativa.margem_calibres is not none %}{{'%.2f'|format(tentativa.margem_calibres)}} calibres{% else %}Dado não informado{% endif %}</strong><small>{{tentativa.aviso_estabilidade or ''}}</small></article></section>
-<div class="acoes centro"><a class="botao" href="/montagem">Nova participação</a><a class="botao secundario" href="/ranking">Ver ranking</a></div>
+{% extends 'base.html' %}
+{% block titulo %}Resultado · ABAQUAR{% endblock %}
+{% block conteudo %}
+<section class="cabecalho centro">
+  <p class="sobretitulo">{{ 'MISSÃO ABORTADA' if tentativa.abortada else ('SIMULAÇÃO INTERROMPIDA' if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 else 'MISSÃO CONCLUÍDA') }} · {{ tentativa.configuracao_codigo }}</p>
+  <h1>{{ 'Missão de ' if tentativa.abortada else 'Voo de ' }}{{ tentativa.nome }}</h1>
+  {% if tentativa.demonstrativo %}<p class="aviso-demo">DEMONSTRAÇÃO · valores fictícios para testar o fluxo. Não são resultados OpenRocket.</p>{% endif %}
+</section>
+
+{% if tentativa.abortada %}
+<section class="resultado-destaque resultado-abortado" aria-labelledby="titulo-aborto">
+  <span>DECISÃO DE SEGURANÇA</span>
+  <h2 id="titulo-aborto">Voo não classificado</h2>
+  <p>A estabilidade de <strong>{{ '%.2f'|format(tentativa.margem_calibres) }} calibre{{ 's' if tentativa.margem_calibres != 1 else '' }}</strong> está abaixo do mínimo de <strong>{{ '%.1f'|format(margem_minima) }} calibre</strong>. A missão foi abortada no início da animação.</p>
+  <p>Esta participação fica registrada no histórico, sem apogeu válido nem posição no ranking.</p>
+</section>
+{% else %}
+  {% if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 %}<p class="estado estado-indisponivel">A simulação foi interrompida antes do pouso, a {{ '%.1f'|format(tentativa.altitude_final_m) }} m de altitude. A maior altura registrada é um resultado parcial.</p>{% endif %}
+  <section class="resultado-destaque"><span>{{ 'MAIOR ALTURA REGISTRADA' if tentativa.altitude_final_m is not none and tentativa.altitude_final_m > 0.5 else 'APOGEU' }}</span><strong>{{ '%.1f'|format(tentativa.apogeu_m) }} <small>m</small></strong><p>Posição atual no ranking: <b>#{{ posicao }}</b></p></section>
+  <section class="grade tres indicadores">
+    <article class="cartao revelar"><span>Velocidade máxima</span><strong>{% if tentativa.velocidade_max_ms is not none %}{{ '%.1f'|format(tentativa.velocidade_max_ms) }} m/s{% else %}Pendente{% endif %}</strong></article>
+    <article class="cartao revelar"><span>Aceleração máxima</span><strong>{% if tentativa.aceleracao_max_ms2 is not none %}{{ '%.1f'|format(tentativa.aceleracao_max_ms2) }} m/s²{% else %}Pendente{% endif %}</strong></article>
+    <article class="cartao revelar"><span>Estabilidade</span><strong>{% if tentativa.margem_calibres is not none %}{{ '%.2f'|format(tentativa.margem_calibres) }} calibres{% else %}Dado não informado{% endif %}</strong><small>{{ tentativa.aviso_estabilidade or '' }}</small></article>
+  </section>
+{% endif %}
+<div class="acoes centro"><a class="botao" href="{{ url_for('web.montagem') }}">Nova participação</a><a class="botao secundario" href="{{ url_for('web.pagina_ranking') }}">Ver ranking</a></div>
 {% endblock %}

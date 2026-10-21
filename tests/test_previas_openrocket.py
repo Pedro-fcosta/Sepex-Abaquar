@@ -42,7 +42,7 @@ def test_lote_importado_libera_todos_os_voos_e_graficos(app, cliente):
     assert dados['origem_trajetoria'] == 'serie_openrocket'
     assert len(dados['pontos']) > 900
     assert dados['pontos'][-1]['altitude_m'] == 0
-    assert 'termina antes do pouso' in cliente.get('/previa/C2-A3-F3-S1').get_data(as_text=True)
+    assert cliente.get('/api/previa/C2-A3-F3-S1').json['tentativa']['abortada'] is True
     with app.app_context():
         assert conexao().execute('SELECT count(*) FROM tentativas').fetchone()[0] == 0
     for arquivo in sorted(LOTE.rglob('*.csv')):
