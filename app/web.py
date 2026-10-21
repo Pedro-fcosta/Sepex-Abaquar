@@ -63,6 +63,11 @@ def inicio():
                            configuracoes_carregadas=db.execute('SELECT count(*) FROM configuracoes').fetchone()[0])
 
 
+@bp.get('/katherine')
+def katherine():
+    return render_template('katherine.html')
+
+
 @bp.get('/montagem')
 def montagem():
     db = conexao()

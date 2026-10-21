@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block titulo %}Conheça Katherine Johnson · ABAQUAR{% endblock %}
+{% block body_class %}pagina-katherine{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='css/katherine.css', v='20261021-1') }}">{% endblock %}
+{% block conteudo %}
+<div class="katherine-pagina">
+  <section class="k-hero k-dark" aria-labelledby="k-titulo">
+    <div class="k-container k-hero-grid">
+      <div class="k-hero-texto">
+        <p class="k-eyebrow"><span class="k-star" aria-hidden="true">✦</span> CIÊNCIA DELAS · SEPEX 2026</p>
+        <h1 id="k-titulo">Katherine<br><em>Johnson</em></h1>
+        <p class="k-hero-lead">A matemática que ajudou a levar a humanidade ao espaço.</p>
+        <p class="k-hero-resumo">Com cálculos de trajetórias e conferências decisivas, ela participou de marcos da exploração espacial enquanto abria caminho em uma profissão marcada por barreiras raciais e de gênero.</p>
+        <a class="k-button k-button-gold" href="#historia">Conheça sua história <span aria-hidden="true">↓</span></a>
+        <span class="k-hero-index">01 / 08 <span aria-hidden="true">—</span> UMA HISTÓRIA QUE MOVE O FUTURO</span>
+      </div>
+      <figure class="k-hero-foto">
+        <img src="{{ url_for('static', filename='img/katherine/katherine-johnson-nasa.png') }}" alt="Katherine Johnson em sua mesa de trabalho no centro Langley da NASA" width="1041" height="530" fetchpriority="high">
+        <figcaption>Katherine Johnson em Langley. <a href="https://www.nasa.gov/image-article/katherine-johnson-nasa-langley-research-center/" target="_blank" rel="noopener noreferrer">Foto: NASA ↗</a></figcaption>
+      </figure>
+      <svg class="k-hero-orbita" viewBox="0 0 540 540" fill="none" aria-hidden="true"><circle cx="270" cy="270" r="205"/><ellipse cx="270" cy="270" rx="250" ry="115" transform="rotate(-35 270 270)"/><circle cx="93" cy="371" r="5"/><path d="M267 38v26m0 414v26M35 270h27m416 0h27"/></svg>
+    </div>
+  </section>
+
+  <section class="k-section k-biografia" id="historia" aria-labelledby="k-quem-titulo">
+    <div class="k-container k-biografia-grid">
+      <div class="k-biografia-texto">
+        <p class="k-kicker">02 / QUEM FOI KATHERINE?</p>
+        <h2 id="k-quem-titulo">Curiosidade que não cabia nos limites de seu tempo.</h2>
+        <p>Desde criança, Katherine gostava de contar e demonstrava facilidade com matemática. Concluiu o ensino médio aos 14 anos e, em 1937, formou-se em matemática e francês no West Virginia State College.</p>
+        <p>Em 1953, ingressou na NACA, agência que antecedeu a NASA. Trabalhou como uma das chamadas “computadoras humanas” e passou a atuar em cálculos de trajetórias espaciais.</p>
+        <p>Como mulher negra, enfrentou a segregação racial e restrições impostas às mulheres na vida profissional. Sua competência ajudou a abrir espaços que lhe eram negados.</p>
+        <div class="k-fatos" aria-label="Dados biográficos"><div><strong>1918</strong><span>Nascimento</span></div><div><strong>1953</strong><span>Entrada na NACA</span></div><div><strong>33 anos</strong><span>Em Langley</span></div></div>
+      </div>
+      <figure class="k-retrato">
+        <img src="{{ url_for('static', filename='img/katherine/katherine-johnson-archive.jpg') }}" alt="Retrato histórico em preto e branco de Katherine Johnson" width="1526" height="1920" loading="lazy">
+        <figcaption>Retrato de Katherine Johnson. <a href="https://science.nasa.gov/people/katherine-johnson/" target="_blank" rel="noopener noreferrer">Foto: NASA ↗</a></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="k-section k-tempo" id="linha-do-tempo" aria-labelledby="k-tempo-titulo">
+    <div class="k-container">
+      <header class="k-section-heading"><p class="k-kicker">03 / UMA TRAJETÓRIA EXTRAORDINÁRIA</p><h2 id="k-tempo-titulo">Uma vida em marcos.</h2><p>Da paixão pelos números a missões que marcaram a história da exploração espacial.</p></header>
+      <ol class="k-timeline">
+        <li class="k-timeline-item"><span class="k-timeline-ano">1918</span><div><h3>O começo</h3><p>Nasce em White Sulphur Springs, Virgínia Ocidental, Estados Unidos.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">1953</span><div><h3>Entrada na NACA</h3><p>Começa a trabalhar no centro Langley, na agência que mais tarde se tornaria a NASA.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">1960</span><div><h3>Matemática das trajetórias</h3><p>Assina com Ted Skopinski um relatório técnico sobre o cálculo do ângulo de lançamento para posicionar uma espaçonave em órbita.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">1961</span><div><h3>Freedom 7</h3><p>Realiza a análise da trajetória do voo de Alan Shepard, primeiro estadunidense a chegar ao espaço.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">1962</span><div><h3>Friendship 7</h3><p>A pedido de John Glenn, confere os cálculos feitos por computadores eletrônicos para sua missão orbital.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">1969</span><div><h3>Programa Apollo</h3><p>Seus cálculos integraram o trabalho matemático associado às missões lunares, incluindo a Apollo 11.</p></div></li>
+        <li class="k-timeline-item"><span class="k-timeline-ano">2015</span><div><h3>Reconhecimento nacional</h3><p>Recebe a Medalha Presidencial da Liberdade dos Estados Unidos.</p></div></li>
+      </ol>
+      <p class="k-fonte-curta">Marcos conferidos na <a href="https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/" target="_blank" rel="noopener noreferrer">biografia oficial da NASA ↗</a> e no <a href="https://ntrs.nasa.gov/citations/19980227091" target="_blank" rel="noopener noreferrer">relatório técnico de 1960 ↗</a>.</p>
+    </div>
+  </section>
+
+  <section class="k-section k-calculos" aria-labelledby="k-calculos-titulo">
+    <div class="k-container">
+      <header class="k-section-heading"><p class="k-kicker">04 / OS CÁLCULOS QUE FIZERAM HISTÓRIA</p><h2 id="k-calculos-titulo">Antes de alcançar o espaço, era preciso calcular o caminho.</h2><p>Entenda por que a matemática foi fundamental para transformar missões espaciais em realidade.</p></header>
+      <div class="k-conceitos">
+        <article><span class="k-conceito-numero">01</span><svg viewBox="0 0 180 95" role="img" aria-label="Curva que representa um caminho"><path class="k-diagrama-grade" d="M8 80H172M8 48H172M8 16H172"/><path class="k-diagrama-linha" d="M10 80Q75 -5 170 77"/><circle cx="10" cy="80" r="4"/><circle cx="170" cy="77" r="4"/></svg><h3>Trajetória</h3><p>O caminho percorrido por um corpo em movimento.</p></article>
+        <article><span class="k-conceito-numero">02</span><svg viewBox="0 0 180 95" role="img" aria-label="Pontos estimados ao longo de uma curva"><path class="k-diagrama-grade" d="M8 80H172M8 48H172M8 16H172"/><path class="k-diagrama-linha" d="M10 80Q75 -5 170 77"/><circle cx="42" cy="43" r="4"/><circle cx="91" cy="25" r="4"/><circle cx="143" cy="52" r="4"/></svg><h3>Previsão</h3><p>Modelos matemáticos ajudam a estimar posições, velocidades e condições de movimento.</p></article>
+        <article><span class="k-conceito-numero">03</span><svg viewBox="0 0 180 95" role="img" aria-label="Duas curvas comparadas"><path class="k-diagrama-grade" d="M8 80H172M8 48H172M8 16H172"/><path class="k-diagrama-linha" d="M10 80Q75 -5 170 77"/><path class="k-diagrama-comparacao" d="M10 80Q75 5 170 77"/></svg><h3>Verificação</h3><p>Conferir os cálculos permite avaliar a consistência dos resultados antes da missão.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="k-section k-laboratorio" id="laboratorio" aria-labelledby="k-lab-titulo">
+    <div class="k-container">
+      <header class="k-section-heading"><p class="k-kicker">05 / INTERAÇÃO MATEMÁTICA</p><h2 id="k-lab-titulo">A matemática também coloca foguetes em movimento.</h2><p>Mude os parâmetros e observe como uma trajetória idealizada se transforma.</p></header>
+      <div class="k-lab-grid">
+        <div class="k-lab-visual"><div class="k-lab-visual-topo"><span>TRAJETÓRIA DIDÁTICA</span><span>g = 9,81 m/s²</span></div><svg id="k-grafico" viewBox="0 0 760 410" role="img" aria-labelledby="k-grafico-titulo k-grafico-descricao"><title id="k-grafico-titulo">Trajetória balística calculada</title><desc id="k-grafico-descricao">Curva de trajetória que muda conforme a velocidade e o ângulo de lançamento.</desc><g class="k-grafico-grade"><path d="M55 50V340H720M55 270H720M55 200H720M55 130H720M55 60H720M190 50V340M325 50V340M460 50V340M595 50V340"/></g><path id="k-trajetoria-area" class="k-trajetoria-area" d=""/><path id="k-trajetoria-linha" class="k-trajetoria-linha" d=""/><line id="k-apogeu-guia" class="k-apogeu-guia" x1="0" x2="0" y1="0" y2="340"/><circle id="k-apogeu-ponto" class="k-apogeu-ponto" cx="0" cy="0" r="7"/><text x="55" y="374">LANÇAMENTO</text><text x="720" y="374" text-anchor="end">ALCANCE</text><text id="k-apogeu-label" x="0" y="0">APOGEU</text></svg><div class="k-lab-medidas" aria-live="polite"><div><small>ALTURA MÁXIMA</small><strong id="k-altura">—</strong></div><div><small>ALCANCE HORIZONTAL</small><strong id="k-alcance">—</strong></div><div><small>TEMPO DE VOO</small><strong id="k-duracao">—</strong></div></div></div>
+        <div class="k-lab-controles"><p class="k-lab-eyebrow">AJUSTE OS PARÂMETROS</p><label for="k-velocidade">Velocidade inicial <output id="k-velocidade-valor" for="k-velocidade">65 m/s</output></label><input id="k-velocidade" type="range" min="20" max="120" value="65" step="1"><div class="k-range-extremos"><span>20 m/s</span><span>120 m/s</span></div><label for="k-angulo">Ângulo de lançamento <output id="k-angulo-valor" for="k-angulo">45°</output></label><input id="k-angulo" type="range" min="15" max="75" value="45" step="1"><div class="k-range-extremos"><span>15°</span><span>75°</span></div><button id="k-reiniciar" class="k-button k-button-outline" type="button">↺ Reiniciar parâmetros</button><p class="k-equacao" aria-label="Equações do modelo">x(t) = v₀ cos(θ)t<br>y(t) = v₀ sin(θ)t − ½gt²</p></div>
+      </div>
+      <p class="k-modelo-aviso"><strong>Modelo didático simplificado.</strong> Terreno plano, gravidade constante e ausência de resistência do ar. Não representa um lançamento orbital nem a dinâmica completa de um foguete real. Não afirma que Katherine utilizou esse modelo nas missões da NASA.</p>
+    </div>
+  </section>
+
+  <section class="k-section k-legado k-dark" aria-labelledby="k-legado-titulo">
+    <div class="k-container k-legado-grid"><div><p class="k-kicker">06 / ALÉM DOS NÚMEROS</p><h2 id="k-legado-titulo">O talento sempre existiu.<br><em>As oportunidades, nem sempre.</em></h2><p>Katherine Johnson construiu sua carreira enfrentando barreiras de segregação racial e desigualdade de gênero. Seu legado representa não apenas uma conquista científica, mas também a importância de ampliar o acesso à educação, ao conhecimento e às oportunidades na ciência.</p><span class="k-legado-assinatura">CIÊNCIA DELAS · SEPEX 2026</span></div><figure><img src="{{ url_for('static', filename='img/katherine/katherine-johnson-2015.jpg') }}" alt="Katherine Johnson recebe a Medalha Presidencial da Liberdade em 2015, ao lado do presidente Barack Obama" width="800" height="916" loading="lazy"><figcaption>Medalha Presidencial da Liberdade, 2015. <a href="https://science.nasa.gov/people/katherine-johnson/" target="_blank" rel="noopener noreferrer">Foto: NASA / Bill Ingalls ↗</a></figcaption></figure></div>
+  </section>
+
+  <section class="k-section k-convite" aria-labelledby="k-convite-titulo"><div class="k-container k-convite-grid"><div><p class="k-kicker">07 / DA HISTÓRIA À EXPERIÊNCIA</p><h2 id="k-convite-titulo">A próxima trajetória pode começar aqui.</h2><p>Décadas depois dos cálculos de Katherine Johnson, a matemática continua indispensável para a exploração espacial. No ABAQUAR, ela ganha vida por meio do projeto, da simulação e da análise de foguetes.</p><p>Agora é a sua vez de experimentar como decisões de engenharia influenciam uma trajetória.</p><a class="k-button k-button-blue" href="{{ url_for('web.montagem') }}">Monte seu foguete <span aria-hidden="true">→</span></a></div><div class="k-convite-diagrama" aria-hidden="true"><svg viewBox="0 0 420 340" fill="none"><path d="M28 290H392M28 225H392M28 160H392M28 95H392M82 45V290M160 45V290M238 45V290M316 45V290" stroke="currentColor" opacity=".17"/><path d="M40 287C135 278 125 120 260 73" stroke="#d99b2c" stroke-width="3" stroke-dasharray="7 9"/><circle cx="260" cy="73" r="8" fill="#d99b2c"/><path d="M262 68c20-29 25-47 22-58-12 5-27 18-43 48l21 10Z" fill="#f6f9ff" stroke="#1555ac" stroke-width="3"/><path d="m247 59-14 7 13 4m26-1 7 13-16-5" fill="#67a9f3" stroke="#1555ac" stroke-width="3"/><path d="m247 73-9 17 17-11" fill="#f4bf5b"/><circle cx="268" cy="48" r="5" fill="#67a9f3"/><path d="M48 290c20-49 42-70 71-88" stroke="#67a9f3" stroke-width="2" opacity=".6"/></svg><span>PROJETO → SIMULAÇÃO → ANÁLISE</span></div></div></section>
+
+  <section class="k-section k-quiz" id="quiz" aria-labelledby="k-quiz-titulo"><div class="k-container k-quiz-grid"><div><p class="k-kicker">08 / TESTE O QUE APRENDEU</p><h2 id="k-quiz-titulo">O que você aprendeu sobre Katherine?</h2><p>Três perguntas rápidas para revisar a história e a matemática por trás das missões.</p></div><div class="k-quiz-painel"><div class="k-quiz-topo"><span id="k-quiz-progresso">PERGUNTA 1 DE 3</span><span id="k-quiz-pontos">0 ACERTOS</span></div><div class="k-quiz-barra" aria-hidden="true"><span id="k-quiz-barra-valor"></span></div><div id="k-quiz-conteudo"><noscript>Ative o JavaScript para responder ao quiz.</noscript></div></div></div></section>
+
+  <section class="k-fontes" aria-labelledby="k-fontes-titulo"><div class="k-container"><h2 id="k-fontes-titulo">Fontes e créditos</h2><p>Conteúdo histórico e fotografias: <a href="https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/" target="_blank" rel="noopener noreferrer">NASA · Biografia de Katherine Johnson ↗</a>, <a href="https://science.nasa.gov/people/katherine-johnson/" target="_blank" rel="noopener noreferrer">NASA Science · Katherine Johnson ↗</a>, <a href="https://www.nasa.gov/image-article/katherine-johnson-nasa-langley-research-center/" target="_blank" rel="noopener noreferrer">NASA · Katherine em Langley ↗</a> e <a href="https://ntrs.nasa.gov/citations/19980227091" target="_blank" rel="noopener noreferrer">NASA Technical Reports Server · Relatório de 1960 ↗</a>. Visualizações e textos explicativos: ABAQUAR.</p></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/katherine.js', v='20261021-1') }}" defer></script>{% endblock %}

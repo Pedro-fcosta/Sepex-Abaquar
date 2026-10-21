@@ -199,6 +199,8 @@ code { color: var(--azul-principal); overflow-wrap: anywhere; }
 .inicio-ciencia-marca { color: var(--home-azul); font-size: 2rem; line-height: 1; }
 .inicio-ciencia .sobretitulo { margin-bottom: 7px; }
 .inicio-ciencia h2 { font-size: clamp(1.5rem, 2vw, 1.9rem); }
+.inicio-ciencia p:not(.sobretitulo) { color: var(--text-muted); line-height: 1.6; }
+.inicio-ciencia .botao { margin-top: 18px; }
 
 /* Configurador e progresso */
 .montagem-cabecalho { margin-bottom: 22px; }
